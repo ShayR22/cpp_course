@@ -7,10 +7,9 @@
 class Practitioner : public Professor, public Student
 {
 public:
-	/******Constructors******/
 	Practitioner(const char* name, const Date& birthDate, const char* id, eDepartmenType department, double salary,
 		int maxOfGrades = 20, int maxOfLectures = 20, int maxOfLecturesTeaching = 5);
-	Practitioner(const Professor& p, const Student& s); // check that p and s are the same person
+	Practitioner(Professor& p, Student& s); // check that p and s are the same person
 	
 
 	const Professor** assistantTo() const; //To whom he helps

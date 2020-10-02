@@ -11,7 +11,7 @@ private:
 	int grade;
 public:
 	/******Constructors******/
-	CourseInformation(const Lecture& lecture, int grade = -1);
+	CourseInformation(Lecture& lecture, int grade = -1);
 
 
 	/******Gets/Sets******/

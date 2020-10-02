@@ -1,6 +1,8 @@
 #ifndef __H_LECTURE__
 #define __H_LECTURE__
 
+#include <ostream>
+
 class Student;
 class Professor;
 class ClassRoom;
@@ -36,8 +38,9 @@ private:
 
 public:
 	/******Constructors******/
-	Lecture(eWeekDay day, int startHour, int duration, eType type,const Course& course,
-		const ClassRoom& classRoom, const Professor& lecturer, const Lecture* practice, int maxStudentList = 20, int maxWaitingList = 20);
+	Lecture(eWeekDay day, int startHour, int duration, eType type, Course& course,
+		    ClassRoom& classRoom, Professor& lecturer, Lecture* practice,
+		    int maxStudentList = 20, int maxWaitingList = 20);
 
 	/******Gets/Sets******/
 	int getId() const { return id; }
@@ -68,10 +71,10 @@ public:
 
 	const Lecture& getPracticeLecture() const { return *practice; }
 	bool setPracticeLecture(const Lecture& newPracticeLecture);
-
+	
 	const Course& getCourse()const { return course; }
 
-	friend ostream& operator<<(ostream& os, const Lecture& l);
+	friend std::ostream& operator<<(std::ostream& os, const Lecture& l);
 
 	/******Deconstructor******/
 	~Lecture();
@@ -83,7 +86,5 @@ private:
 	Lecture& operator=(const Lecture& otherL) = delete;
 	Lecture& operator=(Lecture&& otherL) = delete;
 };
-int Lecture::automaticID = 0;
-
 
 #endif

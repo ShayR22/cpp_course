@@ -22,7 +22,7 @@ private:
 
 public:
 	/******Constructors******/
-	Course(const char* name, const Professor& coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
+	Course(const char* name, Professor& coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
 	Course(Course&& otherC);
 
 	/******Gets/Sets******/
@@ -44,7 +44,7 @@ public:
 	
 	/******print******/
 	void printStudentsInCourse() const;
-	friend ostream& operator<<(ostream& os, const Course& c);
+	friend std::ostream& operator<<(std::ostream& os, const Course& c);
 
 	/******Deconstructor******/
 	~Course();

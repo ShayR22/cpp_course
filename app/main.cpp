@@ -1,6 +1,7 @@
-using namespace std;
 #include <iostream>
 #include "College.h"
+
+using namespace std;
 
 char printMenu(College& college);
 char printStudentsMenu(College& college);
@@ -14,7 +15,7 @@ void printStudents(College& c);
 Student* getStudentById(College& c);
 Student* getStudentInfo();
 Lecture* chooseLectureOfCourse(College& c);
-Lecture* createLecture(College& college, const Course& course);
+Lecture* createLecture(College& college, Course& course);
 void printProfessors(College& c);
 Professor* getProfessorById(College& c);
 Practitioner* getPractitionerById(College& c);
@@ -22,7 +23,7 @@ Professor* getProfessorInfo();
 void printCourses(College& c);
 Course& getCourseInfo(College& college);
 Course* getCourseByName(College& c);
-void setGrades(College& c, const Professor& prof);
+void setGrades(College& c, Professor& prof);
 
 int main(int argc, char** argv)
 {
@@ -302,7 +303,7 @@ Lecture* chooseLectureOfCourse(College& c)
 	return lectures[lIndex];
 }
 
-Lecture* createLecture(College& college, const Course& course)
+Lecture* createLecture(College& college, Course& course)
 {
 	Lecture* lecture;
 	Lecture::eType lectureType = (Lecture::eType)1;
@@ -318,9 +319,9 @@ Lecture* createLecture(College& college, const Course& course)
 	cin >> lectureDuration;
 	cout << "Please enter lecture classroom number: ";
 	cin >> lectureRoomNumber;
-	const ClassRoom* lectureRoom = college.getClassRoomByNumber(lectureRoomNumber);
+	ClassRoom* lectureRoom = college.getClassRoomByNumber(lectureRoomNumber);
 
-	const Professor* lectureProf = getProfessorById(college);
+	Professor* lectureProf = getProfessorById(college);
 	if (!lectureProf)
 	{
 			cout << "Can not find proffesor";
@@ -342,7 +343,7 @@ Lecture* createLecture(College& college, const Course& course)
 	cin >> pracDuration;
 	cout << "Please enter lecture classroom number: ";
 	cin >> pracRoomNumber;
-	const ClassRoom* pracRoom = college.getClassRoomByNumber(lectureRoomNumber);
+	ClassRoom* pracRoom = college.getClassRoomByNumber(lectureRoomNumber);
 
 	Practitioner* practiceProf = getPractitionerById(college);
 	if (!practiceProf)
@@ -351,7 +352,7 @@ Lecture* createLecture(College& college, const Course& course)
 		return nullptr;
 	}
 
-	const Lecture* lecturePract = new Lecture(practiceDay, pracStartHour, pracDuration, pracType,
+	Lecture* lecturePract = new Lecture(practiceDay, pracStartHour, pracDuration, pracType,
 		course, *pracRoom, *practiceProf, nullptr);
 
 	lecture = new Lecture(lectureDay, lectureStartHour, lectureDuration, lectureType, course, *lectureRoom,
@@ -413,7 +414,7 @@ Course& getCourseInfo(College& college)
 	cout << "Please enter number of points: ";
 	cin >> points;
 	cout << "Please choose a professor to be the coordinator of the course";
-	const Professor* coordinator = getProfessorById(college);
+	Professor* coordinator = getProfessorById(college);
 
 	Course *c = new Course(name, *coordinator, points);
 	return *c;
@@ -428,7 +429,7 @@ Course* getCourseByName(College& c)
 	return c.getCourseByName(name);
 }
 
-void setGrades(College& c, const Professor& prof)
+void setGrades(College& c, Professor& prof)
 {
 	int lecId, arrSize = 0;
 	Lecture** arr = prof.getLectures(&arrSize);
