@@ -19,11 +19,11 @@ private:
 	Course** conditionCourses;
 	int maxConditionCourses;
 	int numOfConditionCourses;
-
+	inline bool isNearlyEqual(double x, double y);
 public:
 	/******Constructors******/
 	Course(const char* name, Professor& coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
-	Course(Course&& otherC);
+	Course(Course&& otherC) noexcept;
 
 	/******Gets/Sets******/
 	const char* getCourseName() const { return name; }
