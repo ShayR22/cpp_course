@@ -7,6 +7,7 @@ private:
 	int year;
 	int month;
 	int day;
+	int getNumOfDaysInYearMonth();
 public:
 	/******Constructors******/
 	Date(int year, int month, int day);
