@@ -10,7 +10,7 @@
 
 using namespace std;
 
-Course::Course(const char* name, Professor& coordinator, float points,
+Course::Course(const char* name, const Professor* coordinator, float points,
 	int maxLectures, int maxConditionCourses) : 
 	coordinator(coordinator), points(points), maxLectures(maxLectures), maxConditionCourses(maxConditionCourses)
 {
@@ -51,10 +51,13 @@ bool Course::setCourseName(const char* newCourseName)
 	return true;
 }
 
-bool Course::setCoordinator(const Professor& p)
+bool Course::setCoordinator(const Professor* p)
 {
-	/* in order to implement this we would require operator = for proffesor*/
-	return false;
+	if (p == nullptr)
+		return false;
+
+	coordinator = p;
+	return true;
 }
 
 

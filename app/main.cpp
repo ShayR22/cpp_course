@@ -416,7 +416,7 @@ Course& getCourseInfo(College& college)
 	cout << "Please choose a professor to be the coordinator of the course";
 	Professor* coordinator = getProfessorById(college);
 
-	Course *c = new Course(name, *coordinator, points);
+	Course *c = new Course(name, coordinator, points);
 	return *c;
 }
 

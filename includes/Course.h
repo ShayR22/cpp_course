@@ -11,7 +11,7 @@ public:
 private:
 	/******Attributes******/
 	char name[COURSE_NAME_SIZE];
-	Professor& coordinator;
+	const Professor* coordinator;
 	float points;
 	Lecture** lectures;
 	int maxLectures;
@@ -22,14 +22,14 @@ private:
 	inline bool isNearlyEqual(double x, double y);
 public:
 	/******Constructors******/
-	Course(const char* name, Professor& coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
+	Course(const char* name, const Professor* coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
 	Course(Course&& otherC) noexcept;
 
 	/******Gets/Sets******/
 	const char* getCourseName() const { return name; }
 	bool setCourseName(const char* newCourseName);
-	const Professor& getCoordinator()const { return coordinator; }
-	bool setCoordinator(const Professor& p);
+	const Professor* getCoordinator()const { return coordinator; }
+	bool setCoordinator(const Professor* p);
 	float getPoints() const { return points; }
 	bool setPoints(float p);
 	Lecture** getLectures(int* numOfLectures) const; // returning also the current number of lectures
