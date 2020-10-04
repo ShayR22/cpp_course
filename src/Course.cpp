@@ -48,7 +48,7 @@ bool Course::setCourseName(const char* newCourseName)
 		return false;
 
 	strncpy(name, newCourseName, Course::COURSE_NAME_SIZE);
-
+	return true;
 }
 
 bool Course::setCoordinator(const Professor& p)
@@ -78,7 +78,7 @@ bool Course::setPoints(float p)
 
 Lecture** Course::getLectures(int* numOfLectures) const
 {
-	*numOfLectures = numOfLectures;
+	*numOfLectures = this->numOfLectures;
 	return lectures;
 }
 
