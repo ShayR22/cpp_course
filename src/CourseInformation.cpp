@@ -1,18 +1,29 @@
 #include "CourseInformation.h"
 #include "Lecture.h"
 
-CourseInformation::CourseInformation(Lecture& lecture, int grade) :
-	lecture(lecture)
+
+CourseInformation::CourseInformation(const Lecture* lecture, int grade) :
+	lecture(lecture), grade(grade)
 {
 
 }
 
-bool sCourseInformationetGrade(int newGrade)
+
+void CourseInformation::setLecture(const Lecture* newLecture)
 {
-	return false;
+	lecture = newLecture;
 }
 
-void CourseInformationprint()
+bool CourseInformation::setGrade(int newGrade)
+{
+	if (newGrade < 1 || newGrade > 100)
+		return false;
+	grade = newGrade;
+	return true;
+}
+
+
+void CourseInformation::print() const
 {
 
 }
