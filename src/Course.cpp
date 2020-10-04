@@ -10,7 +10,7 @@
 
 using namespace std;
 
-Course::Course(const char* name, Professor& coordinator, float points,
+Course::Course(const char* name, const Professor* coordinator, float points,
 	int maxLectures, int maxConditionCourses) : 
 	coordinator(coordinator), points(points), maxLectures(maxLectures), maxConditionCourses(maxConditionCourses)
 {
@@ -48,13 +48,16 @@ bool Course::setCourseName(const char* newCourseName)
 		return false;
 
 	strncpy(name, newCourseName, Course::COURSE_NAME_SIZE);
-
+	return true;
 }
 
-bool Course::setCoordinator(const Professor& p)
+bool Course::setCoordinator(const Professor* p)
 {
-	/* in order to implement this we would require operator = for proffesor*/
-	return false;
+	if (p == nullptr)
+		return false;
+
+	coordinator = p;
+	return true;
 }
 
 
@@ -78,7 +81,7 @@ bool Course::setPoints(float p)
 
 Lecture** Course::getLectures(int* numOfLectures) const
 {
-	*numOfLectures = numOfLectures;
+	*numOfLectures = this->numOfLectures;
 	return lectures;
 }
 

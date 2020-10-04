@@ -7,16 +7,16 @@ class CourseInformation
 {
 private:
 	/******Attributes******/
-	Lecture& lecture;
+	const Lecture* lecture;
 	int grade;
 public:
 	/******Constructors******/
-	CourseInformation(Lecture& lecture, int grade = -1);
+	CourseInformation(const Lecture* lecture, int grade = -1);
 
 
 	/******Gets/Sets******/
-	const Lecture& getLecture() const { return lecture; }
-	bool setLecture(const Lecture& newLecture);
+	const Lecture* getLecture() const { return lecture; }
+	void setLecture(const Lecture* newLecture);
 	int getGrade() const { return grade; }
 	bool setGrade(int newGrade);
 
