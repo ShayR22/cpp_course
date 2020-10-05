@@ -5,7 +5,7 @@
 #include "Person.h"
 #include "Course.h"
 
-class Student : public Person
+class Student : virtual public Person
 {
 public:
 	enum eDepartmenType { SOFTWARE, MEDICAL, ELECTRICITY };

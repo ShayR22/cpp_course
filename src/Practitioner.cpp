@@ -2,14 +2,16 @@
 
 Practitioner::Practitioner(const char* name, const Date& birthDate, const char* id, eDepartmenType department, double salary,
 	int maxOfGrades, int maxOfLectures, int maxOfLecturesTeaching) :
-	Professor(name, birthDate, id ,salary, maxOfLectures), Student(name, birthDate, id, department, maxOfGrades)
+	Professor(name, birthDate, id, salary, maxOfLectures), Student(name, birthDate, id, department, maxOfGrades),
+	Person(name, birthDate, id)
 {
 
 }
 
 Practitioner::Practitioner(Professor& p, Student& s) :
 	Professor(p.getName(), p.getBirthDate(), p.getId(), p.getSalary()),
-	Student(s.getName(), s.getBirthDate(), s.getId(), s.getDepartment())
+	Student(s.getName(), s.getBirthDate(), s.getId(), s.getDepartment()),
+	Person(p.getName(), p.getBirthDate(), p.getId())
 {
 
 }

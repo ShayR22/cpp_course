@@ -6,7 +6,7 @@
 #include "Course.h"
 
 
-class Professor : public Person
+class Professor : virtual public Person
 {
 private:
 	/******Attributes******/
