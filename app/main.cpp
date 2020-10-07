@@ -432,13 +432,13 @@ Course* getCourseByName(College& c)
 void setGrades(College& c, Professor& prof)
 {
 	int lecId, arrSize = 0;
-	Lecture** arr = prof.getLectures(&arrSize);
+	const Lecture * const * arr = prof.getLectures(&arrSize);
 	printArray((void**)arr, arrSize);
 
 	cout << "Please enter lecture ID: ";
 	cin >> lecId;
 
-	Lecture* lecture = nullptr;
+	const Lecture* lecture = nullptr;
 	for (int i = 0; i < arrSize; i++)
 	{
 		if (arr[i]->getId() == lecId)

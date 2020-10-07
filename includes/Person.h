@@ -1,11 +1,10 @@
 #ifndef __H_PERSON__
 #define __H_PERSON__
 
-using namespace std;
 #include <iostream>
-
 #include "Date.h"
 
+using namespace std;
 
 class Person
 {
@@ -38,7 +37,7 @@ public://public methods
 private://private methods
 
 	/******Gets/Sets******/
-	bool setBirthDate(const Date& newBirthDate);
+	void setBirthDate(const Date& newBirthDate);
 	bool setId(const char* newId);
 };
 

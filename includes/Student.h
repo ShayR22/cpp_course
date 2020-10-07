@@ -5,7 +5,7 @@
 #include "Person.h"
 #include "Course.h"
 
-class Student : public Person
+class Student : virtual public Person
 {
 public:
 	enum eDepartmenType { SOFTWARE, MEDICAL, ELECTRICITY };
@@ -17,15 +17,16 @@ private:
 
 public:
 	/******Constructors******/
-	Student(const char* name, const Date& birthDate, const char* id, eDepartmenType department, int maxOfCourses = 20);
-	Student(Student&& otherS);
+	Student(const char* name, const Date& birthDate, const char* id,
+			eDepartmenType department, int maxOfCourses = 20) noexcept(false);
+	Student(Student&& otherS) noexcept;
 
 	/******Gets/Sets******/
 	eDepartmenType getDepartment() const { return department; }
-	bool setDepartment(eDepartmenType newDepartmentType);
-	const CourseInformation** getCourseInformation(int* numOfCourses) const; // also returning current num of grades
+	void setDepartment(eDepartmenType newDepartmentType);
+	const CourseInformation * const * getCourseInformation(int* numOfCourses) const; // also returning current num of grades
 	void updateGrade(const Lecture& lecture, int newGrade) const; //searching in "grades" the Course (given by lecture),getting the Grade --- update the coures's grade
-	bool addLecture(Lecture* newLecture);
+	bool addLecture(const Lecture* newLecture);
 
 	bool deleteFromCourse(Course& c); // finding the course the student is in, 
 	//finding the lecture and deletes the student from lecture,then deletes the course from student's grades.
