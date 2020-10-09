@@ -6,55 +6,54 @@
 class Course
 {
 public:
-	enum eAddingStudentStatus { SUCCESS, UNQUALIFIED, FULL };// for lecture
-	static const int COURSE_NAME_SIZE = 20;
+	enum class eAddingStudentStatus { SUCCESS, UNQUALIFIED, FULL };// for lecture
 private:
-	/******Attributes******/
-	char name[COURSE_NAME_SIZE];
+	char* name;
 	const Professor* coordinator;
 	float points;
 	Lecture** lectures;
 	int maxLectures;
 	int numOfLectures;
-	Course** conditionCourses;
+	const Course** conditionCourses;
 	int maxConditionCourses;
 	int numOfConditionCourses;
 	inline bool isNearlyEqual(double x, double y);
-public:
-	/******Constructors******/
-	Course(const char* name, const Professor* coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
-	Course(Course&& otherC) noexcept;
 
-	/******Gets/Sets******/
+	void destroyLectures();
+
+	int getLectureIndex(const Lecture& l);
+	int getConditionCourseIndex(const Course& c);
+	bool notInside(const Student** student, int studentsLen, const Student* isInside) const;
+
+public:
+	Course(const char* name, const Professor* coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
+	Course(const Course& other) noexcept;
+	Course(Course&& other) noexcept;
+
+	Course& operator=(const Course& other);
+	Course& operator=(Course&& other) noexcept;
+
+	bool operator==(const Course& other) const;
+
 	const char* getCourseName() const { return name; }
 	bool setCourseName(const char* newCourseName);
 	const Professor* getCoordinator()const { return coordinator; }
 	bool setCoordinator(const Professor* p);
 	float getPoints() const { return points; }
 	bool setPoints(float p);
-	Lecture** getLectures(int* numOfLectures) const; // returning also the current number of lectures
+	Lecture** getLectures(int* numOfLectures) const;
 	bool removeLecture(const Lecture& lectureToRemove);
 	bool addLecture(const Lecture& lectureToAdd);
-	const Course** getConditionsCourses(int* numOfConditionsCourses) const; // returning also the current number of courses
+	const Course** getConditionsCourses(int* numOfConditionCourses) const;
 	bool removeConditionCourse(const Course& c);
 	bool addConditionCourse(const Course& c);
 
-	eAddingStudentStatus addStudentToCourse(Lecture& lecture_to_enter, Student& student_to_sign);//check qualification's conditions, 
-	//searching the lecture, and adding 
+	eAddingStudentStatus addStudentToCourse(Lecture& lectureToEnter, Student& studentToSign) noexcept(false);
 	
-	/******print******/
-	void printStudentsInCourse() const;
+	void printStudentsInCourse(std::ostream& os) const;
 	friend std::ostream& operator<<(std::ostream& os, const Course& c);
 
-	/******Deconstructor******/
 	~Course();
-
-private:
-	/******Constructors******/
-	Course(const Course& otherC) = delete;
-	Course& operator=(const Course& otherC) = delete;
-	Course& operator=(Course&& otherC) = delete;
 };
 
-
-#endif
+#endif /* __H_COURSE__ */

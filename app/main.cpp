@@ -3,6 +3,8 @@
 #include <iostream>
 #include "College.h"
 
+#define COURSE_NAME_SIZE 20
+
 using namespace std;
 
 char printMenu(College& college);
@@ -408,7 +410,7 @@ void printCourses(College& c)
 
 Course& getCourseInfo(College& college)
 {
-	char name[Course::COURSE_NAME_SIZE];
+	char name[COURSE_NAME_SIZE];
 	float points;
 
 	cout << "Please enter course name: ";
@@ -424,7 +426,7 @@ Course& getCourseInfo(College& college)
 
 Course* getCourseByName(College& c)
 {
-	char name[Course::COURSE_NAME_SIZE];
+	char name[COURSE_NAME_SIZE];
 	cout << "Please enter course name: ";
 	cin >> name;
 

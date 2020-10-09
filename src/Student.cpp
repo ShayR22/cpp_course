@@ -145,6 +145,28 @@ bool Student::deleteFromCourse(Course& c)
 	return false;
 }
 
+bool Student::passedCourse(const Course* c)
+{
+	for (int i = 0; i < numOfCourses; i++)
+	{
+		const Course& cur_c = courses[i]->getLecture()->getCourse();
+		if (*c == cur_c)
+			return true;
+	}
+	return false;
+}
+
+bool Student::qualify(const Course& c)
+{
+	int numCourses;
+	const Course* const* conditionCourses = c.getConditionsCourses(&numCourses);
+	for (int i = 0; i < numCourses; i++)
+		if (!passedCourse(&c))
+			return false;
+
+	return true;
+}
+
 void Student::printGrades(ostream& os) const
 {
 	if (numOfCourses == 0)
