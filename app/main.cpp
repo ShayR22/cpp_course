@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <iostream>
 #include "College.h"
 
@@ -100,7 +102,7 @@ char printStudentsMenu(College& college)
 			return 'r';
 		case '4':
 			s = getStudentById(college);
-			s->printGrades();
+			s->printGrades(cout);
 			return 'r';
 		case '5':
 			 s = getStudentById(college);
@@ -117,7 +119,7 @@ char printStudentsMenu(College& college)
 		case '6':
 			s = getStudentById(college);
 			if (s)
-				s->printProfessores();
+				s->printProfessores(cout);
 			return 'r';
 		case 'r':
 			return 'r'; // return to main menu and resume
@@ -164,7 +166,7 @@ char printProfessorsMenu(College& college)
 		case '4':
 			p = getProfessorById(college);
 			if (p)
-				p->printLectures();
+				p->printLectures(cout);
 			return 'r';
 		case '5':
 			setGrades(college, *getProfessorById(college));
