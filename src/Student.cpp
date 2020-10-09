@@ -156,7 +156,7 @@ void Student::printGrades(ostream& os) const
 
 	for (int i = 0; i < numOfCourses; i++)
 	{
-		courses[i]->print();
+		os << courses[i];
 	}
 }
 
