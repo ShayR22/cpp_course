@@ -4,11 +4,34 @@
 using namespace std;
 
 Lecture::Lecture(eWeekDay day, int startHour, int duration, eType type, Course& course,
-				 ClassRoom& classRoom, Professor& lecturer, Lecture* practice,
+				 const ClassRoom& classRoom, const Professor& lecturer, Lecture* practice,
 				 int maxStudentList, int maxWaitingList ) :
-	course(course), classRoom(classRoom), lecturer(lecturer), practice(practice)
+	course(course), classRoom(&classRoom), lecturer(&lecturer), practice(practice)
 {
 
+}
+
+Lecture::Lecture(const Lecture& other) :
+course(other.course), classRoom(other.classRoom), lecturer(other.lecturer), practice(other.practice)
+
+{
+
+}
+
+
+bool Lecture::operator==(const Lecture& l) const
+{
+	return true;
+}
+
+Lecture& Lecture::operator=(const Lecture& otherL)
+{
+	return *this;
+}
+
+Lecture& Lecture::operator=(Lecture&& otherL)
+{
+	return *this;
 }
 
 bool Lecture::setWeekDay(eWeekDay day)
@@ -36,7 +59,7 @@ bool Lecture::setLectureType(const eType newType)
 	return false;
 }
 
-bool Lecture::setClassRoom(const ClassRoom& newClassRoom)
+bool Lecture::setClassRoom(const ClassRoom* newClassRoom)
 {
 	return false;
 }
