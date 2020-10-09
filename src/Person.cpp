@@ -36,6 +36,28 @@ Person::Person(Person&& other) noexcept
 	*this = other;
 }
 
+Person& Person::operator=(const Person& other)
+{
+	this->birthDate = other.birthDate;
+
+	/* -1 in order to save 1 index for '\0' */
+	setNameOrZeros(this->name, other.name, (Person::NAME_LEN - 1));
+	setNameOrZeros(this->id, other.id, (Person::ID_LEN - 1));
+	return *this;
+}
+
+Person& Person::operator=(Person&& other) noexcept
+{
+	this->birthDate = other.birthDate,
+		this->name = other.name;
+	this->id = other.id;
+
+	other.name = nullptr;
+	other.id = nullptr;
+	other.birthDate = nullptr;
+	return *this;
+}
+
 Person::~Person()
 {
 	delete name;
@@ -54,7 +76,6 @@ ostream& operator<<(ostream& os, const Person& per)
 	return os;
 }
 
-
 bool Person::operator==(const char* id) const
 {
 	if (!strcmp(this->id, id))
@@ -65,26 +86,4 @@ bool Person::operator==(const char* id) const
 bool Person::operator==(Person& other) const
 {
 	return (*this == other.id);
-}
-
-Person& Person::operator=(const Person& other)
-{
-	this->birthDate = other.birthDate;
-
-	/* -1 in order to save 1 index for '\0' */
-	setNameOrZeros(this->name, other.name, (Person::NAME_LEN - 1));
-	setNameOrZeros(this->id, other.id, (Person::ID_LEN - 1));
-	return *this;
-}
-
-Person& Person::operator=(Person&& other) noexcept
-{
-	this->birthDate = other.birthDate,
-	this->name = other.name;
-	this->id = other.id;
-
-	other.name = nullptr;
-	other.id = nullptr;
-	other.birthDate = nullptr;
-	return *this;
 }

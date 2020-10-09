@@ -14,12 +14,18 @@ private:
 	CourseInformation** courses;
 	int numOfCourses;
 	int maxOfCourses;
+	void destroyCourses();
 
 public:
 	Student(const char* name, const Date& birthDate, const char* id,
 			eDepartmenType department, int maxOfCourses = 20) noexcept(false);
 	Student(const Student& other) noexcept;
 	Student(Student&& otherS) noexcept;
+
+	Student& operator=(const Student& other);
+	Student& operator=(Student&& other) noexcept;
+
+	~Student();
 
 	eDepartmenType getDepartment() const { return department; }
 	void setDepartment(eDepartmenType newDepartmentType);
@@ -34,10 +40,6 @@ public:
 	virtual void print(std::ostream& os) const;
 
 	const Student& operator+=(const Lecture& l);
-	Student& operator=(const Student& other);
-	Student& operator=(Student&& other) noexcept;
-
-	~Student();
 };
 
-#endif
+#endif /* __H_STUDENT__ */

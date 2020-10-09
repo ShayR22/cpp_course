@@ -21,6 +21,43 @@ Professor::Professor(Professor&& other) noexcept : Person(other)
 	*this = other;
 }
 
+const Professor& Professor::operator=(const Professor& other)
+{
+	Person::operator=(other);
+
+	salary = other.salary;
+	maxOfLectures = other.maxOfLectures;
+	numOfLectures = other.numOfLectures;
+
+	delete lectures;
+	lectures = new const Lecture * [maxOfLectures];
+
+	for (int i = 0; i < maxOfLectures; i++)
+	{
+		if (i < numOfLectures)
+			lectures[i] = other.lectures[i];
+		else
+			lectures[i] = nullptr;
+	}
+	return *this;
+}
+const Professor& Professor::operator=(Professor& other) noexcept
+{
+	Person::operator=(other);
+	salary = other.salary;
+
+	maxOfLectures = other.maxOfLectures;
+	numOfLectures = other.numOfLectures;
+	lectures = other.lectures;
+	other.lectures = nullptr;
+	return *this;
+}
+
+Professor::~Professor()
+{
+	delete lectures;
+}
+
 bool Professor::setSalary(double new_salary)
 {
 	if (salary < 0)
@@ -121,41 +158,3 @@ const Professor& Professor::operator-=(const Lecture& l)
 
 	return *this;
 }
-
-const Professor& Professor::operator=(const Professor& other)
-{
-	Person::operator=(other);
-
-	salary = other.salary;
-	maxOfLectures = other.maxOfLectures;
-	numOfLectures = other.numOfLectures;
-
-	delete lectures;
-	lectures = new const Lecture*[maxOfLectures];
-	
-	for (int i = 0; i < maxOfLectures; i++)
-	{
-		if (i <	numOfLectures)
-			lectures[i] = other.lectures[i];
-		else
-			lectures[i] = nullptr;
-	}
-	return *this;
-}
-const Professor& Professor::operator=(Professor& other) noexcept
-{
-	Person::operator=(other);
-	salary = other.salary;
-
-	maxOfLectures = other.maxOfLectures;
-	numOfLectures = other.numOfLectures;
-	lectures = other.lectures;
-	other.lectures = nullptr;
-	return *this;
-}
-
-Professor::~Professor()
-{
-	delete lectures;
-}
-
