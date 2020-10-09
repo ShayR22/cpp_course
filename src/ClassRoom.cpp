@@ -23,8 +23,9 @@ bool ClassRoom::setMaxSeats(int newMaxSeats)
 	return true;
 }
 
-void ClassRoom::print() const
+std::ostream& operator<<(std::ostream& os, const ClassRoom& cr)
 {
-	cout << "ClassRoom Number: " << roomNumber << ", contains " << maxSeats << " seats" << endl;
+	os << "ClassRoom Number: " << cr.roomNumber << ", contains " << cr.maxSeats << " seats" << endl;
+	return os;
 }
 
