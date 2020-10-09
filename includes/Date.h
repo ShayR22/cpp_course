@@ -9,10 +9,9 @@ private:
 	int day;
 	int getNumOfDaysInYearMonth();
 public:
-	/******Constructors******/
 	Date(int year, int month, int day);
+	Date(const Date& other);
 	
-	/******Gets/Sets******/
 	int getYear() const { return year; }
 	bool setYear(int newYear);
 	int getMonth() const { return month; }
@@ -20,9 +19,9 @@ public:
 	int getDay() const { return day; }
 	bool setDay(int newDay);
 
-	/******print******/
-	void print() const;
+	friend std::ostream& operator<<(std::ostream& os, const Date& d);
 
+	Date& operator=(const Date& other);
 };
 
 #endif
