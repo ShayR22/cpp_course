@@ -1,12 +1,10 @@
 #include "CourseInformation.h"
 #include "Lecture.h"
 
+using namespace std;
 
 CourseInformation::CourseInformation(const Lecture* lecture, int grade) :
-	lecture(lecture), grade(grade)
-{
-
-}
+	lecture(lecture), grade(grade) {}
 
 
 void CourseInformation::setLecture(const Lecture* newLecture)
@@ -22,8 +20,9 @@ bool CourseInformation::setGrade(int newGrade)
 	return true;
 }
 
-
-void CourseInformation::print() const
+ostream& operator<<(ostream& os, const CourseInformation& ci)
 {
-
+	os << "Lecture: " << *(ci.lecture) << endl;
+	os << "Grade: " << ci.grade << endl;
+	return os;
 }
