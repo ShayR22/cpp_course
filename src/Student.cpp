@@ -14,6 +14,25 @@ Student::Student(const char* name, const Date& birthDate, const char* id,
 	courses = new CourseInformation*[maxOfCourses];
 }
 
+Student::Student(const Student& other) noexcept : Person(other), 
+	department(other.department), maxOfCourses(other.maxOfCourses), numOfCourses(other.numOfCourses)
+{
+	courses = new CourseInformation*[maxOfCourses];
+
+	for (int i = 0; i < maxOfCourses; i++)
+	{
+		if (i < numOfCourses)
+		{
+			CourseInformation* cur_course = other.courses[i];
+			courses[i] = new CourseInformation(cur_course->getLecture(), cur_course->getGrade());
+		}
+		else
+		{
+			courses[i] = nullptr;
+		}
+	}
+}
+
 Student::Student(Student&& otherS) noexcept : Person(otherS), department(otherS.department),
 	maxOfCourses(otherS.maxOfCourses), numOfCourses(otherS.numOfCourses)
 {
@@ -32,17 +51,18 @@ const CourseInformation * const * Student::getCourseInformation(int* numOfCourse
 	return courses;
 }
 
-void Student::updateGrade(const Lecture& lecture, int newGrade) const
+bool Student::updateGrade(const Lecture& lecture, int newGrade) const
 {
 	for (int i = 0; i < numOfCourses; i++)
 	{
 		if (lecture.getId() == courses[i]->getLecture()->getId())
 		{
 			courses[i]->setGrade(newGrade);
+			return true;
 		}
-
 	}
-} //searching in "grades" the Course (given by lecture),getting the Grade --- update the coures's grade
+	return false;
+}
 
 bool Student::addLecture(const Lecture* newLecture)
 {
@@ -61,8 +81,6 @@ bool Student::addLecture(const Lecture* newLecture)
 	return true;
 }
 
-// finding the course the student is in, 
-// finding the lecture and deletes the student from lecture,then deletes the course from student's grades.
 bool Student::deleteFromCourse(Course& c)
 {
 	int numLectures;
@@ -77,12 +95,12 @@ bool Student::deleteFromCourse(Course& c)
 	return false;
 }
 
-void Student::printGrades() const
+void Student::printGrades(ostream& os) const
 {
 	if (numOfCourses == 0)
 	{
 		Person::print(cout);
-		cout << "haven't finished any courses" << endl;
+		os << "haven't finished any courses" << endl;
 		return;
 	}
 
@@ -92,12 +110,12 @@ void Student::printGrades() const
 	}
 }
 
-void Student::printProfessores()const
+void Student::printProfessores(ostream& os) const
 {
 	if (numOfCourses == 0)
 	{
 		Person::print(cout);
-		cout << "doesn't have any courses, thus, no proffesors" << endl;
+		os << "doesn't have any courses, thus, no proffesors" << endl;
 		return;
 	}
 
@@ -110,15 +128,55 @@ void Student::printProfessores()const
 
 void Student::print(ostream& os) const
 {
-	Person::print(cout);
-	printGrades();
-	printProfessores();
+	Person::print(os);
+	printGrades(os);
+	printProfessores(os);
 }
 
 const Student& Student::operator+=(const Lecture& l)
 {
 	if (!addLecture(&l))
 		cout << "failed to add lecture" << endl;
+	return *this;
+}
+
+Student& Student::operator=(const Student& other)
+{
+	Person::operator=(other);
+
+	for (int i = 0; i < numOfCourses; i++)
+		delete courses[i];
+	delete courses;
+
+	this->maxOfCourses = other.maxOfCourses;
+	this->numOfCourses = other.numOfCourses;
+	courses = new CourseInformation *[this->maxOfCourses];
+
+	for (int i = 0; i < maxOfCourses; i++)
+	{
+		if (i < numOfCourses) 
+		{
+			CourseInformation* cur_course = other.courses[i];
+			courses[i] = new CourseInformation(cur_course->getLecture(), cur_course->getGrade());
+		}
+		else 
+		{
+			courses[i] = nullptr;
+		}
+	}
+	return *this;
+}
+
+Student& Student::operator=(Student&& other) noexcept
+{
+	Person::operator=(other);
+	
+	this->maxOfCourses = other.maxOfCourses;
+	this->numOfCourses = other.numOfCourses;
+	this->courses = other.courses;
+	other.courses = nullptr;
+	other.maxOfCourses = 0;
+	other.numOfCourses = 0;
 	return *this;
 }
 

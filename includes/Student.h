@@ -8,7 +8,7 @@
 class Student : virtual public Person
 {
 public:
-	enum eDepartmenType { SOFTWARE, MEDICAL, ELECTRICITY };
+	enum class eDepartmenType { SOFTWARE, MEDICAL, ELECTRICITY };
 private:
 	eDepartmenType department;
 	CourseInformation** courses;
@@ -16,36 +16,28 @@ private:
 	int maxOfCourses;
 
 public:
-	/******Constructors******/
 	Student(const char* name, const Date& birthDate, const char* id,
 			eDepartmenType department, int maxOfCourses = 20) noexcept(false);
+	Student(const Student& other) noexcept;
 	Student(Student&& otherS) noexcept;
 
-	/******Gets/Sets******/
 	eDepartmenType getDepartment() const { return department; }
 	void setDepartment(eDepartmenType newDepartmentType);
-	const CourseInformation * const * getCourseInformation(int* numOfCourses) const; // also returning current num of grades
-	void updateGrade(const Lecture& lecture, int newGrade) const; //searching in "grades" the Course (given by lecture),getting the Grade --- update the coures's grade
+	const CourseInformation * const * getCourseInformation(int* numOfCourses) const;
+	bool updateGrade(const Lecture& lecture, int newGrade) const; 
 	bool addLecture(const Lecture* newLecture);
 
-	bool deleteFromCourse(Course& c); // finding the course the student is in, 
-	//finding the lecture and deletes the student from lecture,then deletes the course from student's grades.
+	bool deleteFromCourse(Course& c);
 
-	/******print******/
-	void printGrades() const;
-	void printProfessores()const;
-	virtual void print(ostream& os) const;
+	void printGrades(std::ostream& os) const;
+	void printProfessores(std::ostream& os)const;
+	virtual void print(std::ostream& os) const;
 
-	const Student& operator+=(const Lecture& l);	//	use Student.addLecture
+	const Student& operator+=(const Lecture& l);
+	Student& operator=(const Student& other);
+	Student& operator=(Student&& other) noexcept;
 
-
-	/******Deconstructor******/
 	~Student();
-
-private:
-	Student(const Student& otherS) = delete;
-	Student& operator=(const Student& otherS) = delete;
-	Student& operator=(Student&& otherS) = delete;
 };
 
 #endif

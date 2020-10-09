@@ -11,6 +11,16 @@ Professor::Professor(const char* name, const Date& birthDate, const char* id, do
 	lectures = new const Lecture*[maxOfLectures];
 }
 
+Professor::Professor(const Professor& other) noexcept : Person(other)
+{
+	*this = other;
+}
+
+Professor::Professor(Professor&& other) noexcept : Person(other)
+{
+	*this = other;
+}
+
 bool Professor::setSalary(double new_salary)
 {
 	if (salary < 0)
@@ -23,7 +33,6 @@ bool Professor::setSalary(double new_salary)
 	return true;
 }
 
-/* TODO maybe change this function to include cosnt protection */
 const Lecture* const* Professor::getLectures(int* numOfLectures) const
 {
 	*numOfLectures = this->numOfLectures;
@@ -46,17 +55,22 @@ void Professor::removeLectureByIndex(int index)
 	lectures[numOfLectures--] = nullptr;
 }
 
-bool Professor::removeLecture(const Lecture* lectureToRemove)
+int Professor::getLectureIndex(const Lecture& find)
 {
 	for (int i = 0; i < numOfLectures; i++)
-	{
-		if (lectures[i]->getId() == lectureToRemove->getId())
-		{
-			removeLectureByIndex(i);
-			return true;
-		}
-	}
-	return false;
+		if (lectures[i]->getId() == find.getId())
+			return i;
+	return -1;
+}
+
+bool Professor::removeLecture(const Lecture* lectureToRemove)
+{
+	int idx = getLectureIndex(*lectureToRemove);
+	if (idx < 0)
+		return false;
+
+	removeLectureByIndex(idx);
+	return true;
 }
 
 bool Professor::addLectureTeaching(const Lecture* newLecture)
@@ -76,26 +90,20 @@ bool Professor::addLectureTeaching(const Lecture* newLecture)
 	return true;
 }
 
-bool Professor::setGrades(const Lecture& c)
-{
-	return false;
-}
- // each student gives to professor the "GRADE" obj , the prof needs to update
-
-void Professor::printLectures() const
+void Professor::printLectures(ostream& os) const
 {
 	if (numOfLectures == 0)
-		cout << "no lecutres" << endl;
+		os << "no lecutres" << endl;
 
 	for (int i = 0; i < numOfLectures; i++)
-		cout << *lectures[i];
-
+		os << *lectures[i];
 }
 
 void Professor::print(ostream& os) const
 {
 	Person::print(os);
-	printLectures();
+	os << "Salary: " << salary << endl;
+	printLectures(os);
 }
 
 const Professor& Professor::operator+=(const Lecture& l)
@@ -104,7 +112,7 @@ const Professor& Professor::operator+=(const Lecture& l)
 		cout << "Failed to add lecture" << endl;
 
 	return *this;
-} // use Professor.addLecture
+}
 
 const Professor& Professor::operator-=(const Lecture& l)
 {
@@ -112,12 +120,42 @@ const Professor& Professor::operator-=(const Lecture& l)
 		cout << "Failed to add lecture" << endl;
 
 	return *this;
-} // use Professor.removeLecture
+}
+
+const Professor& Professor::operator=(const Professor& other)
+{
+	Person::operator=(other);
+
+	salary = other.salary;
+	maxOfLectures = other.maxOfLectures;
+	numOfLectures = other.numOfLectures;
+
+	delete lectures;
+	lectures = new const Lecture*[maxOfLectures];
+	
+	for (int i = 0; i < maxOfLectures; i++)
+	{
+		if (i <	numOfLectures)
+			lectures[i] = other.lectures[i];
+		else
+			lectures[i] = nullptr;
+	}
+	return *this;
+}
+const Professor& Professor::operator=(Professor& other) noexcept
+{
+	Person::operator=(other);
+	salary = other.salary;
+
+	maxOfLectures = other.maxOfLectures;
+	numOfLectures = other.numOfLectures;
+	lectures = other.lectures;
+	other.lectures = nullptr;
+	return *this;
+}
 
 Professor::~Professor()
 {
-	for (int i = 0; i < numOfLectures; i++)
-		delete lectures[i];
 	delete lectures;
 }
 

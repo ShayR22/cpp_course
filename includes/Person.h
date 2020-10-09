@@ -4,42 +4,34 @@
 #include <iostream>
 #include "Date.h"
 
-using namespace std;
-
 class Person
 {
-public://public methods
+
+private:
+	char* name;
+	char* id;
+	const Date *birthDate;
+
+public:
 	static const  int NAME_LEN = 20;
 	static const int ID_LEN = 10;
-private:
-	/******Attributes******/
-	char name[NAME_LEN];
-	char id[ID_LEN];
-	Date birthDate;
 
-public://public methods
-	/******Constructors******/
-	Person(const char* name, const Date& birthDate, const char* id);//Constructor
+	Person(const char* name, const Date& birthDate, const char* id) noexcept;
+	Person(const Person& other) noexcept;
+	Person(Person&& other) noexcept;
 	virtual ~Person();
 
-	/******Gets/Sets******/
 	const char* getName() const { return name; }
-	const Date& getBirthDate() const { return birthDate; }// return the obj or the address
+	const Date& getBirthDate() const { return *birthDate; }
 	const char* getId() const { return id; }
-	bool setName(const char* newName);
 
-	/******print******/
-	friend ostream& operator<<(ostream& os, Person& per); // for good impelemtation, use 'print' here, to print professors and students
-	virtual void print(ostream& os) const;						//	instead of add operator<< to students and professors
+	friend std::ostream& operator<<(std::ostream& os, Person& per);
+	virtual void print(std::ostream& os) const;
 
-	virtual bool operator==(const char* id) const;	//	equal a Person obj by ID string
-	
-private://private methods
-
-	/******Gets/Sets******/
-	void setBirthDate(const Date& newBirthDate);
-	bool setId(const char* newId);
+	virtual bool operator==(const char* id) const;
+	virtual bool operator==(Person& other) const;
+	virtual Person& operator=(const Person& other);
+	virtual Person& operator=(Person&& other) noexcept;
 };
 
-
-#endif 
+#endif /* __H_PERSON__ */
