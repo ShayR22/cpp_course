@@ -33,6 +33,56 @@ Student::Student(const Student& other) noexcept : Person(other),
 	}
 }
 
+void Student::destroyCourses()
+{
+	for (int i = 0; i < numOfCourses; i++)
+		delete courses[i];
+	delete courses;
+}
+
+Student& Student::operator=(const Student& other)
+{
+	Person::operator=(other);
+	destroyCourses();
+
+	this->maxOfCourses = other.maxOfCourses;
+	this->numOfCourses = other.numOfCourses;
+	courses = new CourseInformation * [this->maxOfCourses];
+
+	for (int i = 0; i < maxOfCourses; i++)
+	{
+		if (i < numOfCourses)
+		{
+			CourseInformation* cur_course = other.courses[i];
+			courses[i] = new CourseInformation(cur_course->getLecture(), cur_course->getGrade());
+		}
+		else
+		{
+			courses[i] = nullptr;
+		}
+	}
+	return *this;
+}
+
+Student& Student::operator=(Student&& other) noexcept
+{
+	Person::operator=(other);
+
+	this->maxOfCourses = other.maxOfCourses;
+	this->numOfCourses = other.numOfCourses;
+	this->courses = other.courses;
+	other.courses = nullptr;
+	other.maxOfCourses = 0;
+	other.numOfCourses = 0;
+	return *this;
+}
+
+Student::~Student()
+{
+	destroyCourses();
+}
+
+
 Student::Student(Student&& otherS) noexcept : Person(otherS), department(otherS.department),
 	maxOfCourses(otherS.maxOfCourses), numOfCourses(otherS.numOfCourses)
 {
@@ -140,50 +190,4 @@ const Student& Student::operator+=(const Lecture& l)
 	return *this;
 }
 
-Student& Student::operator=(const Student& other)
-{
-	Person::operator=(other);
-
-	for (int i = 0; i < numOfCourses; i++)
-		delete courses[i];
-	delete courses;
-
-	this->maxOfCourses = other.maxOfCourses;
-	this->numOfCourses = other.numOfCourses;
-	courses = new CourseInformation *[this->maxOfCourses];
-
-	for (int i = 0; i < maxOfCourses; i++)
-	{
-		if (i < numOfCourses) 
-		{
-			CourseInformation* cur_course = other.courses[i];
-			courses[i] = new CourseInformation(cur_course->getLecture(), cur_course->getGrade());
-		}
-		else 
-		{
-			courses[i] = nullptr;
-		}
-	}
-	return *this;
-}
-
-Student& Student::operator=(Student&& other) noexcept
-{
-	Person::operator=(other);
-	
-	this->maxOfCourses = other.maxOfCourses;
-	this->numOfCourses = other.numOfCourses;
-	this->courses = other.courses;
-	other.courses = nullptr;
-	other.maxOfCourses = 0;
-	other.numOfCourses = 0;
-	return *this;
-}
-
-Student::~Student()
-{
-	for (int i = 0; i < numOfCourses; i++)
-		delete courses[i];
-	delete courses;
-}
 
