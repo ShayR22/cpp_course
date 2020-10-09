@@ -15,6 +15,7 @@ private:
 	int numOfCourses;
 	int maxOfCourses;
 	void destroyCourses();
+	bool passedCourse(const Course* c);
 
 public:
 	Student(const char* name, const Date& birthDate, const char* id,
@@ -34,6 +35,7 @@ public:
 	bool addLecture(const Lecture* newLecture);
 
 	bool deleteFromCourse(Course& c);
+	bool qualify(const Course& c);
 
 	void printGrades(std::ostream& os) const;
 	void printProfessores(std::ostream& os)const;

@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <string.h>
 #include "Person.h"
 #include <string>
@@ -83,7 +85,7 @@ bool Person::operator==(const char* id) const
 	return false;
 }
 
-bool Person::operator==(Person& other) const
+bool Person::operator==(const Person& other) const
 {
 	return (*this == other.id);
 }

@@ -32,7 +32,7 @@ public:
 	virtual void print(std::ostream& os) const;
 
 	virtual bool operator==(const char* id) const;
-	virtual bool operator==(Person& other) const;
+	virtual bool operator==(const Person& other) const;
 };
 
 #endif /* __H_PERSON__ */
