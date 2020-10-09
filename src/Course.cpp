@@ -1,53 +1,122 @@
 #define _CRT_SECURE_NO_WARNINGS
-#define EPSSILON 0.0000001
-
 
 #include <ostream>
 #include <string>
 #include <cmath>
 #include "Course.h"
+#include "Student.h"
 
+#define EPSSILON 0.0000001
 
 using namespace std;
 
 Course::Course(const char* name, const Professor* coordinator, float points,
 	int maxLectures, int maxConditionCourses) : 
-	coordinator(coordinator), points(points), maxLectures(maxLectures), maxConditionCourses(maxConditionCourses)
+	coordinator(coordinator), maxLectures(maxLectures), maxConditionCourses(maxConditionCourses),
+	numOfLectures(0), numOfConditionCourses(0)
 {
-	strncpy(this->name, name, Course::COURSE_NAME_SIZE);
-	this->name[Course::COURSE_NAME_SIZE - 1] = '\0';
+	if (!setCourseName(name))
+		throw "ERROR: In class Course: name is nullptr";
+	
+	if(!setPoints(points))
+		throw "ERROR: In class Course: points can't be negative or not divisible by 0.5";
 
 	this->lectures = new Lecture * [maxLectures];
-	this->numOfLectures = 0;
-
-	this->conditionCourses = new Course * [maxConditionCourses];
-	this->numOfConditionCourses = 0;
+	this->conditionCourses = new const Course * [maxConditionCourses];
 }
 
-Course::Course(Course&& otherC) noexcept :
-	coordinator(otherC.coordinator), points(otherC.points),
-	maxLectures(otherC.maxLectures), lectures(otherC.lectures), numOfLectures(otherC.numOfLectures),
-	maxConditionCourses(otherC.maxConditionCourses), conditionCourses(otherC.conditionCourses),
-	numOfConditionCourses(otherC.numOfConditionCourses)
+Course::Course(const Course& other) noexcept
 {
-	/* TODO maybe change the way the class work to have char * instead static char [] */
-	strncpy(name, otherC.name, Course::COURSE_NAME_SIZE);
+	*this = other;
+}
 
-	otherC.lectures = nullptr;
-	otherC.maxLectures = 0;
-	otherC.numOfLectures = 0;
+Course::Course(Course&& other) noexcept
+{
+	*this = other;
+}
 
-	otherC.conditionCourses = nullptr;
-	otherC.maxConditionCourses = 0;
-	otherC.numOfConditionCourses = 0;
+Course& Course::operator=(const Course& other)
+{
+	setCourseName(other.name);
+	coordinator = other.coordinator;
+	points = other.points;
+
+	destroyLectures();
+	maxLectures = other.maxLectures;
+	numOfLectures = other.numOfLectures;
+	lectures = new Lecture * [maxLectures];
+	for (int i = 0; i < maxLectures; i++)
+	{
+		if (i < numOfLectures)
+			lectures[i] = new Lecture(*other.lectures[i]);
+		else
+			lectures[i] = nullptr;
+	}
+
+	delete conditionCourses;
+	maxConditionCourses = other.maxConditionCourses;
+	numOfConditionCourses = other.numOfConditionCourses;
+	conditionCourses = new const Course * [maxConditionCourses];
+	for (int i = 0; i < maxConditionCourses; i++)
+	{
+		if (i < numOfConditionCourses)
+			conditionCourses[i] = other.conditionCourses[i];
+		else
+			conditionCourses[i] = nullptr;
+	}
+
+	return *this;
+}
+
+Course& Course::operator=(Course&& other) noexcept
+{
+	name = other.name;
+	other.name = nullptr;
+	coordinator = other.coordinator;
+	other.coordinator = nullptr;
+	points = other.points;
+
+	maxLectures = other.maxLectures;
+	other.maxLectures = 0;
+	numOfLectures = other.numOfLectures;
+	other.numOfLectures = 0;
+	lectures = other.lectures;
+	other.lectures = nullptr;
+	
+	maxConditionCourses = other.maxConditionCourses;
+	other.maxConditionCourses = 0;
+	numOfConditionCourses = other.numOfConditionCourses;
+	other.numOfConditionCourses = 0;
+	conditionCourses = other.conditionCourses;
+	other.conditionCourses = nullptr;
+
+	return *this;
+}
+
+bool Course::operator==(const Course& other) const
+{
+	return strcmp(name, other.name) == 0;
+}
+
+void Course::destroyLectures()
+{
+	for (int i = 0; i < numOfLectures; i++)
+		delete lectures[i];
+	delete lectures;
 }
 
 bool Course::setCourseName(const char* newCourseName)
 {
-	if (strlen(newCourseName) >= Course::COURSE_NAME_SIZE)
+	if (name == nullptr)
 		return false;
 
-	strncpy(name, newCourseName, Course::COURSE_NAME_SIZE);
+	if (name == this->name)
+		return true;
+
+	delete this->name;
+	int length = strlen(name);
+	this->name = new char[length];
+	strcpy(this->name, name);
 	return true;
 }
 
@@ -59,7 +128,6 @@ bool Course::setCoordinator(const Professor* p)
 	coordinator = p;
 	return true;
 }
-
 
 inline bool Course::isNearlyEqual(double x, double y)
 {
@@ -85,51 +153,152 @@ Lecture** Course::getLectures(int* numOfLectures) const
 	return lectures;
 }
 
-// returning also the current number of lectures
+int Course::getLectureIndex(const Lecture& l)
+{
+	for (int i = 0; i < numOfLectures; i++)
+		if (*lectures[i] == l)
+			return i;
+	return -1;
+}
+
 bool Course::removeLecture(const Lecture& lectureToRemove)
 {
-	return false;
+	int index = getLectureIndex(lectureToRemove);
+	if (index < 0)
+		return false;
+
+	delete lectures[index];
+	int numEleToMove = numOfLectures - index - 1;
+	if (numEleToMove != 0)
+		memmove(&lectures[index], &lectures[index + 1], sizeof(Lecture*) * numEleToMove);
+	lectures[numOfLectures--] = nullptr;
+	return true;
 }
 
 bool Course::addLecture(const Lecture& lectureToAdd)
 {
-	return false;
+	if (numOfLectures >= maxLectures)
+		return false;
+
+	if (getLectureIndex(lectureToAdd) >= 0)
+		return false;
+
+	lectures[numOfLectures++] = new Lecture(lectureToAdd);
+	return true;
 }
 
-const Course** Course::getConditionsCourses(int* numOfConditionsCourses) const
+const Course** Course::getConditionsCourses(int* numOfConditionCourses) const
 {
-	return nullptr;
+	*numOfConditionCourses = this->numOfConditionCourses;
+	return conditionCourses;
 }
 
-// returning also the current number of courses
+int Course::getConditionCourseIndex(const Course& c)
+{
+	for (int i = 0; i < numOfConditionCourses; i++)
+		if (*conditionCourses[i] == c)
+			return i;
+	return -1;
+}
+
 bool Course::removeConditionCourse(const Course& c)
 {
-	return false;
+	int index = getConditionCourseIndex(c);
+	if (index < 0)
+		return false;
+
+	int numEleToMove = numOfConditionCourses - index - 1;
+	if (numEleToMove != 0)
+		memmove(&conditionCourses[index], &conditionCourses[index + 1], sizeof(Course*) * numEleToMove);
+	conditionCourses[numOfConditionCourses--] = nullptr;
+	return true;
 }
 
 bool Course::addConditionCourse(const Course& c)
 {
-	return false;
+	if (numOfConditionCourses >= maxConditionCourses)
+		return false;
+
+	if (getConditionCourseIndex(c) >= 0)
+		return false;
+
+	conditionCourses[numOfConditionCourses++] = &c;
+	return true;
 }
 
-Course::eAddingStudentStatus Course::addStudentToCourse(Lecture& lecture_to_enter, Student& student_to_sign)
+Course::eAddingStudentStatus Course::addStudentToCourse(Lecture& lectureToEnter, Student& studentToSign) noexcept(false)
 {
-	return Course::eAddingStudentStatus::UNQUALIFIED;
+	if (getLectureIndex(lectureToEnter) < 0)
+		throw "ERROR: Lecture is not in course";
+
+	if (!studentToSign.qualify(*this))
+		return Course::eAddingStudentStatus::UNQUALIFIED;
+
+	if (!studentToSign.addLecture(&lectureToEnter))
+		return Course::eAddingStudentStatus::FULL;
+
+	return Course::eAddingStudentStatus::SUCCESS;
 }
 
-void Course::printStudentsInCourse() const
+bool Course::notInside(const Student** students, int studentsLen, const Student* isInside) const
 {
+	for (int i = 0; i < studentsLen; i++)
+		if (*(students[i]) == *isInside)
+			return false;
 
+	return true;			
+}
+
+void Course::printStudentsInCourse(ostream& os) const
+{
+	Student const *** studentMat = new const Student **[numOfLectures];
+	int* studentMatRowSizes = new int[numOfLectures];
+
+	for (int i = 0; i < numOfLectures; i++)
+		studentMat[i] = lectures[i]->getStudentList(&studentMatRowSizes[i]);
+
+	int totalStudentsSum = 0;
+	for (int i = 0; i < numOfLectures; i++)
+		totalStudentsSum += studentMatRowSizes[i];
+
+	const Student** uniqueStudents = new const Student * [totalStudentsSum];
+
+	int uniqueStudentsLen = 0;
+
+	for (int i = 0; i < numOfLectures; i++)
+	{
+		for (int j = 0; j < studentMatRowSizes[i]; j++)
+		{
+			if (notInside(uniqueStudents, uniqueStudentsLen, studentMat[i][j]))
+			{
+				uniqueStudents[uniqueStudentsLen++] = studentMat[i][j];
+			}
+		}
+	}
+
+	for (int i = uniqueStudentsLen; i < totalStudentsSum; i++)
+		uniqueStudents[i] = nullptr;
+
+	for (int i = 0; i < uniqueStudentsLen; i++)
+		os << *(uniqueStudents[i]);
+		
+	delete uniqueStudents;
+	delete studentMat;
+	delete studentMatRowSizes;
 }
 
 ostream& operator<<(ostream& os, const Course& c)
 {
+	for (int i = 0; i < c.numOfLectures; i++)
+		os << c.lectures[i];
 	return os;
 }
 
 Course::~Course()
 {
-
+	destroyLectures();
+	delete conditionCourses;
+	delete name;
 }
 
 
