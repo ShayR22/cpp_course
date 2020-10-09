@@ -1,30 +1,24 @@
 #ifndef __H_GRADE__
 #define __H_GRADE__
 
-class Lecture;
+#include "Lecture.h"
 
 class CourseInformation
 {
 private:
-	/******Attributes******/
 	const Lecture* lecture;
 	int grade;
 public:
-	/******Constructors******/
 	CourseInformation(const Lecture* lecture, int grade = -1);
 
-
-	/******Gets/Sets******/
 	const Lecture* getLecture() const { return lecture; }
 	void setLecture(const Lecture* newLecture);
 	int getGrade() const { return grade; }
 	bool setGrade(int newGrade);
 
-	/******print******/
-	void print()const;
+	friend std::ostream& operator<<(std::ostream& os, const CourseInformation& ci);
 
 private:
-	/******Constructors******/
 	CourseInformation(const CourseInformation& otherG) = delete;
 	CourseInformation(CourseInformation&& otherG) = delete;
 	CourseInformation& operator=(const CourseInformation& cinfo) = delete;
