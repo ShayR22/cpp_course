@@ -1,9 +1,11 @@
 #include <iostream>
+#include <string>
 #include "Date.h"
 
 using namespace std;
 
 Date::Date(int year, int month, int day) : year(year), month(month), day(day) {}
+Date::Date(const Date& other) { *this = other; }
 
 bool Date::setYear(int newYear)
 {
@@ -45,7 +47,16 @@ bool Date::setDay(int newDay)
 	return true;
 }
 
-void Date::print() const
+Date& Date::operator=(const Date& other)
 {
-	cout << "year: " << year << ", month: " << month << ", day: " << day << endl;
+	this->year = other.year;
+	this->month = other.month;
+	this->day = other.day;
+	return *this;
+}
+
+ostream& operator<< (ostream& os, const Date& d)
+{
+	os << "year: " << d.year << ", month: " << d.month << ", day: " << d.day << endl;
+	return os;
 }
