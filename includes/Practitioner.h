@@ -13,12 +13,11 @@ public:
 	Practitioner(const Practitioner& other) noexcept;
 	Practitioner(Practitioner&& other) noexcept;
 
-	Practitioner& operator=(const Practitioner& other);
-	Practitioner& operator=(Practitioner&& other) noexcept;
-
 	const Professor** assistantTo(int* proffesors_size) const;
 
 	virtual void print(std::ostream& os) const;
-};
 
-#endif /* __H_PRACTITIONER__ */
+	Practitioner& operator=(const Practitioner& other);
+	Practitioner& operator=(Practitioner&& other) noexcept;
+};
+#endif
