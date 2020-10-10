@@ -98,6 +98,11 @@ bool Course::operator==(const Course& other) const
 	return strcmp(name, other.name) == 0;
 }
 
+bool Course::operator==(const char* name) const
+{
+	return strcmp(this->name, name) == 0;
+}
+
 void Course::destroyLectures()
 {
 	for (int i = 0; i < numOfLectures; i++)

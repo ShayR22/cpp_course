@@ -34,6 +34,8 @@ public:
 	Course& operator=(Course&& other) noexcept;
 
 	bool operator==(const Course& other) const;
+	bool operator==(const char *name) const;
+
 
 	const char* getCourseName() const { return name; }
 	bool setCourseName(const char* newCourseName);

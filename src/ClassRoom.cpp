@@ -6,6 +6,16 @@ using namespace std;
 ClassRoom::ClassRoom(int roomNumber, int maxSeats) :
 	roomNumber(roomNumber), maxSeats(maxSeats) {}
 
+bool ClassRoom::operator==(const ClassRoom& other) const
+{
+	return roomNumber == other.roomNumber;
+}
+
+bool ClassRoom::operator==(int roomNumber) const
+{
+	return this->roomNumber == roomNumber;
+}
+
 bool ClassRoom::setRoomNumber(int newRoomNumber)
 {
 	if (newRoomNumber < 0)
