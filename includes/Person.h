@@ -9,13 +9,10 @@ class Person
 private:
 	char* name;
 	char* id;
-	const Date *birthDate;
+	Date* birthDate;
 
 public:
-	static const  int NAME_LEN = 20;
-	static const int ID_LEN = 10;
-
-	Person(const char* name, const Date& birthDate, const char* id) noexcept;
+	Person(const char* name, const Date& birthDate, const char* id) noexcept(false);
 	Person(const Person& other) noexcept;
 	Person(Person&& other) noexcept;
 
@@ -24,9 +21,14 @@ public:
 
 	virtual ~Person();
 
+	bool setName(const char* name);
 	const char* getName() const { return name; }
-	const Date& getBirthDate() const { return *birthDate; }
+
+	bool setId(const char* id);
 	const char* getId() const { return id; }
+
+	void setBirthDate(const Date& date);
+	const Date& getBirthDate() const { return *birthDate; }
 
 	friend std::ostream& operator<<(std::ostream& os, const Person& per);
 	virtual void print(std::ostream& os) const;
