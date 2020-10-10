@@ -4,6 +4,8 @@
 #include "College.h"
 
 #define COURSE_NAME_SIZE 20
+#define PERSON_NAME_LEN	20
+#define PERSON_ID_LEN	20
 
 using namespace std;
 
@@ -234,8 +236,8 @@ void printArray(void** arr, int size)
 
 Person* getPersonInfo()
 {
-	char name[Person::NAME_LEN];
-	char id[Person::ID_LEN];
+	char name[PERSON_NAME_LEN];
+	char id[PERSON_ID_LEN];
 	int day, month, year;
 
 	cout << "Please enter name: ";
@@ -260,7 +262,7 @@ void printStudents(College& c)
 
 Student* getStudentById(College& c)
 {
-	char id[Person::ID_LEN];
+	char id[PERSON_ID_LEN];
 	cout << "Please enter student ID: ";
 	cin >> id;
 
@@ -374,7 +376,7 @@ void printProfessors(College& c)
 
 Professor* getProfessorById(College& c)
 {
-	char id[Person::ID_LEN];
+	char id[PERSON_ID_LEN];
 	cout << "Please enter professor ID: ";
 	cin >> id;
 
@@ -383,7 +385,7 @@ Professor* getProfessorById(College& c)
 
 Practitioner* getPractitionerById(College& c)
 {
-	char id[Person::ID_LEN];
+	char id[PERSON_ID_LEN];
 	cout << "Please enter practitioner ID: ";
 	cin >> id;
 
