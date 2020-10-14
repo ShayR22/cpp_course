@@ -106,19 +106,26 @@ bool College::removeClassRoom(const ClassRoom& classRoomToRemove)
 
 const ClassRoom* College::getClassRoomByNumber(int roomNumber) const
 {
-    return nullptr;
+    int index = getClassRoomIndex(roomNumber);
+    if (index < 0)
+        return nullptr;
+    return classRooms[index];
 }
 
 const ClassRoom* const* College::getClassRooms(int* numOfClassRooms) const
 {
-    return nullptr;
+    *numOfClassRooms = this->numOfClassRooms;
+    return classRooms;
 }
 
 void College::printClassRooms(std::ostream& os) const
 {
-
+    os << "\nAll Class-Rooms:";
+    for (int i = 0; i < numOfClassRooms; i++)
+        os << "\n" << *(classRooms[i]);
 }
 
+// course
 bool College::addCourse(const Course& newCourse)
 {
     if (getCourseIndex(newCourse.getCourseName()) >= 0)
@@ -152,32 +159,51 @@ bool College::removeCourse(const Course& courseToRemove)
 
 bool College::setCourseName(const char* name, const char* newName)
 {
-    return false;
+    int index = getCourseIndex(name);
+    if (index < 0)
+        return false;
+    return courses[index]->setCourseName(name);
 }
 
 bool College::setCoursePoints(const char* name, float points)
 {
-    return false;
+    int index = getCourseIndex(name);
+    if (index < 0)
+        return false;
+    return courses[index]->setPoints(points);
 }
+
 
 bool College::addNewLectureToCourse(const char* courseName, const Lecture& newLecture)
 {
-	return false;
+    int index = getCourseIndex(courseName);
+    if (index < 0)
+        return false;
+    return courses[index]->addLecture(newLecture);
 }
 
 bool College::removeLectureFromCourse(const char* courseName, int id)
 {
-	return false;
+    int index = getCourseIndex(courseName);
+    if (index < 0)
+        return false;
+    return courses[index]->removeLecture(id);
 }
 
 bool College::addConditionCourseToCourse(const char* name, const Course& c)
 {
-	return false;
+    int index = getCourseIndex(name);
+    if (index < 0)
+        return false;
+    return courses[index]->addConditionCourse(c);
 }
 
 bool College::removeConditionCourseFromCourse(const char* name, const char* remove)
 {
-	return false;
+    int index = getCourseIndex(name);
+    if (index < 0)
+        return false;
+    return courses[index]->removeConditionCourse(remove);
 }
 
 /* NOTE: return also the current number of courses */
@@ -197,68 +223,116 @@ const Course* College::getCourseByName(const char* name) const
 
 void College::printCourses(std::ostream& os) const
 {
-
+    os << "\nAll Courses:";
+    for (int i = 0; i < numOfCourses; i++)
+        os << "\n" << *(courses[i]);
 }
+
 
 // Lecture
-bool College::addLectureToCourse(const Lecture& lecture, const char* courseName)
-{
-	return false;
-}
-
-bool College::removeLectureFromCourse(const Lecture& lecture, const char* courseName)
-{
-	return false;
-}
-
 bool College::setLectureWeekDay(const char* courseName, const Lecture& lecture, Lecture::eWeekDay day)
 {
-	return false;
+    int index = getCourseIndex(courseName);
+    if (index < 0)
+        return false;
+    return courses[index]->setLectureWeekDay(lecture, day);
 }
 
 bool College::setLecturStartHour(const char* courseName, const Lecture& lecture, int hour)
 {
-	return false;
+    int index = getCourseIndex(courseName);
+    if (index < 0)
+        return false;
+    return courses[index]->setLecturStartHour(lecture, hour);
 }
 
 bool College::setLectureDuration(const char* courseName, const Lecture& lecture, int durationHours)
 {
-	return false;
+    int index = getCourseIndex(courseName);
+    if (index < 0)
+        return false;
+    return courses[index]->setLectureDuration(lecture, durationHours);
 }
 
 bool College::setMaxStudentList(const char* courseName, const Lecture& lecture, int newMaxStudents)
 {
-	return false;
+    int index = getCourseIndex(courseName);
+    if (index < 0)
+        return false;
+    return courses[index]->setLectureMaxStudents(lecture, newMaxStudents);
 }
 
 bool College::setLectureType(const char* courseName, const Lecture& lecture, Lecture::eType type)
 {
-	return false;
+    int index = getCourseIndex(courseName);
+    if (index < 0)
+        return false;
+    return courses[index]->setLectureType(lecture, type);
 }
 
 bool College::setLectureClassroom(const char* courseName, const Lecture& lecture, int roomNumber)
 {
-	return false;
+    int lectureIndex = getCourseIndex(courseName);
+    if (lectureIndex < 0)
+        return false;
+
+    int roomIndex = getClassRoomIndex(roomNumber);
+    if (roomIndex < 0)
+        return false;
+    return courses[lectureIndex]->setLectureClassroom(lecture, classRooms[roomIndex]);
 }
 
 bool College::setLectureLecturer(const char* courseName, const Lecture& lecture, const char* professorID)
 {
-	return false;
+    int lectureIndex = getCourseIndex(courseName);
+    if (lectureIndex < 0)
+        return false;
+
+    int professorIndex = getProfessorIndex(professorID);
+    if (professorIndex < 0)
+        return false;
+
+    return courses[lectureIndex]->setLectureLecturer(lecture, professors[professorIndex]);
 }
 
 bool College::setLecturePractitioner(const char* courseName, const Lecture& lecture, const char* practitionerID)
 {
-	return false;
+    int lectureIndex = getCourseIndex(courseName);
+    if (lectureIndex < 0)
+        return false;
+
+    int practitionerIndex = getPractitionerIndex(practitionerID);
+    if (practitionerIndex < 0)
+        return false;
+
+    return courses[lectureIndex]->setLectureLecturer(lecture, practitioners[practitionerIndex]);
 }
 
 bool College::addStudentToLectureWaitingList(const char* courseName, const Lecture& lecture, const char* studentID)
 {
-	return false;
+    int lectureIndex = getCourseIndex(courseName);
+    if (lectureIndex < 0)
+        return false;
+
+    int studentIndex = getStudentIndex(studentID);
+    if (studentIndex < 0)
+        return false;
+    
+    return courses[lectureIndex]->addStudentToWaitingListCourse(lecture, *students[studentIndex]);
 }
 
 bool College::removeStudentFromLectureWaitingList(const char* courseName, const Lecture& lecture, const char* studentID)
 {
-	return false;
+    int lectureIndex = getCourseIndex(courseName);
+    if (lectureIndex < 0)
+        return false;
+
+    // TODO: check if lecture already check if student exist (it should be there, because it's 'more correct' and faster)
+    int studentIndex = getStudentIndex(studentID);
+    if (studentIndex < 0)
+        return false;
+
+    return courses[lectureIndex]->removeStudentToWaitingListCourse(lecture, *students[studentIndex]);
 }
 
 // Student

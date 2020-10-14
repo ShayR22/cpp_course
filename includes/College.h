@@ -57,8 +57,9 @@ public:
     void printCourses(std::ostream& os) const;
 
     // Lecture
-    bool addLectureToCourse(const Lecture& lecture, const char* courseName);
-    bool removeLectureFromCourse(const Lecture& lecture, const char* courseName);
+    // TODO: remove them:
+    // bool addLectureToCourse(const Lecture& lecture, const char* courseName);
+    // bool removeLectureFromCourse(const Lecture& lecture, const char* courseName);
     bool setLectureWeekDay(const char* courseName, const Lecture& lecture, Lecture::eWeekDay day);
     bool setLecturStartHour(const char* courseName, const Lecture& lecture, int hour);
     bool setLectureDuration(const char* courseName, const Lecture& lecture, int durationHours);
