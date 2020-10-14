@@ -180,6 +180,12 @@ bool Course::removeLecture(const Lecture& lectureToRemove)
 	return true;
 }
 
+bool Course::removeLecture(int id)
+{
+	/* TODO */
+	return false;
+}
+
 bool Course::addLecture(const Lecture& lectureToAdd)
 {
 	if (numOfLectures >= maxLectures)
@@ -219,6 +225,12 @@ bool Course::removeConditionCourse(const Course& c)
 	return true;
 }
 
+bool Course::removeConditionCourse(const char* name)
+{
+	/* TODO */
+	return false;
+}
+
 bool Course::addConditionCourse(const Course& c)
 {
 	if (numOfConditionCourses >= maxConditionCourses)
@@ -230,6 +242,54 @@ bool Course::addConditionCourse(const Course& c)
 	conditionCourses[numOfConditionCourses++] = &c;
 	return true;
 }
+
+bool Course::setLectureWeekDay(const Lecture& lecture, Lecture::eWeekDay day)
+{
+	return false;
+}
+
+bool Course::setLecturStartHour(const Lecture& lecture, int hour)
+{
+	return false;
+}
+
+bool Course::setLectureDuration(const Lecture& lecture, int durationHours)
+{
+	return false;
+}
+
+bool Course::setLectureMaxStudents(const Lecture& lecture, int newMaxStudents)
+{
+	return false;
+}
+
+bool Course::setLectureType(const Lecture& lecture, Lecture::eType type)
+{
+	return false;
+}
+
+bool Course::setLectureClassroom(const Lecture& lecture, const ClassRoom* classRoom)
+{
+	return false;
+}
+
+bool Course::setLectureLecturer(const Lecture& lecture, const Professor* professor)
+{
+	return false;
+}
+
+bool Course::addStudentToWaitingListCourse(const Lecture& lecture, const Student& student)
+{
+	return false;
+}
+
+bool Course::removeStudentToWaitingListCourse(const Lecture& lecture, const Student& student)
+{
+	return false;
+}
+
+
+
 
 Course::eAddingStudentStatus Course::addStudentToCourse(Lecture& lectureToEnter, Student& studentToSign) noexcept(false)
 {

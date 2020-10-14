@@ -45,10 +45,22 @@ public:
 	bool setPoints(float p);
 	Lecture** getLectures(int* numOfLectures) const;
 	bool removeLecture(const Lecture& lectureToRemove);
+	bool removeLecture(int id);
 	bool addLecture(const Lecture& lectureToAdd);
 	const Course** getConditionsCourses(int* numOfConditionCourses) const;
 	bool removeConditionCourse(const Course& c);
+	bool removeConditionCourse(const char* name);
 	bool addConditionCourse(const Course& c);
+
+	bool setLectureWeekDay(const Lecture& lecture, Lecture::eWeekDay day);
+	bool setLecturStartHour(const Lecture& lecture, int hour);
+	bool setLectureDuration(const Lecture& lecture, int durationHours);
+	bool setLectureMaxStudents(const Lecture& lecture, int newMaxStudents);
+	bool setLectureType(const Lecture& lecture, Lecture::eType type);
+	bool setLectureClassroom(const Lecture& lecture, const ClassRoom* classRoom);
+	bool setLectureLecturer(const Lecture& lecture, const Professor* professor);
+	bool addStudentToWaitingListCourse(const Lecture& lecture, const Student& student);
+	bool removeStudentToWaitingListCourse(const Lecture& lecture, const Student& student);
 
 	eAddingStudentStatus addStudentToCourse(Lecture& lectureToEnter, Student& studentToSign) noexcept(false);
 	
