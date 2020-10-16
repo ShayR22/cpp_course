@@ -44,6 +44,8 @@ public:
 	Lecture(const Lecture& otherL);
 
 	bool operator==(const Lecture& l) const;
+	bool operator==(int id) const { return this->id == id; }
+
 	//Lecture(Lecture&& otherL);
 	Lecture& operator=(const Lecture& otherL);
 	Lecture& operator=(Lecture&& otherL);

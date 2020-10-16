@@ -279,6 +279,7 @@ bool College::setLectureClassroom(const char* courseName, const Lecture& lecture
     if (lectureIndex < 0)
         return false;
 
+    // check classroom exist
     int roomIndex = getClassRoomIndex(roomNumber);
     if (roomIndex < 0)
         return false;
@@ -291,6 +292,7 @@ bool College::setLectureLecturer(const char* courseName, const Lecture& lecture,
     if (lectureIndex < 0)
         return false;
 
+    // check professor exist
     int professorIndex = getProfessorIndex(professorID);
     if (professorIndex < 0)
         return false;
@@ -320,8 +322,7 @@ bool College::addStudentToLectureWaitingList(const char* courseName, const Lectu
     int studentIndex = getStudentIndex(studentID);
     if (studentIndex < 0)
         return false;
-    
-    return courses[lectureIndex]->addStudentToWaitingListCourse(lecture, *students[studentIndex]);
+    return courses[lectureIndex]->addStudentToWaitingListCourse(lecture, *(students[studentIndex]));
 }
 
 bool College::removeStudentFromLectureWaitingList(const char* courseName, const Lecture& lecture, const char* studentID)
@@ -330,12 +331,10 @@ bool College::removeStudentFromLectureWaitingList(const char* courseName, const 
     if (lectureIndex < 0)
         return false;
 
-    // TODO: check if lecture already check if student exist (it should be there, because it's 'more correct' and faster)
     int studentIndex = getStudentIndex(studentID);
     if (studentIndex < 0)
         return false;
-
-    return courses[lectureIndex]->removeStudentToWaitingListCourse(lecture, *students[studentIndex]);
+    return courses[lectureIndex]->removeStudentToWaitingListCourse(lecture, *(students[studentIndex]));
 }
 
 // Student
