@@ -7,7 +7,10 @@ Professor::Professor(const char* name, const Date& birthDate, const char* id, do
 	Person(name, birthDate, id), salary(salary), maxOfLectures(maxOfLectures), numOfLectures(0), lectures(nullptr)
 {
 	if (maxOfLectures <= 0)
-		throw - 1;
+		throw "max lectures given must be a positive number";
+	if (salary < 0)
+		throw "Professor salary cant be a negative number";
+
 	lectures = new const Lecture*[maxOfLectures];
 }
 
