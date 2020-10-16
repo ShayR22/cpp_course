@@ -87,7 +87,7 @@ void Professor::removeLectureByIndex(int index)
 	delete lectures[index];
 	/* copy and override the array in order to keep it ordered */
 	if (numEleToMove != 0)
-		memmove((void *)lectures[index], (void *)lectures[index + 1], sizeof(Lecture*) * numEleToMove);
+		memmove(&lectures[index], &lectures[index + 1], sizeof(Lecture*) * numEleToMove);
 
 	lectures[numOfLectures--] = nullptr;
 }
