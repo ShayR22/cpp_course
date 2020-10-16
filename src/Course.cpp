@@ -158,12 +158,17 @@ Lecture** Course::getLectures(int* numOfLectures) const
 	return lectures;
 }
 
-int Course::getLectureIndex(const Lecture& l)
+int Course::getLectureIndex(int id) const
 {
 	for (int i = 0; i < numOfLectures; i++)
-		if (*lectures[i] == l)
+		if (*lectures[i] == id)
 			return i;
 	return -1;
+}
+
+int Course::getLectureIndex(const Lecture& l) const
+{
+	return getLectureIndex(l.getId());
 }
 
 bool Course::removeLecture(const Lecture& lectureToRemove)
@@ -182,8 +187,17 @@ bool Course::removeLecture(const Lecture& lectureToRemove)
 
 bool Course::removeLecture(int id)
 {
-	/* TODO */
-	return false;
+	int index = getLectureIndex(id);
+	if (index < 0)
+		return false;
+
+	delete lectures[index];
+	int numEleToMove = numOfLectures - index - 1;
+	if (numEleToMove > 0)
+		memmove(&lectures[index], &lectures[index + 1], sizeof(Lecture*) * numEleToMove);
+	lectures[--numOfLectures] = nullptr;
+
+	return true;
 }
 
 bool Course::addLecture(const Lecture& lectureToAdd)
@@ -204,12 +218,17 @@ const Course** Course::getConditionsCourses(int* numOfConditionCourses) const
 	return conditionCourses;
 }
 
-int Course::getConditionCourseIndex(const Course& c)
+int Course::getConditionCourseIndex(const char* name) const
 {
 	for (int i = 0; i < numOfConditionCourses; i++)
-		if (*conditionCourses[i] == c)
+		if (*conditionCourses[i] == name)
 			return i;
 	return -1;
+}
+
+int Course::getConditionCourseIndex(const Course& c) const
+{
+	return getConditionCourseIndex(c.name);
 }
 
 bool Course::removeConditionCourse(const Course& c)
@@ -227,8 +246,17 @@ bool Course::removeConditionCourse(const Course& c)
 
 bool Course::removeConditionCourse(const char* name)
 {
-	/* TODO */
-	return false;
+	int index = getConditionCourseIndex(name);
+	if (index < 0)
+		return false;
+
+	delete conditionCourses[index];
+	int numEleToMove = numOfConditionCourses - index - 1;
+	if (numEleToMove > 0)
+		memmove(&conditionCourses[index], &conditionCourses[index + 1], sizeof(Course*) * numEleToMove);
+	conditionCourses[--numOfConditionCourses] = nullptr;
+
+	return true;
 }
 
 bool Course::addConditionCourse(const Course& c)
@@ -245,47 +273,80 @@ bool Course::addConditionCourse(const Course& c)
 
 bool Course::setLectureWeekDay(const Lecture& lecture, Lecture::eWeekDay day)
 {
-	return false;
+	int index = getLectureIndex(lecture);
+	if (index < 0)
+		return false;
+	return lectures[index]->setWeekDay(day);
 }
 
 bool Course::setLecturStartHour(const Lecture& lecture, int hour)
 {
-	return false;
+	int index = getLectureIndex(lecture);
+	if (index < 0)
+		return false;
+	return lectures[index]->setHour(hour);
 }
 
 bool Course::setLectureDuration(const Lecture& lecture, int durationHours)
 {
-	return false;
+	int index = getLectureIndex(lecture);
+	if (index < 0)
+		return false;
+	return lectures[index]->setDuration(durationHours);
 }
 
 bool Course::setLectureMaxStudents(const Lecture& lecture, int newMaxStudents)
 {
-	return false;
+	int index = getLectureIndex(lecture);
+	if (index < 0)
+		return false;
+	return lectures[index]->setMaxStudentsList(newMaxStudents);
 }
 
 bool Course::setLectureType(const Lecture& lecture, Lecture::eType type)
 {
-	return false;
+	int index = getLectureIndex(lecture);
+	if (index < 0)
+		return false;
+	return lectures[index]->setLectureType(type);
 }
 
+// Assumption: classroom is valid
 bool Course::setLectureClassroom(const Lecture& lecture, const ClassRoom* classRoom)
 {
-	return false;
+	int index = getLectureIndex(lecture);
+	if (index < 0)
+		return false;
+
+	return lectures[index]->setClassRoom(classRoom);
 }
 
-bool Course::setLectureLecturer(const Lecture& lecture, const Professor* professor)
+// Assumption: professor is valid
+bool Course::setLectureLecturer(const Lecture& lecture, const Professor* lecturer)
 {
-	return false;
+	int index = getLectureIndex(lecture);
+	if (index < 0)
+		return false;
+
+	return lectures[index]->setLecturer(*lecturer);
 }
 
 bool Course::addStudentToWaitingListCourse(const Lecture& lecture, const Student& student)
 {
-	return false;
+	int index = getLectureIndex(lecture);
+	if (index < 0)
+		return false;
+	return lectures[index]->addToWaitingList(student);
 }
 
+// Assumption: student is valid
 bool Course::removeStudentToWaitingListCourse(const Lecture& lecture, const Student& student)
 {
-	return false;
+	int lectureIndex = getLectureIndex(lecture);
+	if (lectureIndex < 0)
+		return false;
+
+	return lectures[lectureIndex]->removeFromWaitingList(student);
 }
 
 

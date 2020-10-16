@@ -21,8 +21,10 @@ private:
 
 	void destroyLectures();
 
-	int getLectureIndex(const Lecture& l);
-	int getConditionCourseIndex(const Course& c);
+	int getLectureIndex(int id) const;
+	int getLectureIndex(const Lecture& l) const;
+	int getConditionCourseIndex(const char* name) const;
+	int getConditionCourseIndex(const Course& c) const;
 	bool notInside(const Student** student, int studentsLen, const Student* isInside) const;
 
 public:
@@ -58,7 +60,7 @@ public:
 	bool setLectureMaxStudents(const Lecture& lecture, int newMaxStudents);
 	bool setLectureType(const Lecture& lecture, Lecture::eType type);
 	bool setLectureClassroom(const Lecture& lecture, const ClassRoom* classRoom);
-	bool setLectureLecturer(const Lecture& lecture, const Professor* professor);
+	bool setLectureLecturer(const Lecture& lecture, const Professor* lecturer);
 	bool addStudentToWaitingListCourse(const Lecture& lecture, const Student& student);
 	bool removeStudentToWaitingListCourse(const Lecture& lecture, const Student& student);
 
