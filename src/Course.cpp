@@ -276,7 +276,8 @@ bool Course::setLectureWeekDay(const Lecture& lecture, Lecture::eWeekDay day)
 	int index = getLectureIndex(lecture);
 	if (index < 0)
 		return false;
-	return lectures[index]->setWeekDay(day);
+	lectures[index]->setWeekDay(day);
+	return true;
 }
 
 bool Course::setLecturStartHour(const Lecture& lecture, int hour)
@@ -308,7 +309,8 @@ bool Course::setLectureType(const Lecture& lecture, Lecture::eType type)
 	int index = getLectureIndex(lecture);
 	if (index < 0)
 		return false;
-	return lectures[index]->setLectureType(type);
+	lectures[index]->setLectureType(type);
+	return true;
 }
 
 // Assumption: classroom is valid
@@ -318,7 +320,8 @@ bool Course::setLectureClassroom(const Lecture& lecture, const ClassRoom* classR
 	if (index < 0)
 		return false;
 
-	return lectures[index]->setClassRoom(classRoom);
+	lectures[index]->setClassRoom(classRoom);
+	return true;
 }
 
 // Assumption: professor is valid
@@ -328,7 +331,8 @@ bool Course::setLectureLecturer(const Lecture& lecture, const Professor* lecture
 	if (index < 0)
 		return false;
 
-	return lectures[index]->setLecturer(*lecturer);
+	lectures[index]->setLecturer(*lecturer);
+	return true;
 }
 
 bool Course::addStudentToWaitingListCourse(const Lecture& lecture, const Student& student)
@@ -377,7 +381,7 @@ bool Course::notInside(const Student** students, int studentsLen, const Student*
 
 void Course::printStudentsInCourse(ostream& os) const
 {
-	Student const *** studentMat = new const Student **[numOfLectures];
+	Student const *const** studentMat = new const Student *const*[numOfLectures];
 	int* studentMatRowSizes = new int[numOfLectures];
 
 	for (int i = 0; i < numOfLectures; i++)

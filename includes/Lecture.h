@@ -15,8 +15,8 @@ private:
 	static int automaticID;
 
 public:
-	enum eWeekDay { SUNDAY = 1, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY };
-	enum eType { PRACTICE = 0, LECTURE };
+	enum class eWeekDay { SUNDAY = 1, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY};
+	enum class eType { PRACTICE = 0, LECTURE };
 
 private:
 	int id;		//  =  ++auromaticID
@@ -24,67 +24,68 @@ private:
 	int startHour;
 	int duration;
 	eType type;
-	Course& course;
+	Course* course;
 	const ClassRoom* classRoom;
 	const Professor* lecturer;
-	const Lecture* practice;//tirgul
-	Student** studentList;
+	const Lecture* practice;
+	const Student** studentList;
 	int maxStudentList;
 	int numOfStudentList;
 	const Student** waitingList;
 	int maxWaitingList;
 	int numOfWaitingList;
+
+	void removeStudentByIndex(int index, const Student** ptrArray, int arraySize);
 	
 
 public:
-	/******Constructors******/
 	Lecture(eWeekDay day, int startHour, int duration, eType type, Course& course,
-		    const ClassRoom& classRoom, const Professor& lecturer, Lecture* practice,
-		    int maxStudentList = 20, int maxWaitingList = 20);
-	Lecture(const Lecture& otherL);
+		    const ClassRoom& classRoom, const Professor& lecturer, const Lecture* practice,
+		    int maxStudentList = 20, int maxWaitingList = 20) noexcept(false);
+	Lecture(const Lecture& otherL) noexcept;
+	Lecture(Lecture&& otherL) noexcept;
 
 	bool operator==(const Lecture& l) const;
-	bool operator==(int id) const { return this->id == id; }
+	bool operator==(int id) const;
 
-	//Lecture(Lecture&& otherL);
-	Lecture& operator=(const Lecture& otherL);
-	Lecture& operator=(Lecture&& otherL);
+	Lecture& operator=(const Lecture& otherL) noexcept;
+	Lecture& operator=(Lecture&& otherL) noexcept;
 
-	/******Gets/Sets******/
 	int getId() const { return id; }
-	eWeekDay getWeekDay()const { return day; }
-	bool setWeekDay(eWeekDay day);
-	int getHour() const { return startHour; }
+	eWeekDay getWeekDay() const;
+	void setWeekDay(eWeekDay day);
+	int getHour() const;
 	bool setHour(int newHour);
-	int getDuration()const { return duration; }
+	int getDuration() const;
 	bool setDuration(int newDuration);
-	int getMaxStudentsList()const { return maxStudentList; }
+	int getMaxStudentsList() const;
 	bool setMaxStudentsList(int newMaxStudentsList); //Check that: "ClassRoom->maxSeats >= newMaxStudentList" 
-	eType getLectureType()const { return type; }
-	bool setLectureType(const eType newType);
+	eType getLectureType()const;
+	void setLectureType(const eType newType);
 
-	const ClassRoom& getClassRoom() const { return *classRoom; }
-	bool setClassRoom(const ClassRoom* newClassRoom);
+	const ClassRoom& getClassRoom() const;
+	void setClassRoom(const ClassRoom* newClassRoom);
 
-	const Professor& getLecturer()const { return *lecturer; }
-	bool setLecturer(const Professor& newLectureProfessor);
+	const Professor& getLecturer()const;
+	void setLecturer(const Professor& newLectureProfessor);
 
-	const Student** getStudentList(int* numOfStudentList) const; // returning also the "current number of students"
+	const Student*const* getStudentList(int* numOfStudentList) const; // returning also the "current number of students"
 	bool addStudent(const Student& newStudent);
 	bool removeStudent(Student& studentToRemove);
 
-	const Student** getWaitingList(int* numOfWaitingList)const; // returning also the "current number of students"
+	const Student*const* getWaitingList(int* numOfWaitingList)const; // returning also the "current number of students"
 	bool addToWaitingList(const Student& newStudent);
 	bool removeFromWaitingList(const Student& studentToRemove);
 
-	const Lecture& getPracticeLecture() const { return *practice; }
-	bool setPracticeLecture(const Lecture& newPracticeLecture);
+	const Lecture& getPracticeLecture() const;
+	void setPracticeLecture(const Lecture& newPracticeLecture);
 	
-	const Course& getCourse()const { return course; }
+	const Course& getCourse()const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Lecture& l);
+	friend std::ostream& operator<<(std::ostream& os, enum eWeekDay day);
+	friend std::ostream& operator<<(std::ostream& os, enum eType type);
 
-	/******Deconstructor******/
 	~Lecture();
 
 };
