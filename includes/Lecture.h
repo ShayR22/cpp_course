@@ -25,13 +25,13 @@ private:
 	int duration;
 	eType type;
 	Course& course;
-	ClassRoom& classRoom;
-	Professor& lecturer;
-	Lecture* practice;//tirgul
+	const ClassRoom* classRoom;
+	const Professor* lecturer;
+	const Lecture* practice;//tirgul
 	Student** studentList;
 	int maxStudentList;
 	int numOfStudentList;
-	Student** waitingList;
+	const Student** waitingList;
 	int maxWaitingList;
 	int numOfWaitingList;
 	
@@ -39,8 +39,14 @@ private:
 public:
 	/******Constructors******/
 	Lecture(eWeekDay day, int startHour, int duration, eType type, Course& course,
-		    ClassRoom& classRoom, Professor& lecturer, Lecture* practice,
+		    const ClassRoom& classRoom, const Professor& lecturer, Lecture* practice,
 		    int maxStudentList = 20, int maxWaitingList = 20);
+	Lecture(const Lecture& otherL);
+
+	bool operator==(const Lecture& l) const;
+	//Lecture(Lecture&& otherL);
+	Lecture& operator=(const Lecture& otherL);
+	Lecture& operator=(Lecture&& otherL);
 
 	/******Gets/Sets******/
 	int getId() const { return id; }
@@ -55,10 +61,10 @@ public:
 	eType getLectureType()const { return type; }
 	bool setLectureType(const eType newType);
 
-	const ClassRoom& getClassRoom() const { return classRoom; }
-	bool setClassRoom(const ClassRoom& newClassRoom);
+	const ClassRoom& getClassRoom() const { return *classRoom; }
+	bool setClassRoom(const ClassRoom* newClassRoom);
 
-	const Professor& getLecturer()const { return lecturer; }
+	const Professor& getLecturer()const { return *lecturer; }
 	bool setLecturer(const Professor& newLectureProfessor);
 
 	const Student** getStudentList(int* numOfStudentList) const; // returning also the "current number of students"
@@ -79,12 +85,6 @@ public:
 	/******Deconstructor******/
 	~Lecture();
 
-private:
-	/******Constructors******/
-	Lecture(const Lecture& otherL) = delete;
-	Lecture(Lecture&& otherL) = delete;
-	Lecture& operator=(const Lecture& otherL) = delete;
-	Lecture& operator=(Lecture&& otherL) = delete;
 };
 
 #endif
