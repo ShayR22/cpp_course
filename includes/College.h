@@ -81,6 +81,7 @@ public:
     const Student* const* getStudents(int* numOfStudents) const;
     const Student* getStudentById(const char* id) const;
     void printStudents(std::ostream& os) const;
+    void printProfessorsOfStudent(std::ostream& os, const char* id);
 
     // Professor
     bool addProfessor(const Professor& newProfessor);

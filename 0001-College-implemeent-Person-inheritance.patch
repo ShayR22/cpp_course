@@ -1,0 +1,471 @@
+From e48d479357424a73fc78855ff1c84d870364fc6b Mon Sep 17 00:00:00 2001
+From: ShayR <shayrashinsky@gmail.com>
+Date: Fri, 16 Oct 2020 09:31:04 +0300
+Subject: [PATCH] College: implemeent: Person inheritance
+
+implement person inheritance (student, professor
+and practitioners) college functions.
+---
+ src/College.cpp | 257 +++++++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 210 insertions(+), 47 deletions(-)
+
+diff --git a/src/College.cpp b/src/College.cpp
+index 0dc0d1c..4d93261 100644
+--- a/src/College.cpp
++++ b/src/College.cpp
+@@ -1,6 +1,9 @@
+ #include "College.h"
+ 
+ 
++using namespace std;
++
++
+ College::College(int maxAllStudents, int maxAllProfessors, int maxAllCourses, int maxAllClassRooms) noexcept(false) :
+     numOfStudents(0), maxStudents(NULL),
+     numOfProfessors(0), maxProfessors(NULL),
+@@ -262,7 +265,7 @@ bool College::removeStudentFromLectureWaitingList(const char* courseName, const
+ }
+ 
+ // Student
+-bool College::addStudent(const Student& newStudent)  // TODO: there was const on newStudent
++bool College::addStudent(const Student& newStudent)
+ {
+     // if student exist
+     if (getStudentIndex(newStudent.getName()) >= 0)
+@@ -277,27 +280,79 @@ bool College::addStudent(const Student& newStudent)  // TODO: there was const on
+ 
+ bool College::removeStudent(const char* studentID)
+ {
+-	return false;
++    int index = getStudentIndex(studentID);
++    if (index < 0)
++    {
++        cout << "Student not in College" << endl;
++        return false;
++    }
++
++    removeStudent(index);
++
++    for (int i = 0; i < numOfCourses; i++)
++        removeStudentFromCourse(studentID, courses[i]->getCourseName());
++
++    return true;
+ }
+ 
+ bool College::setStudentDepartment(const char* studentID, Student::eDepartmenType newDepartmentType)
+ {
+-	return false;
++    int index = getStudentIndex(studentID);
++    if (index < 0)
++    {
++        cout << "Student not in College" << endl;
++        return false;
++    }
++
++    students[index]->setDepartment(newDepartmentType);
++    return true;
+ }
+ 
+ bool College::updateStudentGrade(const char* studentID, const Lecture& lecture, int newGrade)
+ {
+-	return false;
++    int index = getStudentIndex(studentID);
++    if (index < 0)
++    {
++        cout << "Student not in College" << endl;
++        return false;
++    }
++
++    students[index]->updateGrade(lecture, newGrade);
++    return true;
+ }
+ 
+ bool College::addLectureToStudent(const char* studentID, const Lecture& lecture)
+ {
+-	return false;
++    int index = getStudentIndex(studentID);
++    if (index < 0)
++    {
++        cout << "Student not in College" << endl;
++        return false;
++    }
++
++    students[index]->addLecture(&lecture);
++    return true;
+ }
+ 
+ bool College::removeStudentFromCourse(const char* studentID, const char* courseName)
+ {
+-	return false;
++    int courseIndex = getCourseIndex(courseName);
++    if (courseIndex)
++    {
++        cout << "Course Not Found" << endl;
++        return false;
++    }
++    Course& courseToRemove = *(courses[courseIndex]);
++
++    int studentIndex = getStudentIndex(studentID);
++    if (studentIndex < 0)
++    {
++        cout << "Student not in College" << endl;
++        return false;
++    }
++
++    students[studentIndex]->deleteFromCourse(courseToRemove);
++    return true;
+ }
+ 
+ const Student* const* College::getStudents(int* numOfStudents)const
+@@ -317,7 +372,11 @@ const Student* College::getStudentById(const char* id) const
+ 
+ void College::printStudents(std::ostream& os) const
+ {
++    if (numOfStudents <= 0)
++        os << "College has no students" << endl;
+ 
++    for (int i = 0; i < numOfStudents; i++)
++        os << *(students[i]) << endl;
+ }
+ 
+ bool College::addProfessor(const Professor& newProfessor)
+@@ -325,7 +384,6 @@ bool College::addProfessor(const Professor& newProfessor)
+     if (getProfessorIndex(newProfessor.getName()) >= 0)
+         return false;
+ 
+-
+     if (numOfProfessors >= maxProfessors)
+         return false;
+ 
+@@ -335,22 +393,54 @@ bool College::addProfessor(const Professor& newProfessor)
+ 
+ bool College::removeProfessor(const char* id)
+ {
+-	return false;
++    int index = getProfessorIndex(id);
++    if (index < 0)
++    {
++        cout << "Professor wasn't found" << endl;
++        return false;
++    }
++
++    removeProfessor(index);
++    return true;
+ }
+ 
+ bool College::setProfesssorSalary(const char* id, double newSalary)
+ {
+-	return false;
++    int index = getProfessorIndex(id);
++    if (index < 0)
++    {
++        cout << "Professor wasn't found" << endl;
++        return false;
++    }
++
++    professors[index]->setSalary(newSalary);
++    return true;
+ }
+ 
+ bool College::addLectureToProfessor(const char* id, const Lecture* newLecture)
+ {
+-	return false;
++    int index = getProfessorIndex(id);
++    if (index < 0)
++    {
++        cout << "Professor wasn't found" << endl;
++        return false;
++    }
++
++    professors[index]->addLectureTeaching(newLecture);
++    return true;
+ }
+ 
+ bool College::removeLectureFromProfessor(const char* id, const Lecture* lectureToRemove)
+ {
+-	return false;
++    int index = getProfessorIndex(id);
++    if (index < 0)
++    {
++        cout << "Professor wasn't found" << endl;
++        return false;
++    }
++
++    professors[index]->removeLecture(lectureToRemove);
++    return true;
+ }
+ 
+ /* NOTE: return also the current number of professors */
+@@ -370,7 +460,11 @@ const Professor* College::getProfessorById(const char* id) const
+ 
+ void College::printProfessors(std::ostream& os) const
+ {
+-    
++    if (numOfProfessors <= 0)
++        os << "College has no professors" << endl;
++
++    for (int i = 0; i < numOfProfessors; i++)
++        os << *(professors[i]) << endl;
+ }
+ 
+ // Practitioner
+@@ -388,43 +482,115 @@ bool College::addPractitioner(const Practitioner& newPractitioner)
+ 
+ bool College::removePractitioner(const char* id)
+ {
+-	return false;
++    int index = getPractitionerIndex(id);
++    if (index < 0)
++    {
++        cout << "Practitioner wasn't found" << endl;
++        return false;
++    }
++
++    removePractitioner(index);
++    return true;
+ }
+ 
+ bool College::setPractitionerSalary(const char* id, double newSalary)
+ {
+-	return false;
++    int index = getPractitionerIndex(id);
++    if (index < 0)
++    {
++        cout << "Practitioner wasn't found" << endl;
++        return false;
++    }
++
++    practitioners[index]->setSalary(newSalary);
++    return true;
+ }
+ 
+ bool College::addPracticeToPractitioner(const char* id, const Lecture* newLecture)
+ {
+-	return false;
++    int index = getPractitionerIndex(id);
++    if (index < 0)
++    {
++        cout << "Practitioner wasn't found" << endl;
++        return false;
++    }
++
++    practitioners[index]->addLectureTeaching(newLecture);
++    return true;
+ }
+ 
+ bool College::removePracticeFromPractitioner(const char* id, const Lecture* lectureToRemove)
+ {
+-	return false;
++    int index = getPractitionerIndex(id);
++    if (index < 0)
++    {
++        cout << "Practitioner wasn't found" << endl;
++        return false;
++    }
++
++    practitioners[index]->removeLecture(lectureToRemove);
++    return true;
+ }
+ 
+ bool College::setPractitionerDepartment(const char* id, Student::eDepartmenType newDepartmentType)
+ {
+-	return false;
++    int index = getPractitionerIndex(id);
++    if (index < 0)
++    {
++        cout << "Practitioner wasn't found" << endl;
++        return false;
++    }
++
++    practitioners[index]->setDepartment(newDepartmentType);
++    return true;
+ }
+ 
+ bool College::updatePractitionerGrade(const char* id, const Lecture& lecture, int newGrade)
+ {
+-	return false;
++    int index = getPractitionerIndex(id);
++    if (index < 0)
++    {
++        cout << "Practitioner wasn't found" << endl;
++        return false;
++    }
++
++    practitioners[index]->updateGrade(lecture, newGrade);
++    return true;
+ }
+ 
+ /* TODO give better name from the student fucntions of practitioner */
+ bool College::addLectureToPractitioner(const char* id, const Lecture& lecture)
+ {
+-	return false;
++    int index = getPractitionerIndex(id);
++    if (index < 0)
++    {
++        cout << "Practitioner wasn't found" << endl;
++        return false;
++    }
++
++    practitioners[index]->addLecture(&lecture);
++    return true;
+ }
+ 
+ bool College::removePractitionerFromCourse(const char* id, const char* courseName)
+ {
+-	return false;
++    int courseIndex = getCourseIndex(courseName);
++    if (courseIndex)
++    {
++        cout << "Course Not Found" << endl;
++        return false;
++    }
++    Course& courseToRemove = *(courses[courseIndex]);
++
++    int practitionerIndex = getPractitionerIndex(id);
++    if (practitionerIndex < 0)
++    {
++        cout << "Practitioner not in College" << endl;
++        return false;
++    }
++
++    practitioners[practitionerIndex]->deleteFromCourse(courseToRemove);
++    return true;
+ }
+ 
+ const Practitioner* const* College::getPractitioners(int* numOfPractitioners) const
+@@ -444,7 +610,11 @@ const Practitioner* College::getPractitionerById(const char* id) const
+ 
+ void College::printPractitioners(std::ostream& os) const
+ {
++    if (numOfPractitioners <= 0)
++        os << "College has no practitioners" << endl;
+ 
++    for (int i = 0; i < numOfPractitioners; i++)
++        os << *(practitioners[i]) << endl;
+ }
+ 
+ void College::removeStudentFromAllLectures(Student* removeStudent)
+@@ -466,7 +636,7 @@ bool College::removeStudent(int index)
+ 
+     removeStudentFromAllLectures(students[index]);
+     delete students[index];
+-    
++
+     int numEleToMove = numOfStudents - index - 1;
+     if (numEleToMove > 0)
+         memmove(&students[index], &students[index + 1], sizeof(Student*) * numEleToMove);
+@@ -482,18 +652,18 @@ bool College::removePractitioner(int index)
+     // remove the practitioner from all lectures and courses...
+     removeProfessorFromAllCourses(*practitioners[index]);
+     removeStudentFromAllLectures(practitioners[index]);
+-    
++
+     delete practitioners[index];
+ 
+     int numEleToMove = numOfStudents - index - 1;
+     if (numEleToMove > 0)
+         memmove(&practitioners[index], &practitioners[index + 1], sizeof(Practitioner*) * numEleToMove);
+     practitioners[--numOfPractitioners] = nullptr;
+-    
++
+     return true;
+ }
+ 
+-void College::removeProfessorFromAllCourses(Professor & removeProfessor)
++void College::removeProfessorFromAllCourses(Professor& removeProfessor)
+ {
+     for (int i = 0; i < numOfCourses; i++)
+         if (*courses[i]->getCoordinator() == removeProfessor)
+@@ -511,7 +681,7 @@ bool College::removeProfessor(int index)
+     if (numEleToMove > 0)
+         memmove(&professors[index], &professors[index + 1], sizeof(Professor*) * numEleToMove);
+     professors[--numOfProfessors] = nullptr;
+-    
++
+     return true;
+ }
+ 
+@@ -527,23 +697,23 @@ void College::removeClassRoomFromAllLectures(const ClassRoom& c)
+     }
+ }
+ 
+-const College & College::operator+=(Course & c)
++const College& College::operator+=(Course& c)
+ {
+     addCourse(c);
+     return *this;
+-}		
++}
+ 
+ const College& College::operator+=(const Student& s)
+ {
+     addStudent(s);
+     return *this;
+-}	
++}
+ 
+ const College& College::operator+=(const Professor& p)
+ {
+     addProfessor(p);
+     return *this;
+-}	
++}
+ 
+ const College& College::operator+=(const Practitioner& p)
+ {
+@@ -563,21 +733,14 @@ const College& College::operator-=(const ClassRoom& cr)
+     return *this;
+ }
+ 
+-std::ostream & operator<<(std::ostream & os, const College & c)
++std::ostream& operator<<(std::ostream& os, const College& c)
+ {
+-    int numOfStudents = c.numOfStudents;
+-    const Student* const* s = c.students;
+-    
+-        	/*int numOfProfessors;
+-        +	const Professor*const* prof = c.getProfessors(&numOfProfessors);
+-        +
+-        +	int numOfPractitioners;
+-        +	const Practitioner* const* prac = c.getPractitioners(&numOfPractitioners);*/
+-        
+-     os << "College - Details: \n\n" << "students: \n";
+-     // for (int i = 0; i < numOfStudents; i++)
+-     // 	os << "Student " << i + 1 << ", Details: " << *s[i];
+-     return os;
++    c.printClassRooms(os);
++    c.printCourses(os);
++    c.printProfessors(os);
++    c.printPractitioners(os);
++    c.printStudents(os);
++    return os;
+ }
+ 
+ College::~College()
+@@ -586,19 +749,19 @@ College::~College()
+     for (int i = numOfPractitioners - 1; i >= 0; i--)
+         removePractitioner(i);
+     delete practitioners;
+-    
++
+     for (int i = numOfStudents - 1; i >= 0; i--)
+         removeStudent(i);
+     delete students;
+-    
++
+     for (int i = numOfProfessors - 1; i >= 0; i--)
+         removeProfessor(i);
+     delete professors;
+-    
++
+     for (int i = numOfClassRooms - 1; i >= 0; i--)
+         removeClassRoom(i);
+     delete classRooms;
+-    
++
+     for (int i = numOfCourses - 1; i >= 0; i--)
+         removeCourse(i);
+     delete courses;
+-- 
+2.16.2.windows.1
+

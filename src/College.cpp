@@ -452,6 +452,19 @@ void College::printStudents(std::ostream& os) const
         os << *(students[i]) << endl;
 }
 
+void College::printProfessorsOfStudent(std::ostream& os, const char* id)
+{
+    int index = getStudentIndex(id);
+    if (index < 0)
+    {
+        os << "Failed to find student with id " << id << endl;
+        return;
+    }
+
+    students[index]->printProfessores(os);
+}
+
+
 bool College::addProfessor(const Professor& newProfessor)
 {
     if (getProfessorIndex(newProfessor.getName()) >= 0)
