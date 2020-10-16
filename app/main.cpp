@@ -4,6 +4,8 @@
 #include "College.h"
 
 #define COURSE_NAME_SIZE 20
+#define PERSON_NAME_LEN	20
+#define PERSON_ID_LEN	20
 
 using namespace std;
 

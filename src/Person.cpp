@@ -6,26 +6,15 @@
 
 using namespace std;
 
-static void setNameOrZeros(char* dest, const char* src, int dest_len)
+Person::Person(const char* name, const Date& birthDate, const char* id) noexcept(false) :
+	name(nullptr), id(nullptr), birthDate(nullptr)
 {
-	if (src)
-	{
-		strncpy(dest, src, (dest_len - 1));
-		dest[dest_len] = '\0';
-		return;
-	}
-	memset(dest, 0, dest_len);
-}
+	if (!setName(name))
+		throw "Error: name cant be null and have to have length of at least 1";
+	if (!setId(id))
+		throw "Error: id cant be null and have to have length of at least 1";
 
-Person::Person(const char* name, const Date& birthDate, const char* id) noexcept : birthDate(&birthDate)
-{
-	this->name = new char[NAME_LEN];
-	this->id = new char[ID_LEN];
 	this->birthDate = new Date(birthDate);
-
-	/* -1 in order to save 1 index for '\0' */
-	setNameOrZeros(this->name, name, (Person::NAME_LEN - 1));
-	setNameOrZeros(this->id, id, (Person::ID_LEN - 1));
 }
 
 Person::Person(const Person& other) noexcept
@@ -41,22 +30,22 @@ Person::Person(Person&& other) noexcept
 Person& Person::operator=(const Person& other)
 {
 	this->birthDate = other.birthDate;
-
-	/* -1 in order to save 1 index for '\0' */
-	setNameOrZeros(this->name, other.name, (Person::NAME_LEN - 1));
-	setNameOrZeros(this->id, other.id, (Person::ID_LEN - 1));
+	setName(other.name);
+	setId(other.id);
 	return *this;
 }
 
 Person& Person::operator=(Person&& other) noexcept
 {
-	this->birthDate = other.birthDate,
-		this->name = other.name;
-	this->id = other.id;
-
-	other.name = nullptr;
-	other.id = nullptr;
+	this->birthDate = other.birthDate;
 	other.birthDate = nullptr;
+
+	this->name = other.name;
+	other.name = nullptr;
+
+	this->id = other.id;
+	other.id = nullptr;
+
 	return *this;
 }
 
@@ -65,6 +54,52 @@ Person::~Person()
 	delete name;
 	delete id;
 	delete birthDate;
+}
+
+bool Person::setName(const char* name)
+{
+	if (!name)
+	{
+		cout << "name cant be null";
+		return false;
+	}
+	else if (strlen(name) <= 0)
+	{
+		cout << "name must be positive length";
+		return false;
+	}
+
+	delete this->name;
+	this->name = new char[strlen(name) + 1];
+	strcpy(this->name, name);
+	return true;
+}
+
+bool Person::setId(const char* id)
+{
+	if (!id)
+	{
+		cout << "id cant be null";
+		return false;
+	}
+	else if (strlen(id) <= 0)
+	{
+		cout << "id must be positive length";
+		return false;
+	}
+
+	delete this->id;
+	this->id = new char[strlen(id) + 1];
+	strcpy(this->id, id);
+	return true;
+}
+
+void Person::setBirthDate(const Date& date)
+{
+	if (this->birthDate)
+		*(this->birthDate) = date;
+	else
+		this->birthDate = nullptr;
 }
 
 void Person::print(ostream& os) const
