@@ -2,20 +2,19 @@
 
 using namespace std;
 
-/* TODO maxOfLecturesTeaching isn't being used */
-Practitioner::Practitioner(const char* name, const Date& birthDate, const char* id, eDepartmenType department, double salary,
-	int maxOfGrades, int maxOfLectures, int maxOfLecturesTeaching) noexcept(false) :
+Practitioner::Practitioner(const char* name, const Date& birthDate, const char* id, eDepartmenType department,
+						   double salary, int maxOfLectures, int maxOfLecturesTeaching) noexcept(false) :
 	Person(name, birthDate, id),
-	Professor(name, birthDate, id, salary, maxOfLectures),
-	Student(name, birthDate, id, department, maxOfGrades) {}
+	Professor(name, birthDate, id, salary, maxOfLecturesTeaching),
+	Student(name, birthDate, id, department, maxOfLectures) {}
 
 Practitioner::Practitioner(Professor& p, Student& s) noexcept(false) :
-	Professor(p.getName(), p.getBirthDate(), p.getId(), p.getSalary()),
-	Student(s.getName(), s.getBirthDate(), s.getId(), s.getDepartment()),
-	Person(p.getName(), p.getBirthDate(), p.getId())
+	Person(p),
+	Professor(p),
+	Student(s)
 {
-	if (!(s == p.getId()))
-		throw -1;
+	if (!(s == p))
+		throw "Error not the same Person has been given to professor and student";
 }
 
 Practitioner::Practitioner(const Practitioner& other) noexcept: Person(other), Student(other), Professor(other) {}

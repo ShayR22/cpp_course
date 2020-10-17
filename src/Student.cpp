@@ -82,7 +82,6 @@ Student::~Student()
 	destroyCourses();
 }
 
-
 Student::Student(Student&& otherS) noexcept : Person(otherS), department(otherS.department),
 	maxOfCourses(otherS.maxOfCourses), numOfCourses(otherS.numOfCourses)
 {
@@ -171,7 +170,6 @@ void Student::printGrades(ostream& os) const
 {
 	if (numOfCourses == 0)
 	{
-		Person::print(cout);
 		os << "haven't finished any courses" << endl;
 		return;
 	}
@@ -186,7 +184,6 @@ void Student::printProfessores(ostream& os) const
 {
 	if (numOfCourses == 0)
 	{
-		Person::print(cout);
 		os << "doesn't have any courses, thus, no proffesors" << endl;
 		return;
 	}
@@ -211,5 +208,3 @@ const Student& Student::operator+=(const Lecture& l)
 		cout << "failed to add lecture" << endl;
 	return *this;
 }
-
-

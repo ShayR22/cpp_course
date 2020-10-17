@@ -17,7 +17,8 @@ Person::Person(const char* name, const Date& birthDate, const char* id) noexcept
 	this->birthDate = new Date(birthDate);
 }
 
-Person::Person(const Person& other) noexcept
+Person::Person(const Person& other) noexcept:
+	name(nullptr), id(nullptr), birthDate(nullptr)
 {
 	*this = other;
 }
@@ -29,7 +30,11 @@ Person::Person(Person&& other) noexcept
 
 Person& Person::operator=(const Person& other)
 {
-	this->birthDate = other.birthDate;
+	if (this->birthDate)
+		*(this->birthDate) = *(other.birthDate);
+	else
+		this->birthDate = new Date(*other.birthDate);
+
 	setName(other.name);
 	setId(other.id);
 	return *this;
@@ -99,12 +104,12 @@ void Person::setBirthDate(const Date& date)
 	if (this->birthDate)
 		*(this->birthDate) = date;
 	else
-		this->birthDate = nullptr;
+		this->birthDate = new Date(date);
 }
 
 void Person::print(ostream& os) const
 {
-	os << name << "(" << id << "), " << birthDate << endl;
+	os << name << "(id:" << id << "), " << *birthDate << endl;
 }
 
 ostream& operator<<(ostream& os, const Person& per)
