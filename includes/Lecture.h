@@ -8,7 +8,6 @@ class Professor;
 class ClassRoom;
 class Course;
 
-
 class Lecture
 {
 private:
@@ -19,12 +18,12 @@ public:
 	enum class eType { PRACTICE = 0, LECTURE };
 
 private:
-	int id;		//  =  ++auromaticID
+	int id;	
 	eWeekDay day;
 	int startHour;
 	int duration;
 	eType type;
-	Course* course;
+	const Course* course;
 	const ClassRoom* classRoom;
 	const Professor* lecturer;
 	const Lecture* practice;
@@ -37,9 +36,8 @@ private:
 
 	void removeStudentByIndex(int index, const Student** ptrArray, int arraySize);
 	
-
 public:
-	Lecture(eWeekDay day, int startHour, int duration, eType type, Course& course,
+	Lecture(eWeekDay day, int startHour, int duration, eType type, const Course& course,
 		    const ClassRoom& classRoom, const Professor& lecturer, const Lecture* practice,
 		    int maxStudentList = 20, int maxWaitingList = 20) noexcept(false);
 	Lecture(const Lecture& otherL) noexcept;
@@ -59,7 +57,9 @@ public:
 	int getDuration() const;
 	bool setDuration(int newDuration);
 	int getMaxStudentsList() const;
-	bool setMaxStudentsList(int newMaxStudentsList); //Check that: "ClassRoom->maxSeats >= newMaxStudentList" 
+	bool setMaxStudentsList(int newMaxStudentsList);
+	int getMaxWaitingsList() const;
+	bool setMaxWaitingList(int newMaxWaitingList);
 	eType getLectureType()const;
 	void setLectureType(const eType newType);
 
@@ -69,11 +69,11 @@ public:
 	const Professor& getLecturer()const;
 	void setLecturer(const Professor& newLectureProfessor);
 
-	const Student*const* getStudentList(int* numOfStudentList) const; // returning also the "current number of students"
+	const Student*const* getStudentList(int* numOfStudentList) const;
 	bool addStudent(const Student& newStudent);
 	bool removeStudent(Student& studentToRemove);
 
-	const Student*const* getWaitingList(int* numOfWaitingList)const; // returning also the "current number of students"
+	const Student*const* getWaitingList(int* numOfWaitingList)const;
 	bool addToWaitingList(const Student& newStudent);
 	bool removeFromWaitingList(const Student& studentToRemove);
 
@@ -83,11 +83,10 @@ public:
 	const Course& getCourse()const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Lecture& l);
-	friend std::ostream& operator<<(std::ostream& os, enum eWeekDay day);
-	friend std::ostream& operator<<(std::ostream& os, enum eType type);
+	friend std::ostream& operator<<(std::ostream& os, Lecture::eWeekDay day);
+	friend std::ostream& operator<<(std::ostream& os, Lecture::eType type);
 
 	~Lecture();
-
 };
 
 #endif
