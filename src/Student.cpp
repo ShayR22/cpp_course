@@ -151,13 +151,11 @@ bool Student::addLecture(const Lecture* newLecture)
 
 bool Student::deleteFromCourse(Course& c)
 {
-	int numLectures;
-	Lecture** lectures_ptrs = c.getLectures(&numLectures);
+	map<int, Lecture*> lectures = c.getLectures();
 
-	for (int i = 0; i < numLectures; i++)
+	for (auto &e : lectures)
 	{
-		Lecture* cur_lec = lectures_ptrs[i];
-		if (cur_lec->removeStudent(*this))
+		if (e.second->removeStudent(*this))
 			return true;
 	}
 	return false;
@@ -176,10 +174,10 @@ bool Student::passedCourse(const Course* c)
 
 bool Student::qualify(const Course& c)
 {
-	int numCourses;
-	const Course* const* conditionCourses = c.getConditionsCourses(&numCourses);
-	for (int i = 0; i < numCourses; i++)
-		if (!passedCourse(&c))
+	const map<string, const Course*> conditionCourses = c.getConditionsCourses();
+	//const Course* const* conditionCourses = c.getConditionsCourses(&numCourses);
+	for (auto &e : conditionCourses)
+		if (!passedCourse(e.second))
 			return false;
 
 	return true;

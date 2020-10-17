@@ -193,7 +193,7 @@ bool Lecture::addStudent(const Student& newStudent)
 	return true;
 }
 
-bool Lecture::removeStudent(Student& studentToRemove)
+bool Lecture::removeStudent(const Student& studentToRemove)
 {	
 	if (!studentMap.erase(studentToRemove.getId()))
 	{

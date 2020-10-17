@@ -7,12 +7,12 @@
 class Person
 {
 private:
-	char* name;
-	char* id;
+	std::string name;
+	std::string id;
 	Date* birthDate;
 
 public:
-	Person(const char* name, const Date& birthDate, const char* id) noexcept(false);
+	Person(const std::string& name, const Date& birthDate, const std::string& id) noexcept(false);
 	Person(const Person& other) noexcept;
 	Person(Person&& other) noexcept;
 
@@ -21,11 +21,11 @@ public:
 
 	virtual ~Person();
 
-	bool setName(const char* name);
-	const char* getName() const { return name; }
+	bool setName(const std::string& name);
+	const std::string& getName() const { return name; }
 
-	bool setId(const char* id);
-	const char* getId() const { return id; }
+	bool setId(const std::string& id);
+	const std::string& getId() const { return id; }
 
 	void setBirthDate(const Date& date);
 	const Date& getBirthDate() const { return *birthDate; }
@@ -33,7 +33,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const Person& per);
 	virtual void print(std::ostream& os) const;
 
-	virtual bool operator==(const char* id) const;
+	virtual bool operator==(const std::string& id) const;
 	virtual bool operator==(const Person& other) const;
 };
 

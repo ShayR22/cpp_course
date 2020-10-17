@@ -6,19 +6,19 @@
 
 using namespace std;
 
-Person::Person(const char* name, const Date& birthDate, const char* id) noexcept(false) :
-	name(nullptr), id(nullptr), birthDate(nullptr)
+Person::Person(const string& name, const Date& birthDate, const string& id) noexcept(false) :
+	birthDate(nullptr)
 {
 	if (!setName(name))
-		throw "Error: name cant be null and have to have length of at least 1";
+		throw "Error: name have to have length of at least 1";
 	if (!setId(id))
-		throw "Error: id cant be null and have to have length of at least 1";
+		throw "Error: id have to have length of at least 1";
 
 	this->birthDate = new Date(birthDate);
 }
 
 Person::Person(const Person& other) noexcept:
-	name(nullptr), id(nullptr), birthDate(nullptr)
+	birthDate(nullptr)
 {
 	*this = other;
 }
@@ -36,8 +36,8 @@ Person& Person::operator=(const Person& other)
 	else
 		this->birthDate = new Date(*other.birthDate);
 
-	setName(other.name);
-	setId(other.id);
+	this->name = other.name;
+	this->id = other.id;
 	return *this;
 }
 
@@ -45,58 +45,37 @@ Person& Person::operator=(Person&& other) noexcept
 {
 	this->birthDate = other.birthDate;
 	other.birthDate = nullptr;
-
-	this->name = other.name;
-	other.name = nullptr;
-
-	this->id = other.id;
-	other.id = nullptr;
-
+	this->name = move(other.name);
+	this->id = move(other.id);
 	return *this;
 }
 
 Person::~Person()
 {
-	delete name;
-	delete id;
 	delete birthDate;
 }
 
-bool Person::setName(const char* name)
+bool Person::setName(const string& name)
 {
-	if (!name)
+	if (name.empty())
 	{
-		cout << "name cant be null";
-		return false;
-	}
-	else if (strlen(name) <= 0)
-	{
-		cout << "name must be positive length";
+		cout << "name cant be empty";
 		return false;
 	}
 
-	delete this->name;
-	this->name = new char[strlen(name) + 1];
-	strcpy(this->name, name);
+	this->name = name;
 	return true;
 }
 
-bool Person::setId(const char* id)
+bool Person::setId(const string& id)
 {
-	if (!id)
+	if (id.empty())
 	{
 		cout << "id cant be null";
 		return false;
 	}
-	else if (strlen(id) <= 0)
-	{
-		cout << "id must be positive length";
-		return false;
-	}
 
-	delete this->id;
-	this->id = new char[strlen(id) + 1];
-	strcpy(this->id, id);
+	this->id = id;
 	return true;
 }
 
@@ -119,11 +98,9 @@ ostream& operator<<(ostream& os, const Person& per)
 	return os;
 }
 
-bool Person::operator==(const char* id) const
+bool Person::operator==(const string& id) const
 {
-	if (!strcmp(this->id, id))
-		return true;
-	return false;
+	return this->id == id;
 }
 
 bool Person::operator==(const Person& other) const

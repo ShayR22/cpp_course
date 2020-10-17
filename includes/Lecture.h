@@ -69,7 +69,7 @@ public:
 
 	const std::map<std::string, const Student*> getStudentMap() const;
 	bool addStudent(const Student& newStudent);
-	bool removeStudent(Student& studentToRemove);
+	bool removeStudent(const Student& studentToRemove);
 
 	const std::map<std::string, const Student*> getWaitingMap()const;
 	bool addToWaitingMap(const Student& newStudent);

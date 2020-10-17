@@ -2,34 +2,24 @@
 #define __H_COURSE__
 
 #include "Lecture.h"
+#include <map>
 
 class Course
 {
 public:
 	enum class eAddingStudentStatus { SUCCESS, UNQUALIFIED, FULL };// for lecture
 private:
-	char* name;
+	std::string name;
 	const Professor* coordinator;
 	float points;
-	map<int, Lecture*> lectures;
+	std::map<int, Lecture*> lectures;
 	int maxLectures;
-	int numOfLectures;
-	const Course** conditionCourses;
+	std::map<std::string, const Course*> conditionCourses;
 	int maxConditionCourses;
-	int numOfConditionCourses;
-
-	void destroyLectures();
-
-	int getLectureIndex(int id) const;
-	int getLectureIndex(const Lecture& l) const;
-	int getConditionCourseIndex(const char* name) const;
-	int getConditionCourseIndex(const Course& c) const;
-	bool notInside(const Student** student, int studentsLen, const Student* isInside) const;
 
 	bool checkIfHourOverlap(const Lecture& lecture, const Lecture& practice);
-
 public:
-	Course(const char* name, const Professor* coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
+	Course(const std::string& name, const Professor* coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
 	Course(const Course& other) noexcept;
 	Course(Course&& other) noexcept;
 
@@ -37,22 +27,21 @@ public:
 	Course& operator=(Course&& other) noexcept;
 
 	bool operator==(const Course& other) const;
-	bool operator==(const char *name) const;
+	bool operator==(const std::string& name) const;
 
-
-	const char* getCourseName() const { return name; }
-	bool setCourseName(const char* name);
+	const std::string& getCourseName() const { return name; }
+	bool setCourseName(const std::string& newCourseName);
 	const Professor* getCoordinator()const { return coordinator; }
 	bool setCoordinator(const Professor* p);
 	float getPoints() const { return points; }
 	bool setPoints(float p);
-	Lecture** getLectures(int* numOfLectures) const;
+	std::map<int, Lecture*> getLectures() const;
 	bool removeLecture(const Lecture& lectureToRemove);
 	bool removeLecture(int id);
 	bool addLecture(const Lecture& lectureToAdd);
-	const Course** getConditionsCourses(int* numOfConditionCourses) const;
+	const std::map<std::string, const Course*> getConditionsCourses() const;
 	bool removeConditionCourse(const Course& c);
-	bool removeConditionCourse(const char* name);
+	bool removeConditionCourse(const std::string& name);
 	bool addConditionCourse(const Course& c);
 	const Lecture* getLectureById(int lectureId) const;
 
@@ -66,6 +55,7 @@ public:
 	bool addStudentToWaitingListCourse(const Lecture& lecture, const Student& student);
 	bool removeStudentToWaitingListCourse(const Lecture& lecture, const Student& student);
 	bool setLecturePractice(int lectureID, int practiceID);
+	bool removeStudentFromCourse(const Student& student);
 
 	eAddingStudentStatus addStudentToCourse(const Lecture& lectureToEnter, Student& studentToSign) noexcept(false);
 	
