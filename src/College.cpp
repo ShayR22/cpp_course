@@ -81,7 +81,7 @@ bool College::addClassRoom(const ClassRoom& newClassroom)
     if (numOfClassRooms >= maxClassRooms)
         return false;
 
-    *classRooms[numOfClassRooms++] = newClassroom;
+    classRooms[numOfClassRooms++] = new ClassRoom(newClassroom);
     return true;
 }
 
@@ -136,7 +136,7 @@ bool College::addCourse(const Course& newCourse)
     if (numOfProfessors >= maxProfessors)
         return false;
 
-    *courses[numOfCourses++] = newCourse;
+    courses[numOfCourses++] = new Course(newCourse);
     return true;
 }
 
@@ -473,7 +473,7 @@ bool College::addProfessor(const Professor& newProfessor)
     if (numOfProfessors >= maxProfessors)
         return false;
 
-    *professors[numOfProfessors++] = newProfessor;
+    professors[numOfProfessors++] = new Professor(newProfessor);
     return true;
 }
 
