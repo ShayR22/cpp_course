@@ -1,24 +1,22 @@
 #include <ostream>
 #include "Lecture.h"
 #include "Student.h"
+#include "Classroom.h"
 
 #define OPENING_HOUR 8
 #define CLOSING_HOUR 23
 #define LECTURE_MIN_DURATION 1
 #define LECTURE_MAX_DURATION 6
-#define LECTURE_MAX_NUM_STUDENTS 50
-#define LECTURE_MAX_WAITING_LIST 30
 
 using namespace std;
 
-Lecture::Lecture(eWeekDay day, int startHour, int duration, eType type, Course& course,
+Lecture::Lecture(eWeekDay day, int startHour, int duration, eType type, const Course& course,
 	const ClassRoom& classRoom, const Professor& lecturer, const Lecture* practice,
 	int maxStudentList, int maxWaitingList) noexcept(false) :
 	course(&course), classRoom(&classRoom), lecturer(&lecturer), practice(practice),
 	day(day), type(type), maxStudentList(maxStudentList), maxWaitingList(maxWaitingList),
 	numOfStudentList(0), numOfWaitingList(0), studentList(nullptr), waitingList(nullptr)
 {
-
 	if(!this->setHour(startHour))
 		throw "Invalid hour, hour must be between 8:00 and 22:00";
 	if (!this->setDuration(duration))
@@ -31,6 +29,7 @@ Lecture::Lecture(eWeekDay day, int startHour, int duration, eType type, Course& 
 	this->studentList = new const Student* [this->maxStudentList];
 	this->waitingList = new const Student* [this->maxWaitingList];
 
+	this->id = this->automaticID++;
 }
 
 Lecture::Lecture(const Lecture& otherL) noexcept :
@@ -49,7 +48,10 @@ Lecture::eWeekDay Lecture::getWeekDay() const
 	return this->day; 
 }
 
-void Lecture::setWeekDay(eWeekDay day) { this->day = day; }
+void Lecture::setWeekDay(eWeekDay day)
+{ 
+	this->day = day;
+}
 
 int Lecture::getHour() const 
 { 
@@ -58,8 +60,16 @@ int Lecture::getHour() const
 
 bool Lecture::setHour(int newHour)
 {	
-	if (newHour < OPENING_HOUR || newHour > CLOSING_HOUR - this->duration)
+	if (newHour < OPENING_HOUR)
+	{
+		cout << "New hour given is not valid, hours must be above " << OPENING_HOUR << endl;
 		return false;
+	}
+	if (newHour > CLOSING_HOUR - this->duration)
+	{
+		cout << "New hour given is not valid, hour + duration given must be below " << CLOSING_HOUR << endl;
+		return false;
+	}
 	
 	this->startHour = newHour;
 	return true;
@@ -72,14 +82,23 @@ int Lecture::getDuration() const
 
 bool Lecture::setDuration(int newDuration)
 {	
-	if (newDuration <= 0)
-		this->duration = LECTURE_MIN_DURATION;
-
-	if(this->startHour + newDuration > CLOSING_HOUR)
+	if (newDuration < LECTURE_MIN_DURATION)
+	{
+		cout << "Lecture duration cant be below " << LECTURE_MIN_DURATION << endl;
 		return false;
+	}
+	if (newDuration > LECTURE_MAX_DURATION)
+	{
+		cout << "Lecture duration cant be above " << LECTURE_MAX_DURATION << endl;
+		return false;
+	}
+	if (this->startHour + newDuration > CLOSING_HOUR)
+	{
+		cout << "Lecture duration cant exceed " << CLOSING_HOUR << endl;
+		return false;
+	}
 	
-	else
-		this->duration = newDuration;
+	this->duration = newDuration;
 
 	return true;
 }
@@ -91,12 +110,41 @@ int Lecture::getMaxStudentsList() const
 
 bool Lecture::setMaxStudentsList(int newMaxStudentsList)
 {	
-	if (newMaxStudentsList < 0)
+	if (newMaxStudentsList < this->numOfStudentList)
+	{
+		cout << "Max student list number cant be below the num of students that currently in the list" << endl;
 		return false;
-	if (newMaxStudentsList > LECTURE_MAX_NUM_STUDENTS)
-		this->maxStudentList = LECTURE_MAX_NUM_STUDENTS;
-	else
-		this->maxStudentList = newMaxStudentsList;
+	}
+
+	this->maxStudentList = newMaxStudentsList;
+
+	const Student ** temp = new const Student * [this->maxStudentList];
+	memcpy((void*)temp, (void*)this->studentList, sizeof(Student*) * this->numOfStudentList);
+	delete studentList;
+	this->studentList = temp;
+
+	return true;
+}
+
+int Lecture::getMaxWaitingsList() const
+{
+	return this->maxWaitingList;
+}
+
+bool Lecture::setMaxWaitingList(int newMaxWaitingList)
+{
+	if (newMaxWaitingList < this->numOfWaitingList)
+	{
+		cout << "Max waiting list number cant be below the num of students waiting that currently in the list" << endl;
+		return false;
+	}
+
+	this->maxWaitingList = newMaxWaitingList;
+
+	const Student** temp = new const Student * [this->maxWaitingList];
+	memcpy((void*)temp, (void*)this->waitingList, sizeof(Student*) * this->numOfWaitingList);
+	delete waitingList;
+	this->waitingList = temp;
 
 	return true;
 }
@@ -115,7 +163,6 @@ const ClassRoom& Lecture::getClassRoom() const
 { 
 	return *(this->classRoom); 
 }
-
 
 void Lecture::setClassRoom(const ClassRoom* newClassRoom)
 {
@@ -146,8 +193,11 @@ const Student*const* Lecture::getWaitingList(int* numOfWaitingList) const
 
 bool Lecture::addStudent(const Student& newStudent)
 {	
-	if (this->numOfStudentList == LECTURE_MAX_NUM_STUDENTS)
+	if (this->numOfStudentList == this->maxStudentList)
+	{
+		cout << "Failed to add student, student list is full" << endl;
 		return false;
+	}
 
 	this->studentList[this->numOfStudentList] = &newStudent;
 	this->numOfStudentList++;
@@ -162,14 +212,17 @@ bool Lecture::removeStudent(Student& studentToRemove)
 			removeStudentByIndex(i, this->studentList, this->numOfStudentList);
 		return true;
 	}
+	cout << "Failed to remove student from student list" << endl;
 	return false;
 }
 
-
 bool Lecture::addToWaitingList(const Student& newStudent)
 {	
-	if (this->numOfWaitingList == LECTURE_MAX_WAITING_LIST)
+	if (this->numOfWaitingList == this->maxWaitingList)
+	{
+		cout << "Failed to add student, student waiting list is full" << endl;
 		return false;
+	}
 
 	this->waitingList[this->numOfWaitingList] = &newStudent;
 	this->numOfWaitingList++;
@@ -184,6 +237,7 @@ bool Lecture::removeFromWaitingList(const Student& studentToRemove)
 			removeStudentByIndex(i, this->waitingList, this->numOfWaitingList);
 		return true;
 	}
+	cout << "Failed to remove student from student waiting list" << endl;
 	return false;
 }
 
@@ -199,7 +253,7 @@ void Lecture::removeStudentByIndex(int index, const Student** ptrArray, int arra
 	if (numEleToMove != 0)
 		memmove((void*)&(ptrArray[index]), (void*)&(ptrArray[index + 1]), sizeof(Student*) * numEleToMove);
 
-	ptrArray[arraySize--] = nullptr;
+	ptrArray[--arraySize] = nullptr;
 }
 
 const Lecture& Lecture::getPracticeLecture() const
@@ -229,23 +283,24 @@ bool Lecture::operator==(const Lecture& l) const
 
 Lecture& Lecture::operator=(const Lecture& otherL) noexcept
 {	
-	course = otherL.course;
-	classRoom = otherL.classRoom;
-	lecturer = otherL.lecturer;
-	practice = otherL.practice;
+	this->id = otherL.id;
+	this->course = otherL.course;
+	this->classRoom = otherL.classRoom;
+	this->lecturer = otherL.lecturer;
+	this->practice = otherL.practice;
 			
-	day = otherL.day;
-	type = otherL.type;
-	startHour = otherL.startHour;
-	duration = otherL.duration;
+	this->day = otherL.day;
+	this->type = otherL.type;
+	this->startHour = otherL.startHour;
+	this->duration = otherL.duration;
 
 	delete studentList;
 	delete waitingList;
 
-	numOfStudentList = otherL.numOfStudentList;
-	numOfWaitingList = otherL.numOfWaitingList;
-	maxStudentList = otherL.maxStudentList;
-	maxWaitingList = otherL.maxWaitingList;
+	this->numOfStudentList = otherL.numOfStudentList;
+	this->numOfWaitingList = otherL.numOfWaitingList;
+	this->maxStudentList = otherL.maxStudentList;
+	this->maxWaitingList = otherL.maxWaitingList;
 
 	this->studentList = new const Student * [this->maxStudentList];
 	this->waitingList = new const Student * [this->maxWaitingList];
@@ -257,23 +312,24 @@ Lecture& Lecture::operator=(const Lecture& otherL) noexcept
 
 Lecture& Lecture::operator=(Lecture&& otherL) noexcept
 {
-	course = otherL.course;
-	classRoom = otherL.classRoom;
-	lecturer = otherL.lecturer;
-	practice = otherL.practice;
+	this->id = otherL.id;
+	this->course = otherL.course;
+	this->classRoom = otherL.classRoom;
+	this->lecturer = otherL.lecturer;
+	this->practice = otherL.practice;
 
-	day = otherL.day;
-	type = otherL.type;
-	startHour = otherL.startHour;
-	duration = otherL.duration;
+	this->day = otherL.day;
+	this->type = otherL.type;
+	this->startHour = otherL.startHour;
+	this->duration = otherL.duration;
 
-	numOfStudentList = otherL.numOfStudentList;
-	numOfWaitingList = otherL.numOfWaitingList;
-	maxStudentList = otherL.maxStudentList;
-	maxWaitingList = otherL.maxWaitingList;
+	this->numOfStudentList = otherL.numOfStudentList;
+	this->numOfWaitingList = otherL.numOfWaitingList;
+	this->maxStudentList = otherL.maxStudentList;
+	this->maxWaitingList = otherL.maxWaitingList;
 	
-	studentList = otherL.studentList;
-	waitingList = otherL.waitingList;
+	this->studentList = otherL.studentList;
+	this->waitingList = otherL.waitingList;
 
 	otherL.studentList = nullptr;
 	otherL.waitingList = nullptr;
@@ -285,7 +341,6 @@ Lecture& Lecture::operator=(Lecture&& otherL) noexcept
 
 	return *this;
 }
-
 
 ostream& operator<<(ostream& os, const Lecture& l)
 {
