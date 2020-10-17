@@ -553,6 +553,12 @@ void College::printProfessors(std::ostream& os) const
         os << *(professors[i]) << endl;
 }
 
+void College::printProfessorsOfStudent(std::ostream& os, const char* id) const
+{
+    // TODO
+    return;
+}
+
 // Practitioner
 bool College::addPractitioner(const Practitioner& newPractitioner)
 {

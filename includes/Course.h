@@ -53,6 +53,7 @@ public:
 	bool removeConditionCourse(const Course& c);
 	bool removeConditionCourse(const char* name);
 	bool addConditionCourse(const Course& c);
+	const Lecture* getLectureById(int lectureId) const;
 
 	bool setLectureWeekDay(const Lecture& lecture, Lecture::eWeekDay day);
 	bool setLecturStartHour(const Lecture& lecture, int hour);

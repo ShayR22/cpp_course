@@ -271,6 +271,12 @@ bool Course::addConditionCourse(const Course& c)
 	return true;
 }
 
+const Lecture* Course::getLectureById(int lectureId) const
+{
+	// TODO
+	return nullptr;
+}
+
 bool Course::setLectureWeekDay(const Lecture& lecture, Lecture::eWeekDay day)
 {
 	int index = getLectureIndex(lecture);
