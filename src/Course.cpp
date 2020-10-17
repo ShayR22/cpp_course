@@ -181,7 +181,7 @@ bool Course::removeLecture(const Lecture& lectureToRemove)
 	int numEleToMove = numOfLectures - index - 1;
 	if (numEleToMove != 0)
 		memmove(&lectures[index], &lectures[index + 1], sizeof(Lecture*) * numEleToMove);
-	lectures[numOfLectures--] = nullptr;
+	lectures[--numOfLectures] = nullptr;
 	return true;
 }
 
@@ -240,7 +240,7 @@ bool Course::removeConditionCourse(const Course& c)
 	int numEleToMove = numOfConditionCourses - index - 1;
 	if (numEleToMove != 0)
 		memmove(&conditionCourses[index], &conditionCourses[index + 1], sizeof(Course*) * numEleToMove);
-	conditionCourses[numOfConditionCourses--] = nullptr;
+	conditionCourses[--numOfConditionCourses] = nullptr;
 	return true;
 }
 

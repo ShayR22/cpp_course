@@ -92,7 +92,7 @@ void Professor::removeLectureByIndex(int index)
 	if (numEleToMove != 0)
 		memmove(&lectures[index], &lectures[index + 1], sizeof(Lecture*) * numEleToMove);
 
-	lectures[numOfLectures--] = nullptr;
+	lectures[--numOfLectures] = nullptr;
 }
 
 int Professor::getLectureIndex(const Lecture& find)
