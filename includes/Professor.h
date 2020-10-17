@@ -14,6 +14,9 @@ private:
 	void removeLectureByIndex(int index);
 	int getLectureIndex(const Lecture& find);
 
+protected:
+	virtual void printAddition(std::ostream& os) const;
+
 public:
 	Professor(const char* name, const Date& birthDate, const char* id, double salary, int maxOfLectures = 5) noexcept(false);
 	Professor(const Professor& other) noexcept;
@@ -32,6 +35,7 @@ public:
 	bool addLectureTeaching(const Lecture* newLecture);
 
 	void printLectures(std::ostream& os) const;
+	void printLecturesNames(std::ostream& os) const;
 	virtual void print(std::ostream& os) const;
 
 	const Professor& operator+=(const Lecture& l);

@@ -3,6 +3,7 @@
 #include <ostream>
 #include <string>
 #include <cmath>
+#include "Professor.h"
 #include "Course.h"
 #include "Student.h"
 
@@ -12,8 +13,8 @@ using namespace std;
 
 Course::Course(const char* name, const Professor* coordinator, float points,
 	int maxLectures, int maxConditionCourses) : 
-	coordinator(coordinator), maxLectures(maxLectures), maxConditionCourses(maxConditionCourses),
-	numOfLectures(0), numOfConditionCourses(0)
+	name(nullptr), coordinator(coordinator), maxLectures(maxLectures), 
+	maxConditionCourses(maxConditionCourses), numOfLectures(0), numOfConditionCourses(0)
 {
 	if (!setCourseName(name))
 		throw "ERROR: In class Course: name is nullptr";
@@ -25,12 +26,14 @@ Course::Course(const char* name, const Professor* coordinator, float points,
 	this->conditionCourses = new const Course * [maxConditionCourses];
 }
 
-Course::Course(const Course& other) noexcept
+Course::Course(const Course& other) noexcept :
+	name(nullptr), coordinator(nullptr), lectures(nullptr), numOfLectures(0), conditionCourses(nullptr)
 {
 	*this = other;
 }
 
-Course::Course(Course&& other) noexcept
+Course::Course(Course&& other) noexcept :
+	name(nullptr), coordinator(nullptr), lectures(nullptr), numOfLectures(0), conditionCourses(nullptr)
 {
 	*this = other;
 }
@@ -110,7 +113,7 @@ void Course::destroyLectures()
 	delete lectures;
 }
 
-bool Course::setCourseName(const char* newCourseName)
+bool Course::setCourseName(const char* name)
 {
 	if (name == nullptr)
 		return false;
@@ -119,8 +122,7 @@ bool Course::setCourseName(const char* newCourseName)
 		return true;
 
 	delete this->name;
-	int length = strlen(name);
-	this->name = new char[length];
+	this->name = new char[strlen(name) + 1];
 	strcpy(this->name, name);
 	return true;
 }
@@ -134,21 +136,16 @@ bool Course::setCoordinator(const Professor* p)
 	return true;
 }
 
-inline bool Course::isNearlyEqual(double x, double y)
-{
-	const double epsilon = 1e-6;
-	return abs(x - y) <= epsilon * abs(x);
-}
-
 bool Course::setPoints(float p)
 {
+	const double epsilon = 1e-6;
 	float remainder = p - (long)p;
 
-	/* points can't be negative or not divisible by 0.5*/
-	if (p < 0 || !isNearlyEqual(remainder, 0.5))
+	if (p < 0 || (remainder > epsilon && remainder - 0.5 > epsilon))
 		return false;
 
-	points = p;
+	points = ((int)((p + epsilon) * 2)) / 2.f;
+
 	return true;
 }
 
@@ -273,7 +270,9 @@ bool Course::addConditionCourse(const Course& c)
 
 const Lecture* Course::getLectureById(int lectureId) const
 {
-	// TODO
+	for (int i = 0; i < numOfLectures; i++)
+		if (*lectures[i] == lectureId)
+			return lectures[i];
 	return nullptr;
 }
 
@@ -359,20 +358,48 @@ bool Course::removeStudentToWaitingListCourse(const Lecture& lecture, const Stud
 	return lectures[lectureIndex]->removeFromWaitingList(student);
 }
 
-
-
-
-Course::eAddingStudentStatus Course::addStudentToCourse(Lecture& lectureToEnter, Student& studentToSign) noexcept(false)
+bool Course::setLecturePractice(int lectureID, int practiceID)
 {
-	if (getLectureIndex(lectureToEnter) < 0)
+	int lectureIndex = getLectureIndex(lectureID);
+	int practiceIndex = getLectureIndex(practiceID);
+
+	if (lectureIndex < 0 || practiceIndex < 0)
+	{
+		cout << "invalid lecture / practice have been given" << endl;
+		return false;
+	}
+
+	if (lectures[lectureIndex]->getLectureType() != Lecture::eType::LECTURE ||
+		lectures[practiceIndex]->getLectureType() != Lecture::eType::PRACTICE)
+	{
+		cout << "lecture given must be a lecture, and practice must be practice" << endl;
+		return false;
+	}
+
+	lectures[lectureIndex]->setPracticeLecture(*lectures[practiceIndex]);
+	return true;
+}
+
+
+
+Course::eAddingStudentStatus Course::addStudentToCourse(const Lecture& lectureToEnter, Student& studentToSign) noexcept(false)
+{
+	int lectureIndex = getLectureIndex(lectureToEnter);
+	if (lectureIndex < 0)
 		throw "ERROR: Lecture is not in course";
 
 	if (!studentToSign.qualify(*this))
 		return Course::eAddingStudentStatus::UNQUALIFIED;
 
-	if (!studentToSign.addLecture(&lectureToEnter))
+	if (!lectures[lectureIndex]->addStudent(studentToSign))
 		return Course::eAddingStudentStatus::FULL;
 
+	if (!studentToSign.addLecture(&lectureToEnter))
+	{
+		studentToSign.deleteFromCourse(*this);
+		return Course::eAddingStudentStatus::FULL;
+	}
+		
 	return Course::eAddingStudentStatus::SUCCESS;
 }
 
@@ -425,9 +452,18 @@ void Course::printStudentsInCourse(ostream& os) const
 
 ostream& operator<<(ostream& os, const Course& c)
 {
+	os << "Course Name is " << c.name << endl;
+	os << "coordinator is " << *(c.coordinator) << endl;
+	os << "number of points is " << c.points << endl;
+
+	os << "Lectures: " << (c.numOfLectures == 0 ? "No lectures" : "") << endl;
 	for (int i = 0; i < c.numOfLectures; i++)
-		os << c.lectures[i];
-	return os;
+		os << "(" << i + 1 << ") " << *(c.lectures[i]);
+
+	os << "Condition courses: " << (c.numOfConditionCourses == 0 ? "No condition courses" : "") << endl;
+	for (int i = 0; i < c.numOfConditionCourses; i++)
+		os << "(" << i+1 << ") " << c.conditionCourses[i]->name;
+	return os << "---------------------------------------" << endl;
 }
 
 Course::~Course()

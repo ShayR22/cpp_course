@@ -82,6 +82,16 @@ Student::~Student()
 	destroyCourses();
 }
 
+const char* Student::getDepartmentString() const
+{
+	if (department == eDepartmenType::SOFTWARE)
+		return "Software";
+	else if (department == eDepartmenType::MEDICAL)
+		return "Medical";
+	else
+		return "Electricity";
+}
+
 Student::Student(Student&& otherS) noexcept : Person(otherS), department(otherS.department),
 	maxOfCourses(otherS.maxOfCourses), numOfCourses(otherS.numOfCourses)
 {
@@ -176,7 +186,7 @@ void Student::printGrades(ostream& os) const
 
 	for (int i = 0; i < numOfCourses; i++)
 	{
-		os << courses[i];
+		os << *courses[i];
 	}
 }
 
@@ -191,15 +201,43 @@ void Student::printProfessores(ostream& os) const
 	for (int i = 0; i < numOfCourses; i++)
 	{
 		const Professor& p = courses[i]->getLecture()->getLecturer();
-		p.print(cout);
+		/*if (p == NULL)
+			os << "Lecturer not exist to lecture: " << courses[i]->getLecture()->getId() << endl;
+		else*/
+		p.print(os);
 	}
+}
+
+void Student::printProfessoresNames(ostream& os) const
+{
+	if (numOfCourses == 0)
+	{
+		os << "doesn't have any courses, thus, no proffesors" << endl;
+		return;
+	}
+
+	for (int i = 0; i < numOfCourses; i++)
+	{
+		const Professor& p = courses[i]->getLecture()->getLecturer();
+		os << p.getName() << " (id:" << p.getId() << ")";
+		if (i < numOfCourses - 1)
+			os << ", ";
+		else
+			os << endl;
+	}
+}
+
+void Student::printAddition(ostream& os) const
+{
+	os << "Department: " << getDepartmentString() << endl;
+	printGrades(os);
+	printProfessoresNames(os);
 }
 
 void Student::print(ostream& os) const
 {
 	Person::print(os);
-	printGrades(os);
-	printProfessores(os);
+	Student::printAddition(os);
 }
 
 const Student& Student::operator+=(const Lecture& l)

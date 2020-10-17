@@ -18,6 +18,7 @@ public:
 
 	const Professor** assistantTo(int* proffesors_size) const;
 
+	virtual void printAddition(std::ostream& os) const;
 	virtual void print(std::ostream& os) const;
 };
 

@@ -140,11 +140,35 @@ void Professor::printLectures(ostream& os) const
 		os << *lectures[i];
 }
 
+void Professor::printLecturesNames(ostream& os) const
+{
+	if (numOfLectures == 0)
+	{
+		os << "no lecutres" << endl;
+		return;
+	}
+
+	os << "Lecturers ids to teach: ";
+	for (int i = 0; i < numOfLectures; i++)
+	{
+		os << lectures[i]->getId();
+		if (i < numOfLectures - 1)
+			os << ", ";
+		else
+			os << endl;
+	}
+}
+
+void Professor::printAddition(std::ostream& os) const
+{
+	os << "Salary: " << salary << endl;
+	printLecturesNames(os);
+}
+
 void Professor::print(ostream& os) const
 {
 	Person::print(os);
-	os << "Salary: " << salary << endl;
-	printLectures(os);
+	Professor::printAddition(os);
 }
 
 const Professor& Professor::operator+=(const Lecture& l)
