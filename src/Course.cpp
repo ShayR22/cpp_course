@@ -306,7 +306,7 @@ bool Course::setLectureMaxStudents(const Lecture& lecture, int newMaxStudents)
 	int index = getLectureIndex(lecture);
 	if (index < 0)
 		return false;
-	return lectures[index]->setMaxStudentsList(newMaxStudents);
+	return lectures[index]->setMaxStudentsMap(newMaxStudents);
 }
 
 bool Course::setLectureType(const Lecture& lecture, Lecture::eType type)
@@ -345,7 +345,7 @@ bool Course::addStudentToWaitingListCourse(const Lecture& lecture, const Student
 	int index = getLectureIndex(lecture);
 	if (index < 0)
 		return false;
-	return lectures[index]->addToWaitingList(student);
+	return lectures[index]->addToWaitingMap(student);
 }
 
 // Assumption: student is valid
@@ -355,7 +355,7 @@ bool Course::removeStudentToWaitingListCourse(const Lecture& lecture, const Stud
 	if (lectureIndex < 0)
 		return false;
 
-	return lectures[lectureIndex]->removeFromWaitingList(student);
+	return lectures[lectureIndex]->removeFromWaitingMap(student);
 }
 
 bool Course::setLecturePractice(int lectureID, int practiceID)
@@ -433,40 +433,17 @@ bool Course::notInside(const Student** students, int studentsLen, const Student*
 
 void Course::printStudentsInCourse(ostream& os) const
 {
-	Student const *const** studentMat = new const Student *const*[numOfLectures];
-	int* studentMatRowSizes = new int[numOfLectures];
-
-	for (int i = 0; i < numOfLectures; i++)
-		studentMat[i] = lectures[i]->getStudentList(&studentMatRowSizes[i]);
-
-	int totalStudentsSum = 0;
-	for (int i = 0; i < numOfLectures; i++)
-		totalStudentsSum += studentMatRowSizes[i];
-
-	const Student** uniqueStudents = new const Student * [totalStudentsSum];
-
-	int uniqueStudentsLen = 0;
-
-	for (int i = 0; i < numOfLectures; i++)
+	map<string, const Student*> totalStudentMap;
+	
+	for (auto& e : lectures)
 	{
-		for (int j = 0; j < studentMatRowSizes[i]; j++)
-		{
-			if (notInside(uniqueStudents, uniqueStudentsLen, studentMat[i][j]))
-			{
-				uniqueStudents[uniqueStudentsLen++] = studentMat[i][j];
-			}
-		}
+		const map<string, const Student*> studentMap = e.second.getStudentMap();
+		for (auto& s : studentMap)
+			totalStudentMap[s.first] = s.second;
 	}
 
-	for (int i = uniqueStudentsLen; i < totalStudentsSum; i++)
-		uniqueStudents[i] = nullptr;
-
-	for (int i = 0; i < uniqueStudentsLen; i++)
-		os << *(uniqueStudents[i]);
-		
-	delete uniqueStudents;
-	delete studentMat;
-	delete studentMatRowSizes;
+	for (auto& e : totalStudentMap)
+		os << *e.second;
 }
 
 ostream& operator<<(ostream& os, const Course& c)
@@ -492,4 +469,38 @@ Course::~Course()
 	delete name;
 }
 
+
+double countMin(double price)
+{
+	if (price <= 0)
+	{
+		return 0;
+	}
+	int temp = price;
+	int newPrice = 0;
+
+	if (price < 500)
+	{
+		newPrice = price * 0.95;
+		return newPrice;
+	}
+	if (price > 500 && price < 1000)
+	{
+		newPrice += 500 * 0.95;
+		temp = price - 500;
+		newPrice += temp * 0.91;
+		return newPrice;
+	}
+	if (price >= 1000)
+	{
+		newPrice += 500 * 0.95;
+		temp = price - 500;
+		newPrice += 1000 * 0.91;
+		temp -= 1000;
+		newPrice += temp * 0.88;
+		return newPrice;
+	}		
+	return newPrice;
+
+}
 

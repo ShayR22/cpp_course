@@ -2,6 +2,7 @@
 #define __H_LECTURE__
 
 #include <ostream>
+#include <map>
 
 class Student;
 class Professor;
@@ -27,19 +28,16 @@ private:
 	const ClassRoom* classRoom;
 	const Professor* lecturer;
 	const Lecture* practice;
-	const Student** studentList;
-	int maxStudentList;
-	int numOfStudentList;
-	const Student** waitingList;
-	int maxWaitingList;
-	int numOfWaitingList;
+	int maxStudentMap;
+	int maxWaitingMap;
 
-	void removeStudentByIndex(int index, const Student** ptrArray, int arraySize);
+	std::map<std::string, const Student*> studentMap;
+	std::map<std::string, const Student*> waitingMap;
 	
 public:
 	Lecture(eWeekDay day, int startHour, int duration, eType type, const Course& course,
 		    const ClassRoom& classRoom, const Professor& lecturer, const Lecture* practice,
-		    int maxStudentList = 20, int maxWaitingList = 20) noexcept(false);
+		    int maxStudentMap = 20, int maxWaitingMap = 20) noexcept(false);
 	Lecture(const Lecture& otherL) noexcept;
 	Lecture(Lecture&& otherL) noexcept;
 
@@ -56,10 +54,10 @@ public:
 	bool setHour(int newHour);
 	int getDuration() const;
 	bool setDuration(int newDuration);
-	int getMaxStudentsList() const;
-	bool setMaxStudentsList(int newMaxStudentsList);
-	int getMaxWaitingsList() const;
-	bool setMaxWaitingList(int newMaxWaitingList);
+	int getMaxStudentsMap() const;
+	bool setMaxStudentsMap(int newMaxStudentsMap);
+	int getMaxWaitingsMap() const;
+	bool setMaxWaitingMap(int newMaxWaitingMap);
 	eType getLectureType()const;
 	void setLectureType(const eType newType);
 
@@ -69,13 +67,13 @@ public:
 	const Professor& getLecturer()const;
 	void setLecturer(const Professor& newLectureProfessor);
 
-	const Student*const* getStudentList(int* numOfStudentList) const;
+	const std::map<std::string, const Student*> getStudentMap() const;
 	bool addStudent(const Student& newStudent);
 	bool removeStudent(Student& studentToRemove);
 
-	const Student*const* getWaitingList(int* numOfWaitingList)const;
-	bool addToWaitingList(const Student& newStudent);
-	bool removeFromWaitingList(const Student& studentToRemove);
+	const std::map<std::string, const Student*> getWaitingMap()const;
+	bool addToWaitingMap(const Student& newStudent);
+	bool removeFromWaitingMap(const Student& studentToRemove);
 
 	const Lecture& getPracticeLecture() const;
 	void setPracticeLecture(const Lecture& newPracticeLecture);

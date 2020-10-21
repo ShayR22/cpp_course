@@ -11,7 +11,7 @@ private:
 	char* name;
 	const Professor* coordinator;
 	float points;
-	Lecture** lectures;
+	map<int, Lecture*> lectures;
 	int maxLectures;
 	int numOfLectures;
 	const Course** conditionCourses;

@@ -4,6 +4,7 @@
 #include "Lecture.h"
 #include "Student.h"
 #include "Classroom.h"
+#include <string>
 
 #define OPENING_HOUR 8
 #define CLOSING_HOUR 23
@@ -14,28 +15,23 @@ using namespace std;
 
 Lecture::Lecture(eWeekDay day, int startHour, int duration, eType type, const Course& course,
 	const ClassRoom& classRoom, const Professor& lecturer, const Lecture* practice,
-	int maxStudentList, int maxWaitingList) noexcept(false) :
+	int maxStudentMap, int maxWaitingMap) noexcept(false) :
 	course(&course), classRoom(&classRoom), lecturer(&lecturer), practice(practice),
-	day(day), type(type), maxStudentList(maxStudentList), maxWaitingList(maxWaitingList),
-	numOfStudentList(0), numOfWaitingList(0), studentList(nullptr), waitingList(nullptr)
+	day(day), type(type), maxStudentMap(maxStudentMap), maxWaitingMap(maxWaitingMap)
 {
 	if(!this->setHour(startHour))
 		throw "Invalid hour, hour must be between 8:00 and 22:00";
 	if (!this->setDuration(duration))
 		throw "Invalid duration, duration cant exceed 23:00";
-	if (maxStudentList < 0)
+	if (maxStudentMap < 0)
 		throw "Invalid max student size must be a positive number";
-	if (maxWaitingList < 0)
+	if (maxWaitingMap < 0)
 		throw "Invalid max student size must be a positive number";
-
-	this->studentList = new const Student* [this->maxStudentList];
-	this->waitingList = new const Student* [this->maxWaitingList];
 
 	this->id = this->automaticID++;
 }
 
-Lecture::Lecture(const Lecture& otherL) noexcept :
-	studentList(nullptr), waitingList(nullptr)
+Lecture::Lecture(const Lecture& otherL) noexcept
 {
 	*this = otherL;
 }
@@ -105,49 +101,37 @@ bool Lecture::setDuration(int newDuration)
 	return true;
 }
 
-int Lecture::getMaxStudentsList() const
+int Lecture::getMaxStudentsMap() const
 {
-	return this->maxStudentList;
+	return this->maxStudentMap;
 }
 
-bool Lecture::setMaxStudentsList(int newMaxStudentsList)
+bool Lecture::setMaxStudentsMap(int newMaxStudentsMap)
 {	
-	if (newMaxStudentsList < this->numOfStudentList)
+	if (newMaxStudentsMap < this->studentMap.size())
 	{
-		cout << "Max student list number cant be below the num of students that currently in the list" << endl;
+		cout << "Max student Map number cant be below the num of students that currently in the Map" << endl;
 		return false;
 	}
 
-	this->maxStudentList = newMaxStudentsList;
-
-	const Student ** temp = new const Student * [this->maxStudentList];
-	memcpy((void*)temp, (void*)this->studentList, sizeof(Student*) * this->numOfStudentList);
-	delete studentList;
-	this->studentList = temp;
-
+	this->maxStudentMap = newMaxStudentsMap;
 	return true;
 }
 
-int Lecture::getMaxWaitingsList() const
+int Lecture::getMaxWaitingsMap() const
 {
-	return this->maxWaitingList;
+	return this->maxWaitingMap;
 }
 
-bool Lecture::setMaxWaitingList(int newMaxWaitingList)
+bool Lecture::setMaxWaitingMap(int newMaxWaitingMap)
 {
-	if (newMaxWaitingList < this->numOfWaitingList)
+	if (newMaxWaitingMap < this->waitingMap.size())
 	{
-		cout << "Max waiting list number cant be below the num of students waiting that currently in the list" << endl;
+		cout << "Max waiting Map number cant be below the num of students waiting that currently in the Map" << endl;
 		return false;
 	}
 
-	this->maxWaitingList = newMaxWaitingList;
-
-	const Student** temp = new const Student * [this->maxWaitingList];
-	memcpy((void*)temp, (void*)this->waitingList, sizeof(Student*) * this->numOfWaitingList);
-	delete waitingList;
-	this->waitingList = temp;
-
+	this->maxWaitingMap = newMaxWaitingMap;
 	return true;
 }
 
@@ -181,92 +165,66 @@ void Lecture::setLecturer(const Professor& newLectureProfessor)
 	this->lecturer = &newLectureProfessor;
 }
 
-const Student*const* Lecture::getStudentList(int* numOfStudentList) const
+const map<string, const Student*> Lecture::getStudentMap() const
 {
-	*numOfStudentList = this->numOfStudentList;
-	return this->studentList;
+	return this->studentMap;
 }
 
-const Student*const* Lecture::getWaitingList(int* numOfWaitingList) const
+const map<string, const Student*> Lecture::getWaitingMap() const
 {
-	*numOfWaitingList = this->numOfWaitingList;
-	return this->waitingList;
+	return this->waitingMap;
 }
 
 bool Lecture::addStudent(const Student& newStudent)
 {	
-	for (int i = 0; i < this->numOfStudentList; i++)
+	if (studentMap.find(newStudent.getId()) != studentMap.end())
 	{
-		if (*(this->studentList[i]) == newStudent.getId())
-		{
-			cout << "Student already register in lecture" << endl;
-			return false;
-		}
-	}
-
-	if (this->numOfStudentList == this->maxStudentList)
-	{
-		cout << "Failed to add student, student list is full" << endl;
+		cout << "Student already register in lecture" << endl;
 		return false;
 	}
 
-	this->studentList[this->numOfStudentList] = &newStudent;
-	this->numOfStudentList++;
+	if (this->studentMap.size() == this->maxStudentMap)
+	{
+		cout << "Failed to add student, student Map is full" << endl;
+		return false;
+	}
+
+	this->studentMap.insert({ newStudent.getId(), &newStudent });
 	return true;
 }
 
 bool Lecture::removeStudent(Student& studentToRemove)
-{
-	for (int i = 0; i < this->numOfStudentList; i++)
-	{
-		if (*(this->studentList[i]) == studentToRemove.getId())
-		{
-			removeStudentByIndex(i, this->studentList, this->numOfStudentList);
-			return true;
-		}
-	}
-	return false;
-}
-
-bool Lecture::addToWaitingList(const Student& newStudent)
 {	
-	if (this->numOfWaitingList == this->maxWaitingList)
+	if (!studentMap.erase(studentToRemove.getId()))
 	{
-		cout << "Failed to add student, student waiting list is full" << endl;
+		cout << "Failed to remove student from student Map, student does not exists" << endl;
 		return false;
 	}
-
-	this->waitingList[this->numOfWaitingList] = &newStudent;
-	this->numOfWaitingList++;
 	return true;
 }
 
-bool Lecture::removeFromWaitingList(const Student& studentToRemove)
-{
-	for (int i = 0; i < this->numOfWaitingList; i++)
+bool Lecture::addToWaitingMap(const Student& newStudent)
+{	
+	if (this->waitingMap.size() == this->maxWaitingMap)
 	{
-		if (*(this->waitingList[i]) == studentToRemove.getId())
-			removeStudentByIndex(i, this->waitingList, this->numOfWaitingList);
-		return true;
+		cout << "Failed to add student, student waiting Map is full" << endl;
+		return false;
 	}
-	cout << "Failed to remove student from student waiting list" << endl;
-	return false;
+
+	this->waitingMap.insert({ newStudent.getId(), &newStudent });
+	return true;
 }
 
-void Lecture::removeStudentByIndex(int index, const Student** ptrArray, int arraySize)
+bool Lecture::removeFromWaitingMap(const Student& studentToRemove)
 {
-	if (index > arraySize - 1)
-		return;
-
-	int numEleToMove = arraySize - index - 1;
-
-	delete ptrArray[index];
-	/* copy and override the array in order to keep it ordered */
-	if (numEleToMove != 0)
-		memmove((void*)&(ptrArray[index]), (void*)&(ptrArray[index + 1]), sizeof(Student*) * numEleToMove);
-
-	ptrArray[--arraySize] = nullptr;
+	if (!waitingMap.erase(studentToRemove.getId()))
+	{
+		cout << "Failed to remove student from student waiting Map, student does not exists" << endl;
+		return false;
+	}
+	return true;
 }
+
 
 const Lecture& Lecture::getPracticeLecture() const
 {
@@ -306,18 +264,11 @@ Lecture& Lecture::operator=(const Lecture& otherL) noexcept
 	this->startHour = otherL.startHour;
 	this->duration = otherL.duration;
 
-	delete studentList;
-	delete waitingList;
+	this->maxStudentMap = otherL.maxStudentMap;
+	this->maxWaitingMap = otherL.maxWaitingMap;
 
-	this->numOfStudentList = otherL.numOfStudentList;
-	this->numOfWaitingList = otherL.numOfWaitingList;
-	this->maxStudentList = otherL.maxStudentList;
-	this->maxWaitingList = otherL.maxWaitingList;
-
-	this->studentList = new const Student * [this->maxStudentList];
-	this->waitingList = new const Student * [this->maxWaitingList];
-	memcpy((void*)studentList, (void*)otherL.studentList, sizeof(Student*) * numOfStudentList);
-	memcpy((void*)waitingList, (void*)otherL.waitingList, sizeof(Student*) * numOfWaitingList);
+	this->studentMap = otherL.studentMap;
+	this->waitingMap = otherL.waitingMap;
 
 	return *this;
 }
@@ -335,21 +286,14 @@ Lecture& Lecture::operator=(Lecture&& otherL) noexcept
 	this->startHour = otherL.startHour;
 	this->duration = otherL.duration;
 
-	this->numOfStudentList = otherL.numOfStudentList;
-	this->numOfWaitingList = otherL.numOfWaitingList;
-	this->maxStudentList = otherL.maxStudentList;
-	this->maxWaitingList = otherL.maxWaitingList;
+	this->maxStudentMap = otherL.maxStudentMap;
+	this->maxWaitingMap = otherL.maxWaitingMap;
 	
-	this->studentList = otherL.studentList;
-	this->waitingList = otherL.waitingList;
+	this->studentMap = move(otherL.studentMap);
+	this->waitingMap = move(otherL.waitingMap);
 
-	otherL.studentList = nullptr;
-	otherL.waitingList = nullptr;
-
-	otherL.numOfStudentList = 0;
-	otherL.numOfWaitingList = 0;
-	otherL.maxStudentList = 0;
-	otherL.maxWaitingList = 0;
+	otherL.maxStudentMap = 0;
+	otherL.maxWaitingMap = 0;
 
 	return *this;
 }
@@ -407,10 +351,6 @@ ostream& operator<<(ostream& os, Lecture::eType type)
 	return os;
 }	
 
-Lecture::~Lecture()
-{
-	delete studentList;
-	delete waitingList;
-}
+Lecture::~Lecture(){}
 
 int Lecture::automaticID = 0;
