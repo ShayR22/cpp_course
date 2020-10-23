@@ -3,7 +3,7 @@
 
 #include <ostream>
 
-
+using namespace std;
 
 template <class T> class GenericLinkedList
 {
@@ -52,24 +52,48 @@ private:
 			delete nextT;
 			this->nextT = new Node(s);
 		}
+		
 
 	};
 
 	Node<T>* head;
 public:
 	GenericLinkedList() : head(nullptr) {}
+	GenericLinkedList(const GenericLinkedList& other) : head(nullptr)
+	{
+		*this = other;
+	}
+
+	GenericLinkedList(GenericLinkedList&& other)
+	{
+		*this = other;
+	}
 
 	~GenericLinkedList()
 	{
 		Node<T>* current = head;
 		Node<T>* next;
-		
+
 		while (current != nullptr)
 		{
 			next = current->getNext();
 			delete current;
 			current = next;
 		}
+	}
+
+	const T* operator[](std::size_t index) const
+	{
+		unsigned count = 0;
+		Node<T>* temp = this->head;
+		while (temp != nullptr)
+		{
+			if (count == index)
+				return temp->getData();
+			temp = temp->getNext();
+			count++;
+		}
+		return nullptr;
 	}
 
 	void addTToEnd(const T& s)
@@ -108,19 +132,70 @@ public:
 			return true;
 		}
 
-		prev->setNext(current->getNext());
-		delete current;
+		if (current->getNext() == nullptr)
+			prev->setNext(nullptr);
+		else
+			prev->setNext(current->getNext());
+
+		return true;
 	}
 
-	void printT()
+	bool update(const T& s)
+	{
+		Node<T>* current = this->head;
+		while (current != nullptr && !(*(current->getData()) == s))
+		{
+			current = current->getNext();
+		}
+
+		if (current == nullptr)
+			return false;
+
+		*(current->getData()) = s;
+		return true;
+	}
+
+	void printT(std::ostream& os) const
 	{
 		Node<T>* temp = this->head;
 		while (temp != nullptr)
 		{
-			std::cout << *temp->getData() << std::endl;
+			os << *temp->getData() << endl;
 			temp = temp->getNext();
 		}
-	};
+	}
+
+	GenericLinkedList& operator=(const GenericLinkedList& otherL)
+	{
+		this->~GenericLinkedList();
+
+		if (otherL.head == nullptr)
+		{
+			this->head = nullptr;
+			return *this;
+		}
+
+		this->head = new Node<T>(*otherL.head->getData());
+
+		Node<T>* otherTemp = otherL.head;
+		Node<T>* thisTemp = this->head;
+
+		while (otherTemp->getNext() != nullptr)
+		{
+			thisTemp->setNext(*(otherTemp->getNext()->getData()));
+			thisTemp = thisTemp->getNext();
+			otherTemp = otherTemp->getNext();
+		}
+
+		return *this;
+	}
+
+	GenericLinkedList& operator=(GenericLinkedList&& otherL)
+	{
+		this->head = otherL.head;
+		otherL.head = nullptr;
+		return *this;
+	}
 };
 
 #endif

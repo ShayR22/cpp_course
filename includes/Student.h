@@ -4,6 +4,7 @@
 #include "CourseInformation.h"
 #include "Person.h"
 #include "Course.h"
+#include "GenericLinkedList.h"
 
 class Student : virtual public Person
 {
@@ -11,7 +12,7 @@ public:
 	enum class eDepartmenType { SOFTWARE, MEDICAL, ELECTRICITY };
 private:
 	eDepartmenType department;
-	CourseInformation** courses;
+	GenericLinkedList<CourseInformation> courses;
 	int numOfCourses;
 	int maxOfCourses;
 	void destroyCourses();
@@ -36,8 +37,8 @@ public:
 	const char* getDepartmentString() const;
 
 	void setDepartment(eDepartmenType newDepartmentType);
-	const CourseInformation * const * getCourseInformation(int* numOfCourses) const;
-	bool updateGrade(const Lecture& lecture, int newGrade) const; 
+	const GenericLinkedList<CourseInformation> getCourseInformation(int* numOfCourses) const;
+	bool updateGrade(const Lecture& lecture, int newGrade);
 	bool addLecture(const Lecture* newLecture);
 
 	bool deleteFromCourse(Course& c);
