@@ -8,29 +8,25 @@
 #include "Professor.h"
 #include "Course.h"
 #include "ClassRoom.h"
+#include <map>
 
 class College
 {
 private:
-    Student * *students;
+    std::map<std::string, Student *> students;
     int maxStudents;
-    int numOfStudents;
 
-    Professor * *professors;
+    std::map<std::string, Professor*> professors;
     int maxProfessors;
-    int numOfProfessors;
     
-    Practitioner * *practitioners;
+    std::map<std::string, Practitioner*> practitioners;
     int maxPractitioners;
-    int numOfPractitioners;
     
-    Course * *courses;
+    std::map<std::string, Course*>courses;
     int maxCourses;
-    int numOfCourses;
     
-    ClassRoom * *classRooms;
+    std::map<int, ClassRoom*> classRooms;
     int maxClassRooms;
-    int numOfClassRooms;
 
 public:
     College(int maxAllStudents = 100, int maxAllProfessors = 100, int maxAllCourses = 100,
@@ -40,7 +36,7 @@ public:
     bool addClassRoom(const ClassRoom& newClassroom);
     bool removeClassRoom(const ClassRoom& classRoomToRemove);
     const ClassRoom* getClassRoomByNumber(int roomNumber) const;
-    const ClassRoom* const* getClassRooms(int* numOfClassRooms) const;
+    const std::map<int, const ClassRoom*> getClassRooms() const;
     void printClassRooms(std::ostream& os) const;
 
     // Course
@@ -52,7 +48,7 @@ public:
     bool removeLectureFromCourse(const std::string& courseName, int id);
     bool addConditionCourseToCourse(const std::string& name, const Course& c);
     bool removeConditionCourseFromCourse(const std::string&name, const std::string&remove);
-    const Course* const* getCourses(int* numOfCourses) const;
+    const std::map<std::string, const Course*> getCourses() const;
     const Course* getCourseByName(const std::string& name) const;
     void printCourses(std::ostream& os) const;
 
@@ -77,7 +73,7 @@ public:
     bool updateStudentGrade(const std::string& studentID, const Lecture& lecture, int newGrade);
     bool addLectureToStudent(const std::string& studentID, const Lecture& lecture);
     bool removeStudentFromCourse(const std::string& studentID, const std::string& courseName);
-    const Student* const* getStudents(int* numOfStudents) const;
+    const std::map<std::string, const Student *> getStudents() const;
     const Student* getStudentById(const std::string& id) const;
     void printStudents(std::ostream& os) const;
     void printProfessorsOfStudent(std::ostream& os, const std::string& id);
@@ -88,10 +84,10 @@ public:
     bool setProfesssorSalary(const std::string& id, double newSalary);
     bool addLectureToProfessor(const std::string& id, const Lecture* newLecture);
     bool removeLectureFromProfessor(const std::string& id, const Lecture* lectureToRemove);
-    const Professor* const* getProfessors(int* numOfProfessors) const;
+    const std::map<std::string, const Professor*> getProfessors() const;
     const Professor* getProfessorById(const std::string& id) const;
     void printProfessors(std::ostream& os) const;
-    void printProfessorsOfStudent(std::ostream& os, const char* id) const;
+    void printProfessorsOfStudent(std::ostream& os, const std::string& id) const;
     int getNumOfProfessors() const;
 
     // Practitioner
@@ -105,7 +101,7 @@ public:
     bool addLectureToPractitioner(const std::string& id, const Lecture& lecture);
     bool removePractitionerFromCourse(const std::string& id, const std::string& courseName);
     // return also the current number of professors
-    const Practitioner* const* getPractitioners(int* numOfPractitioners) const;
+    const std::map<std::string, const Practitioner*> getPractitioners() const;
     const Practitioner* getPractitionerById(const std::string& id) const;
     void printPractitioners(std::ostream& os) const;    
     
@@ -125,21 +121,9 @@ private:
     College(College&& otherC) = delete;
     College& operator=(const College& otherC) = delete;
     College & operator=(College && otherC) = delete;
-
-    bool removeStudent(int index);
-    bool removePractitioner(int index);
-    bool removeProfessor(int index);
-    bool removeCourse(int index);
-    bool removeClassRoom(int index);
     
     void removeProfessorFromAllCourses(Professor & professor);
     void removeStudentFromAllLectures(Student * removeStudent);
     void removeClassRoomFromAllLectures(const ClassRoom& c);
-
-    int getStudentIndex(const std::string& id) const;
-    int getPractitionerIndex(const std::string& id) const;
-    int getProfessorIndex(const std::string& id) const;
-    int getCourseIndex(const std::string& name) const;
-    int getClassRoomIndex(int roomNumber) const;
 };
 #endif
