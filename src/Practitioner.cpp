@@ -35,20 +35,17 @@ Practitioner& Practitioner::operator=(Practitioner&& other) noexcept
 	return *this;
 }
 
-const Professor** Practitioner::assistantTo(int *proffesors_size) const
+const map<string, const Professor*> Practitioner::assistantTo() const
 {
-	int numLectures;
-	const Lecture* const* lectures = getLectures(&numLectures);
-	if (numLectures == 0)
-		return nullptr;
+	map<string, const Professor*> professors;
+	const map<int, const Lecture*> lectures = getLectures();
 
-	const Professor** assistingTo = new const Professor * [numLectures];
-	for (int i = 0; i < numLectures; i++)
-		assistingTo[i] = &lectures[i]->getLecturer();
+	for (auto& e : lectures) {
+		const Professor& professor = e.second->getLecturer();
+		professors[professor.getId()] = &professor;
+	}
 
-	*proffesors_size = numLectures;
-
-	return assistingTo;
+	return professors;
 }
 
 void Practitioner::printAddition(ostream& os) const

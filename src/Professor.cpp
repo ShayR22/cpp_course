@@ -4,14 +4,13 @@
 using namespace std;
 
 Professor::Professor(const char* name, const Date& birthDate, const char* id, double salary, int maxOfLectures) noexcept(false):
-	Person(name, birthDate, id), salary(salary), maxOfLectures(maxOfLectures), numOfLectures(0), lectures(nullptr)
+	Person(name, birthDate, id), salary(salary), maxOfLectures(maxOfLectures)
 {
 	if (maxOfLectures <= 0)
 		throw "max lectures given must be a positive number";
 	if (salary < 0)
 		throw "Professor salary cant be a negative number";
 
-	lectures = new const Lecture*[maxOfLectures];
 }
 
 Professor::Professor(const Professor& other) noexcept : Person(other)
@@ -30,18 +29,8 @@ const Professor& Professor::operator=(const Professor& other)
 
 	salary = other.salary;
 	maxOfLectures = other.maxOfLectures;
-	numOfLectures = other.numOfLectures;
+	lectures = other.lectures;
 
-	delete lectures;
-	lectures = new const Lecture * [maxOfLectures];
-
-	for (int i = 0; i < maxOfLectures; i++)
-	{
-		if (i < numOfLectures)
-			lectures[i] = other.lectures[i];
-		else
-			lectures[i] = nullptr;
-	}
 	return *this;
 }
 
@@ -49,18 +38,13 @@ const Professor& Professor::operator=(Professor& other) noexcept
 {
 	Person::operator=(other);
 	salary = other.salary;
-
 	maxOfLectures = other.maxOfLectures;
-	numOfLectures = other.numOfLectures;
 	lectures = other.lectures;
-	other.lectures = nullptr;
 	return *this;
 }
 
 Professor::~Professor()
-{
-	delete lectures;
-}
+{}
 
 bool Professor::setSalary(double new_salary)
 {
@@ -74,43 +58,19 @@ bool Professor::setSalary(double new_salary)
 	return true;
 }
 
-const Lecture* const* Professor::getLectures(int* numOfLectures) const
+const map<int, const Lecture *> Professor::getLectures() const
 {
-	*numOfLectures = this->numOfLectures;
 	return lectures;
 }
 
-void Professor::removeLectureByIndex(int index)
-{
-	/* invalid element index */
-	if (index > numOfLectures - 1)
-		return;
-
-	int numEleToMove = numOfLectures - index - 1;
-
-	delete lectures[index];
-	/* copy and override the array in order to keep it ordered */
-	if (numEleToMove != 0)
-		memmove(&lectures[index], &lectures[index + 1], sizeof(Lecture*) * numEleToMove);
-
-	lectures[--numOfLectures] = nullptr;
-}
-
-int Professor::getLectureIndex(const Lecture& find)
-{
-	for (int i = 0; i < numOfLectures; i++)
-		if (lectures[i]->getId() == find.getId())
-			return i;
-	return -1;
-}
 
 bool Professor::removeLecture(const Lecture* lectureToRemove)
 {
-	int idx = getLectureIndex(*lectureToRemove);
-	if (idx < 0)
+	if (!lectures.erase(lectureToRemove->getId()))
+	{
+		cout << "Failed to remove lecture, lecture does not exists" << endl;
 		return false;
-
-	removeLectureByIndex(idx);
+	}
 	return true;
 }
 
@@ -121,23 +81,24 @@ bool Professor::addLectureTeaching(const Lecture* newLecture)
 		cout << "cant add null as new lecturer" << endl;
 		return false;
 	}
-	if (numOfLectures >= maxOfLectures)
+
+	if ((int)lectures.size() >= maxOfLectures)
 	{
 		cout << "lectueres are full and cant add more lecturers" << endl;
 		return false;
 	}
 
-	lectures[numOfLectures++] = newLecture;
+	lectures[newLecture->getId()] = newLecture;
 	return true;
 }
 
 void Professor::printLectures(ostream& os) const
 {
-	if (numOfLectures == 0)
+	if (lectures.size() == 0)
 		os << "no lecutres" << endl;
 
-	for (int i = 0; i < numOfLectures; i++)
-		os << *lectures[i];
+	for (auto& e : lectures)
+		os << *(e.second);
 }
 
 void Professor::printLecturesNames(ostream& os) const

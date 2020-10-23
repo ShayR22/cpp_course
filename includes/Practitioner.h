@@ -3,6 +3,7 @@
 
 #include "Professor.h"
 #include "Student.h"
+#include <map>
 
 class Practitioner : public Professor, public Student
 {
@@ -16,7 +17,7 @@ public:
 	Practitioner& operator=(const Practitioner& other);
 	Practitioner& operator=(Practitioner&& other) noexcept;
 
-	const Professor** assistantTo(int* proffesors_size) const;
+	const std::map<std::string, const Professor*> assistantTo() const;
 
 	virtual void printAddition(std::ostream& os) const;
 	virtual void print(std::ostream& os) const;

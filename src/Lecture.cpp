@@ -108,7 +108,7 @@ int Lecture::getMaxStudentsMap() const
 
 bool Lecture::setMaxStudentsMap(int newMaxStudentsMap)
 {	
-	if (newMaxStudentsMap < this->studentMap.size())
+	if (newMaxStudentsMap < (int)this->studentMap.size())
 	{
 		cout << "Max student Map number cant be below the num of students that currently in the Map" << endl;
 		return false;
@@ -125,7 +125,7 @@ int Lecture::getMaxWaitingsMap() const
 
 bool Lecture::setMaxWaitingMap(int newMaxWaitingMap)
 {
-	if (newMaxWaitingMap < this->waitingMap.size())
+	if (newMaxWaitingMap < (int)this->waitingMap.size())
 	{
 		cout << "Max waiting Map number cant be below the num of students waiting that currently in the Map" << endl;
 		return false;

@@ -8,11 +8,8 @@ class Professor : virtual public Person
 {
 private:
 	double salary;
-	const Lecture** lectures;
+	std::map<int, const Lecture*> lectures;
 	int maxOfLectures;
-	int numOfLectures;
-	void removeLectureByIndex(int index);
-	int getLectureIndex(const Lecture& find);
 
 protected:
 	virtual void printAddition(std::ostream& os) const;
@@ -29,7 +26,7 @@ public:
 
 	bool setSalary(double new_salary);
 	double getSalary() const { return salary; }
-	const Lecture * const* getLectures(int* numOfLectures) const;
+	const std::map<int, const Lecture*> getLectures() const;
 
 	bool removeLecture(const Lecture* lectureToRemove);
 	bool addLectureTeaching(const Lecture* newLecture);
