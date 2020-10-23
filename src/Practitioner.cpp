@@ -51,8 +51,14 @@ const Professor** Practitioner::assistantTo(int *proffesors_size) const
 	return assistingTo;
 }
 
+void Practitioner::printAddition(ostream& os) const
+{
+	printLecturesNames(os); 
+}
+
 void Practitioner::print(ostream& os) const
 {
-	Professor::print(os);
-	Student::print(os);
+	os << "Prctitioner info:" << endl;
+	Person::print(os);
+	printAddition(os);
 }

@@ -22,7 +22,8 @@ bool CourseInformation::setGrade(int newGrade)
 
 ostream& operator<<(ostream& os, const CourseInformation& ci)
 {
-	os << "Lecture: " << *(ci.lecture) << endl;
+	os << "Lecture Info: " << endl;
+	os << *(ci.lecture);
 	os << "Grade: " << ci.grade << endl;
 	return os;
 }

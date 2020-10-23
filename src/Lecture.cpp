@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <ostream>
 #include "Lecture.h"
 #include "Student.h"
@@ -209,10 +211,11 @@ bool Lecture::removeStudent(Student& studentToRemove)
 	for (int i = 0; i < this->numOfStudentList; i++)
 	{
 		if (*(this->studentList[i]) == studentToRemove.getId())
+		{
 			removeStudentByIndex(i, this->studentList, this->numOfStudentList);
-		return true;
+			return true;
+		}
 	}
-	cout << "Failed to remove student from student list" << endl;
 	return false;
 }
 
@@ -344,8 +347,13 @@ Lecture& Lecture::operator=(Lecture&& otherL) noexcept
 
 ostream& operator<<(ostream& os, const Lecture& l)
 {
-	os << "Course: " << l.course << ", Lecture Day: " << l.day << ", Starting Hour: " << l.startHour << 
-		", Duration: " << l.duration << ", Type: " << l.type << ", Practice: " << l.practice << endl;
+	char practiceID[16] = { 0 };
+	if (l.practice != nullptr)
+		sprintf(practiceID, "%d", l.practice->getId());
+
+	os << "ID: " << l.getId() << ", Course: " << l.course->getCourseName() << ", Lecture Day: " << l.day << 
+		", Starting Hour: " << l.startHour << ", Duration: " << l.duration << 
+		", Type: " << l.type << ", Practice id: " << practiceID << endl;
 
 	return os;
 }

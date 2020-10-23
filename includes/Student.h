@@ -17,6 +17,9 @@ private:
 	void destroyCourses();
 	bool passedCourse(const Course* c);
 
+protected:
+	virtual void printAddition(std::ostream& os) const;
+
 public:
 	Student(const char* name, const Date& birthDate, const char* id,
 			eDepartmenType department, int maxOfCourses = 20) noexcept(false);
@@ -29,6 +32,8 @@ public:
 	~Student();
 
 	eDepartmenType getDepartment() const { return department; }
+	const char* getDepartmentString() const;
+
 	void setDepartment(eDepartmenType newDepartmentType);
 	const CourseInformation * const * getCourseInformation(int* numOfCourses) const;
 	bool updateGrade(const Lecture& lecture, int newGrade) const; 
@@ -38,7 +43,8 @@ public:
 	bool qualify(const Course& c);
 
 	void printGrades(std::ostream& os) const;
-	void printProfessores(std::ostream& os)const;
+	void printProfessores(std::ostream& os) const;
+	void printProfessoresNames(std::ostream& os) const;
 	virtual void print(std::ostream& os) const;
 
 	const Student& operator+=(const Lecture& l);

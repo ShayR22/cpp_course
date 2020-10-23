@@ -3,7 +3,6 @@
 
 #include "Course.h"
 #include "Person.h"
-#include "Practitioner.h" // need to check where put this include
 #include "Practitioner.h"
 #include "Student.h"
 #include "Professor.h"
@@ -56,10 +55,6 @@ public:
     const Course* getCourseByName(const char* name) const;
     void printCourses(std::ostream& os) const;
 
-    // Lecture
-    // TODO: remove them:
-    // bool addLectureToCourse(const Lecture& lecture, const char* courseName);
-    // bool removeLectureFromCourse(const Lecture& lecture, const char* courseName);
     bool setLectureWeekDay(const char* courseName, const Lecture& lecture, Lecture::eWeekDay day);
     bool setLecturStartHour(const char* courseName, const Lecture& lecture, int hour);
     bool setLectureDuration(const char* courseName, const Lecture& lecture, int durationHours);
@@ -68,8 +63,10 @@ public:
     bool setLectureClassroom(const char* courseName, const Lecture& lecture, int roomNumber);
     bool setLectureLecturer(const char* courseName, const Lecture& lecture, const char *professorID);
     bool setLecturePractitioner(const char* courseName, const Lecture& lecture, const char* practitionerID);
+    bool setLecturesPractice(const char* courseName, int lecID, int pracID);
     bool addStudentToLectureWaitingList(const char* courseName, const Lecture& lecture, const char* studentID);
     bool removeStudentFromLectureWaitingList(const char* courseName, const Lecture& lecture, const char* studentID);
+    const Lecture* getLecture(const char* courseName, int lectureId);
 
     // Student
     bool addStudent(const Student& newStudent);
@@ -92,6 +89,8 @@ public:
     const Professor* const* getProfessors(int* numOfProfessors) const;
     const Professor* getProfessorById(const char* id) const;
     void printProfessors(std::ostream& os) const;
+    void printProfessorsOfStudent(std::ostream& os, const char* id) const;
+    int getNumOfProfessors() const;
 
     // Practitioner
     bool addPractitioner(const Practitioner& newPractitioner);
@@ -102,14 +101,18 @@ public:
     bool setPractitionerDepartment(const char* id, Student::eDepartmenType newDepartmentType);
     bool updatePractitionerGrade(const char* id, const Lecture& lecture, int newGrade);
     /* TODO give better name from the student fucntions of practitioner */
-    bool addLectureToPractitioner(const char* id, const Lecture& lecture);
+    bool addLectureToPractitionerToLearn(const char* id, const Lecture& lecture);
+    bool addLectureToPractitionerToTeach(const char* id, const Lecture& lecture);
     bool removePractitionerFromCourse(const char* id, const char* courseName);
     // return also the current number of professors
     const Practitioner* const* getPractitioners(int* numOfPractitioners) const;
     const Practitioner* getPractitionerById(const char* id) const;
     void printPractitioners(std::ostream& os) const;
 
-    const College & operator+=(Course & c);
+    // Lecture
+    
+    
+    const College & operator+=(const Course & c);
     const College & operator+=(const Student & s);
     const College & operator+=(const Professor & p);
     const College & operator+=(const Practitioner & p);

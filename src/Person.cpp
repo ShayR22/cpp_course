@@ -23,7 +23,8 @@ Person::Person(const Person& other) noexcept:
 	*this = other;
 }
 
-Person::Person(Person&& other) noexcept
+Person::Person(Person&& other) noexcept :
+	name(nullptr), id(nullptr), birthDate(nullptr)
 {
 	*this = other;
 }
@@ -109,7 +110,7 @@ void Person::setBirthDate(const Date& date)
 
 void Person::print(ostream& os) const
 {
-	os << name << "(id:" << id << "), " << *birthDate << endl;
+	os << name << "(id:" << id << "), " << *birthDate;
 }
 
 ostream& operator<<(ostream& os, const Person& per)

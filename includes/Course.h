@@ -17,7 +17,6 @@ private:
 	const Course** conditionCourses;
 	int maxConditionCourses;
 	int numOfConditionCourses;
-	inline bool isNearlyEqual(double x, double y);
 
 	void destroyLectures();
 
@@ -40,7 +39,7 @@ public:
 
 
 	const char* getCourseName() const { return name; }
-	bool setCourseName(const char* newCourseName);
+	bool setCourseName(const char* name);
 	const Professor* getCoordinator()const { return coordinator; }
 	bool setCoordinator(const Professor* p);
 	float getPoints() const { return points; }
@@ -53,6 +52,7 @@ public:
 	bool removeConditionCourse(const Course& c);
 	bool removeConditionCourse(const char* name);
 	bool addConditionCourse(const Course& c);
+	const Lecture* getLectureById(int lectureId) const;
 
 	bool setLectureWeekDay(const Lecture& lecture, Lecture::eWeekDay day);
 	bool setLecturStartHour(const Lecture& lecture, int hour);
@@ -63,8 +63,9 @@ public:
 	bool setLectureLecturer(const Lecture& lecture, const Professor* lecturer);
 	bool addStudentToWaitingListCourse(const Lecture& lecture, const Student& student);
 	bool removeStudentToWaitingListCourse(const Lecture& lecture, const Student& student);
+	bool setLecturePractice(int lectureID, int practiceID);
 
-	eAddingStudentStatus addStudentToCourse(Lecture& lectureToEnter, Student& studentToSign) noexcept(false);
+	eAddingStudentStatus addStudentToCourse(const Lecture& lectureToEnter, Student& studentToSign) noexcept(false);
 	
 	void printStudentsInCourse(std::ostream& os) const;
 	friend std::ostream& operator<<(std::ostream& os, const Course& c);
