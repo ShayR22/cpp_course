@@ -18,6 +18,7 @@ private:
 	int maxConditionCourses;
 
 	bool checkIfHourOverlap(const Lecture& lecture, const Lecture& practice);
+
 public:
 	Course(const std::string& name, const Professor* coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
 	Course(const Course& other) noexcept;

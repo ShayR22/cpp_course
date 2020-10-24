@@ -318,7 +318,10 @@ bool Course::setLecturePractice(int lectureID, int practiceID)
 		return false;
 	}
 
-	if (checkIfHourOverlap(*(lectures[lectureID]), *(lectures[practiceID])))
+	Lecture* lecture = lectures.find(lectureID)->second;
+	Lecture* practice = lectures.find(practiceID)->second;
+
+	if (checkIfHourOverlap(*lecture, *practice))
 		return false;
 
 	lectures[lectureID]->setPracticeLecture(*lectures[practiceID]);
