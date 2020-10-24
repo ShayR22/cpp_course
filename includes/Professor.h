@@ -15,7 +15,7 @@ protected:
 	virtual void printAddition(std::ostream& os) const;
 
 public:
-	Professor(const char* name, const Date& birthDate, const char* id, double salary, int maxOfLectures = 5) noexcept(false);
+	Professor(const std::string& name, const Date& birthDate, const std::string& id, double salary, int maxOfLectures = 5) noexcept(false);
 	Professor(const Professor& other) noexcept;
 	Professor(Professor&& other) noexcept;
 	

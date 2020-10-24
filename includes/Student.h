@@ -22,7 +22,7 @@ protected:
 	virtual void printAddition(std::ostream& os) const;
 
 public:
-	Student(const char* name, const Date& birthDate, const char* id,
+	Student(const std::string& name, const Date& birthDate, const std::string& id,
 			eDepartmenType department, int maxOfCourses = 20) noexcept(false);
 	Student(const Student& other) noexcept;
 	Student(Student&& otherS) noexcept;
@@ -31,7 +31,7 @@ public:
 	Student& operator=(Student&& other) noexcept;
 
 	eDepartmenType getDepartment() const { return department; }
-	const char* getDepartmentString() const;
+	const std::string getDepartmentString() const;
 
 	void setDepartment(eDepartmenType newDepartmentType);
 	const GenericLinkedList<CourseInformation> getCourseInformation(int* numOfCourses) const;

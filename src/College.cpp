@@ -270,12 +270,12 @@ bool College::removeStudentFromLectureWaitingList(const string& courseName, cons
 // Student
 bool College::addStudent(const Student& newStudent)
 {
-    if (students.find(newStudent.getName()) != students.end())
+    if (students.find(newStudent.getId()) != students.end())
         return false;
     if ((int)students.size() >= maxStudents)
         return false;
    
-    students[newStudent.getName()] = new Student(newStudent);
+    students[newStudent.getId()] = new Student(newStudent);
     return true;
 }
 
@@ -321,8 +321,18 @@ bool College::addLectureToStudent(const string& studentID, const Lecture& lectur
         return false;
     }
 
-    students[studentID]->addLecture(&lecture);
-    return true;
+    const string& cname = lecture.getCourse().getCourseName();
+
+    if (courses.find(cname) == courses.end())
+    {
+        cout << "Lectures course not found in college" << endl;
+        return false;
+    }
+
+    Course* course = courses[cname];
+    Student* student = students[studentID];
+
+    return course->addStudentToCourse(lecture, *student) == Course::eAddingStudentStatus::SUCCESS;
 }
 
 bool College::removeStudentFromCourse(const string& studentID, const string& courseName)
@@ -478,23 +488,14 @@ void College::printProfessors(std::ostream& os) const
 
 void College::printProfessorsOfStudent(ostream& os, const string& id) const
 {
-<<<<<<< HEAD
-    int index = getStudentIndex(id);
-    if (index < 0) {
-=======
     map<string, Student*>::const_iterator pos = students.find(id);
     if (pos == students.end())
     {
->>>>>>> College convert map
         os << "Student wasn't found" << endl;
         return;
     }
 
-<<<<<<< HEAD
-    students[index]->printProfessores(os);
-=======
     pos->second->printProfessores(os);
->>>>>>> College convert map
 }
 
 int College::getNumOfProfessors() const

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Practitioner::Practitioner(const char* name, const Date& birthDate, const char* id, eDepartmenType department,
+Practitioner::Practitioner(const std::string& name, const Date& birthDate, const std::string& id, eDepartmenType department,
 						   double salary, int maxOfLectures, int maxOfLecturesTeaching) noexcept(false) :
 	Person(name, birthDate, id),
 	Professor(name, birthDate, id, salary, maxOfLecturesTeaching),

@@ -3,14 +3,13 @@
 
 using namespace std;
 
-Professor::Professor(const char* name, const Date& birthDate, const char* id, double salary, int maxOfLectures) noexcept(false):
+Professor::Professor(const string& name, const Date& birthDate, const string& id, double salary, int maxOfLectures) noexcept(false):
 	Person(name, birthDate, id), salary(salary), maxOfLectures(maxOfLectures)
 {
 	if (maxOfLectures <= 0)
 		throw "max lectures given must be a positive number";
 	if (salary < 0)
 		throw "Professor salary cant be a negative number";
-
 }
 
 Professor::Professor(const Professor& other) noexcept : Person(other)
@@ -103,21 +102,23 @@ void Professor::printLectures(ostream& os) const
 
 void Professor::printLecturesNames(ostream& os) const
 {
-	if (numOfLectures == 0)
+	if (lectures.size() == 0)
 	{
 		os << "no lecutres" << endl;
 		return;
 	}
 
 	os << "Lecturers ids to teach: ";
-	for (int i = 0; i < numOfLectures; i++)
+	unsigned int size = lectures.size();
+	unsigned int index = 0;
+	for (auto& e : lectures)
 	{
-		os << lectures[i]->getId();
-		if (i < numOfLectures - 1)
+		os << e.first;
+		if (++index < size)
 			os << ", ";
-		else
-			os << endl;
 	}
+
+	os << endl;
 }
 
 void Professor::printAddition(std::ostream& os) const

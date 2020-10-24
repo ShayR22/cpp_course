@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Student::Student(const char* name, const Date& birthDate, const char* id,
+Student::Student(const string& name, const Date& birthDate, const string& id,
 	eDepartmenType department, int maxOfCourses) noexcept(false):
 	Person(name, birthDate, id), department(department), maxOfCourses(maxOfCourses), numOfCourses(0)
 {
@@ -42,7 +42,7 @@ Student& Student::operator=(Student&& other) noexcept
 	return *this;
 }
 
-const char* Student::getDepartmentString() const
+const string Student::getDepartmentString() const
 {
 	if (department == eDepartmenType::SOFTWARE)
 		return "Software";
@@ -97,6 +97,7 @@ bool Student::addLecture(const Lecture* newLecture)
 	}
 	CourseInformation temp(newLecture);
 	courses.addTToEnd(temp);
+	numOfCourses++;
 	return true;
 }
 
@@ -107,7 +108,10 @@ bool Student::deleteFromCourse(Course& c)
 	for (auto &e : lectures)
 	{
 		if (e.second->removeStudent(*this))
+		{
+			numOfCourses--;
 			return true;
+		}
 	}
 	return false;
 }

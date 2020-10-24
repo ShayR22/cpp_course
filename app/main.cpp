@@ -28,8 +28,8 @@ Lecture* chooseLectureOfCourseFromUser(College& c);
 // Professor menu
 Professor Dummy_getProfessorInfoFromUser();
 Professor getProfessorInfoFromUser(ostream& errorOs);
-const char* getProfessorIdFromUser();
-void setGradesByUser(College& c, const char* profName, ostream& os);
+string getProfessorIdFromUser();
+void setGradesByUser(College& c, string& profName, ostream& os);
 
 // Practitioner
 Practitioner Dummy_getPractitionerInfoFromUser();
@@ -37,19 +37,13 @@ Practitioner getPractitionerInfoFromUser(ostream& errorOs);
 
 // Course menu
 Course getCourseInfoFromUser(College& college, ostream& os);
-void getCourseNameFromUser(char *courseName);
+void getCourseNameFromUser(string& courseName);
 Lecture getLectureInfoFromUser(College& college, const Course& course, const Lecture* practice, Lecture::eType lectureType, ostream& errorOs);
 
 Person getPersonInfoFromUser(ostream& errorOs);
-const char* getStudentIdFromUser();
-const char* getPractitionerIdFromUser();
+string getStudentIdFromUser();
+string getPractitionerIdFromUser();
 
-void readCollege()
-{
-	// TODO
-	// ofstream outFile("../college.txt", ios::app);
-	ifstream outFile("../college.txt");
-}
 
 static void initlaize_with_data(College* c)
 {
@@ -100,7 +94,7 @@ static void initlaize_with_data(College* c)
 	int cppId = cpp.getId();
 	const Lecture* userChosenLecture = c->getLecture("C++", cppId);
 
-	c->addLectureToStudent("1", *userChosenLecture);
+	bool sucess = c->addLectureToStudent("1", *userChosenLecture);
 	c->updateStudentGrade("1", *userChosenLecture, 95);
 
 	c->addLectureToStudent("2", *userChosenLecture);
@@ -123,9 +117,6 @@ int main(int argc, char** argv)
 {
 	College* college = new College();
 	initlaize_with_data(college);
-
-	//	TODO: load classes from file		////////////////////////////////////////
-	//	TODO: load practitioners from file	////////////////////////////////////////
 
 	eSystemStatus choice;
 	do
@@ -172,7 +163,7 @@ eSystemStatus chooseStudentsMenu(College& college)
 {
 	const Student* student;
 	Lecture* l;
-	const char* studentId;
+	string studentId;
 	char choice = '0';
 	
 	do
@@ -298,8 +289,8 @@ Student getStudentInfoFromUser(ostream& errorOs)
 
 Person getPersonInfoFromUser(ostream& errorOs)
 {
-	char name[PERSON_NAME_LEN];
-	char id[PERSON_ID_LEN];
+	string name;
+	string id;
 	int day, month, year;
 	do
 	{
@@ -327,9 +318,9 @@ Person getPersonInfoFromUser(ostream& errorOs)
 	} while (true);
 }
 
-const char* getStudentIdFromUser()
+string getStudentIdFromUser()
 {
-	static char sId[PERSON_ID_LEN];  // TODO: fix it
+	string sId;
 	cout << "Please enter student ID: ";
 	cleanBuffer();
 	cin >> sId;
@@ -338,7 +329,7 @@ const char* getStudentIdFromUser()
 
 Lecture* chooseLectureOfCourseFromUser(College& college)
 {
-	char courseName[32];
+	string courseName;
 	getCourseNameFromUser(courseName);
 	const Course* course = college.getCourseByName(courseName);
 	if (!course)
@@ -347,25 +338,24 @@ Lecture* chooseLectureOfCourseFromUser(College& college)
 		return nullptr;
 	}
 
-	int numOfLectures = 0;
-	Lecture** lectures = course->getLectures(&numOfLectures);
-	for (int i = 0; i < numOfLectures; i++)
-	{
-		cout << (i + 1) << ". " << *lectures[i] << endl;
-	}
-	int lIndex;
-	cout << "Lecture number (NOT ID!): ";
+	std::map<int, Lecture*> lectures = course->getLectures();
+	int i = 0;
+	for (auto& e : lectures)
+		cout << (++i) << ". " << *e.second << endl;
+
+	int lectureId;
+	cout << "Lecture ID (NOT index!): ";
 	cleanBuffer();
-	cin >> lIndex;
-	if (lIndex == 0 || lIndex > numOfLectures)
+	cin >> lectureId;
+	if (lectures.find(lectureId) == lectures.end())
 	{
-		cout << "Invalid lecture number: " << lIndex << endl;
+		cout << "Invalid lecture ID: " << lectureId << endl;
 		return nullptr;
 	}
-	return lectures[--lIndex];
+	return lectures[lectureId];
 }
 
-void getCourseNameFromUser(char * name)
+void getCourseNameFromUser(string& name)
 {
 	cout << "Please enter course name: ";
 	cleanBuffer();
@@ -375,7 +365,7 @@ void getCourseNameFromUser(char * name)
 
 eSystemStatus chooseProfessorsMenu(College& college)
 {
-	const char* professorId;
+	string professorId;
 	const Professor* p;
 	char choice = '0';
 	do
@@ -459,21 +449,20 @@ Professor getProfessorInfoFromUser(ostream& errorOs)
 	} while (true);
 }
 
-const char* getProfessorIdFromUser()
+string getProfessorIdFromUser()
 {
-	static char profId[PERSON_ID_LEN];  // TODO: fix it
+	string profId;
 	cout << "\nPlease enter Professor ID: ";
 	cleanBuffer();
 	cin >> profId;
 	return profId;
 }
 
-void setGradesByUser(College& college, const char* profName, ostream& os)
+void setGradesByUser(College& college, string& profName, ostream& os)
 {
-	char courseName[COURSE_NAME_SIZE];
+	string courseName;
 	int lectureId;
 	int numOfLectures = 0;
-	const Lecture*const* arr = college.getProfessorById(profName)->getLectures(&numOfLectures);
 	
 	const Professor* p = college.getProfessorById(profName);
 	if (p == nullptr)
@@ -506,14 +495,15 @@ void setGradesByUser(College& college, const char* profName, ostream& os)
 	}
 
 	int studentListSize = 0;
-	const Student*const* studentList = lecture->getStudentList(&studentListSize);
+	const map<string, const Student*> studentMap = lecture->getStudentMap();
 
 	int grade = 0;
-	const char* studentId;
+	string studentId;
 	bool sucess;
-	for (int i = 0; i < studentListSize; i++)
+
+	for (auto& e : studentMap)
 	{
-		studentId = studentList[i]->getId();
+		studentId = e.first;
 		do
 		{
 			cout << "Student ID " << studentId << ", Please enter valid grade: ";
@@ -531,7 +521,7 @@ void setGradesByUser(College& college, const char* profName, ostream& os)
 eSystemStatus choosePractitionerMenu(College& college)
 {
 	char choice = '0';
-	const char* practitionerId;
+	string practitionerId;
 
 	do
 	{
@@ -576,9 +566,9 @@ eSystemStatus choosePractitionerMenu(College& college)
 	} while (true);
 }
 
-const char* getPractitionerIdFromUser()
+string getPractitionerIdFromUser()
 {
-	static char practId[PERSON_ID_LEN];  // TODO: fix it
+	string practId;
 	cout << "Please enter practitioner ID: ";
 	cleanBuffer();
 	cin >> practId;
@@ -596,7 +586,7 @@ Practitioner Dummy_getPractitionerInfoFromUser()
 
 Practitioner getPractitionerInfoFromUser(ostream& errorOs)
 {
-	double salary;
+	int salary;
 	int depNum;
 	Student::eDepartmenType dep;
 	
@@ -626,7 +616,7 @@ eSystemStatus chooseCoursesMenu(College& college)
 {
 
 	const Course* course = nullptr;
-	char courseName[32];
+	string courseName;
 	char choice = '0';
 	do
 	{
@@ -648,9 +638,6 @@ eSystemStatus chooseCoursesMenu(College& college)
 		case '2':
 			try
 			{
-				/*Course c = getCourseInfoFromUser(college, cout);
-				bool sucess = college.addCourse(c);
-				if (sucess)*/
 				if(college.addCourse(getCourseInfoFromUser(college, cout)))
 					cout << "Add course sucessfully!" << endl;
 				else
@@ -662,7 +649,6 @@ eSystemStatus chooseCoursesMenu(College& college)
 			}
 			break;
 		case '3':
-			// TODO: maybe to create a new college func: removeCourse(courseName)
 			getCourseNameFromUser(courseName);
 			course = college.getCourseByName(courseName);
 			if (course != nullptr && college.removeCourse(*course))
@@ -711,20 +697,11 @@ eSystemStatus chooseCoursesMenu(College& college)
 	} while (true);
 }
 
-//int i_course = 0;
-//Course Dummy_getCourseInfoFromUser()
-//{
-//	char buffer[6] = "algo";
-//	buffer[5] = i_course++ + '0';
-//
-//	return Course(buffer, --, 2.5);
-//}
-
 Course getCourseInfoFromUser(College& college, ostream& errorOs)
 {
 	do
 	{
-		char courseName[COURSE_NAME_SIZE];
+		string courseName;
 		float points;
 
 		cout << "Please enter course name: ";
@@ -733,7 +710,7 @@ Course getCourseInfoFromUser(College& college, ostream& errorOs)
 		cout << "Please enter number of points: ";
 		cleanBuffer();
 		cin >> points;
-		const char* profId = getProfessorIdFromUser();
+		string profId = getProfessorIdFromUser();
 		const Professor* coordinator = college.getProfessorById(profId);
 		if (!coordinator)
 		{
@@ -762,7 +739,7 @@ Course getCourseInfoFromUser(College& college, ostream& errorOs)
 Lecture getLectureInfoFromUser(College& college, const Course& course, const Lecture* practice, Lecture::eType lectureType, ostream& errorOs)
 {
 	int pracDay, pracStartHour, pracDuration, pracRoomNumber;
-	const char* id;
+	string id;
 	const ClassRoom* pracRoom;
 	const Professor* practiceProf;
 
@@ -812,4 +789,3 @@ Lecture getLectureInfoFromUser(College& college, const Course& course, const Lec
 		}
 	} while (true);
 }
-
