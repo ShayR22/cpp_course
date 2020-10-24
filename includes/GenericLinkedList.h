@@ -52,8 +52,6 @@ private:
 			delete nextT;
 			this->nextT = new Node(s);
 		}
-		
-
 	};
 
 	Node<T>* head;

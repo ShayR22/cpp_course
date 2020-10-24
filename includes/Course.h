@@ -24,8 +24,8 @@ public:
 	Course(const Course& other) noexcept;
 	Course(Course&& other) noexcept;
 
-	Course& operator=(const Course& other);
-	Course& operator=(Course&& other) noexcept;
+	Course& operator=(const Course& other) noexcept;
+	Course& operator=(Course&& other) noexcept; 
 
 	bool operator==(const Course& other) const;
 	bool operator==(const std::string& name) const;

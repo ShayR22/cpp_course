@@ -20,7 +20,6 @@ Course::Course(const string& name, const Professor* coordinator, float points,
 	
 	if(!setPoints(points))
 		throw "ERROR: In class Course: points can't be negative or not divisible by 0.5";
-
 }
 
 Course::Course(const Course& other) noexcept :
@@ -35,7 +34,7 @@ Course::Course(Course&& other) noexcept :
 	*this = other;
 }
 
-Course& Course::operator=(const Course& other)
+Course& Course::operator=(const Course& other) noexcept
 {
 	setCourseName(other.name);
 	coordinator = other.coordinator;
@@ -65,12 +64,20 @@ Course& Course::operator=(Course&& other) noexcept
 
 	maxLectures = other.maxLectures;
 	other.maxLectures = 0;
-	lectures = other.lectures;
-	
+
+	for (auto& e : other.lectures)
+	{
+		lectures[e.first] = e.second;
+		e.second = nullptr;
+	}
+
+	map<int, Lecture*>::iterator it;
+	lectures.erase(it = lectures.begin(), lectures.end());
+
 	maxConditionCourses = other.maxConditionCourses;
 	other.maxConditionCourses = 0;
 	conditionCourses = other.conditionCourses;
-
+	
 	return *this;
 }
 
@@ -218,7 +225,6 @@ bool Course::setLecturStartHour(const Lecture& lecture, int hour)
 		cout << "lecture not found" << endl;
 		return false;
 	}
-
 	return lectures[lecture.getId()]->setHour(hour);
 }
 
@@ -229,7 +235,6 @@ bool Course::setLectureDuration(const Lecture& lecture, int durationHours)
 		cout << "lecture not found" << endl;
 		return false;
 	}
-
 	return lectures[lecture.getId()]->setDuration(durationHours);
 }
 
@@ -363,7 +368,7 @@ Course::eAddingStudentStatus Course::addStudentToCourse(const Lecture& lectureTo
 		studentToSign.deleteFromCourse(*this);
 		return Course::eAddingStudentStatus::FULL;
 	}
-		
+
 	return Course::eAddingStudentStatus::SUCCESS;
 }
 
@@ -408,7 +413,8 @@ ostream& operator<<(ostream& os, const Course& c)
 	return os << "---------------------------------------" << endl;
 }
 
-Course::~Course()
+Course::~Course() 
 {
+	map<int, Lecture*>::iterator it;
+	lectures.erase(it = lectures.begin(), lectures.end());
 }
-

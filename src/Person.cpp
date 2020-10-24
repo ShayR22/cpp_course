@@ -24,7 +24,7 @@ Person::Person(const Person& other) noexcept:
 }
 
 Person::Person(Person&& other) noexcept :
-	name(nullptr), id(nullptr), birthDate(nullptr)
+	birthDate(nullptr)
 {
 	*this = other;
 }

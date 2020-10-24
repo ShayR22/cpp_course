@@ -15,7 +15,6 @@ private:
 	GenericLinkedList<CourseInformation> courses;
 	int numOfCourses;
 	int maxOfCourses;
-	void destroyCourses();
 	bool passedCourse(const Course* c);
 	bool isValidGrade(int grade) const;
 
@@ -30,8 +29,6 @@ public:
 
 	Student& operator=(const Student& other);
 	Student& operator=(Student&& other) noexcept;
-
-	~Student();
 
 	eDepartmenType getDepartment() const { return department; }
 	const char* getDepartmentString() const;

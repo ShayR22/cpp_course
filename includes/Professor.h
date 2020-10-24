@@ -20,9 +20,7 @@ public:
 	Professor(Professor&& other) noexcept;
 	
 	const Professor& operator=(const Professor& other);
-	const Professor& operator=(Professor& other) noexcept;
-
-	~Professor();
+	const Professor& operator=(Professor&& other) noexcept;
 
 	bool setSalary(double new_salary);
 	double getSalary() const { return salary; }
@@ -37,6 +35,8 @@ public:
 
 	const Professor& operator+=(const Lecture& l);
 	const Professor& operator-=(const Lecture& l);
+
+	~Professor();
 };
 
 #endif /* __H_PROFESSOR__ */

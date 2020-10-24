@@ -36,11 +36,6 @@ Lecture::Lecture(const Lecture& otherL) noexcept
 	*this = otherL;
 }
 
-Lecture::Lecture(Lecture&& otherL) noexcept
-{
-	*this = otherL;
-}
-
 Lecture::eWeekDay Lecture::getWeekDay() const
 { 
 	return this->day; 
@@ -273,31 +268,6 @@ Lecture& Lecture::operator=(const Lecture& otherL) noexcept
 	return *this;
 }
 
-Lecture& Lecture::operator=(Lecture&& otherL) noexcept
-{
-	this->id = otherL.id;
-	this->course = otherL.course;
-	this->classRoom = otherL.classRoom;
-	this->lecturer = otherL.lecturer;
-	this->practice = otherL.practice;
-
-	this->day = otherL.day;
-	this->type = otherL.type;
-	this->startHour = otherL.startHour;
-	this->duration = otherL.duration;
-
-	this->maxStudentMap = otherL.maxStudentMap;
-	this->maxWaitingMap = otherL.maxWaitingMap;
-	
-	this->studentMap = move(otherL.studentMap);
-	this->waitingMap = move(otherL.waitingMap);
-
-	otherL.maxStudentMap = 0;
-	otherL.maxWaitingMap = 0;
-
-	return *this;
-}
-
 ostream& operator<<(ostream& os, const Lecture& l)
 {
 	char practiceID[16] = { 0 };
@@ -350,7 +320,5 @@ ostream& operator<<(ostream& os, Lecture::eType type)
 	}
 	return os;
 }	
-
-Lecture::~Lecture(){}
 
 int Lecture::automaticID = 0;

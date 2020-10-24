@@ -34,7 +34,7 @@ const Professor& Professor::operator=(const Professor& other)
 	return *this;
 }
 
-const Professor& Professor::operator=(Professor& other) noexcept
+const Professor& Professor::operator=(Professor&& other) noexcept
 {
 	Person::operator=(other);
 	salary = other.salary;

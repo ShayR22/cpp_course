@@ -39,13 +39,11 @@ public:
 		    const ClassRoom& classRoom, const Professor& lecturer, const Lecture* practice,
 		    int maxStudentMap = 20, int maxWaitingMap = 20) noexcept(false);
 	Lecture(const Lecture& otherL) noexcept;
-	Lecture(Lecture&& otherL) noexcept;
 
 	bool operator==(const Lecture& l) const;
 	bool operator==(int id) const;
 
 	Lecture& operator=(const Lecture& otherL) noexcept;
-	Lecture& operator=(Lecture&& otherL) noexcept;
 
 	int getId() const { return id; }
 	eWeekDay getWeekDay() const;
@@ -83,8 +81,6 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const Lecture& l);
 	friend std::ostream& operator<<(std::ostream& os, Lecture::eWeekDay day);
 	friend std::ostream& operator<<(std::ostream& os, Lecture::eType type);
-
-	~Lecture();
 };
 
 #endif

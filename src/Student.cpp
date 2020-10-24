@@ -19,14 +19,9 @@ Student::Student(const Student& other) noexcept : Person(other),
 
 }
 
-void Student::destroyCourses()
-{
-}
-
 Student& Student::operator=(const Student& other)
 {
 	Person::operator=(other);
-	destroyCourses();
 
 	this->maxOfCourses = other.maxOfCourses;
 	this->numOfCourses = other.numOfCourses;
@@ -41,15 +36,10 @@ Student& Student::operator=(Student&& other) noexcept
 
 	this->maxOfCourses = other.maxOfCourses;
 	this->numOfCourses = other.numOfCourses;
-	this->courses = other.courses;
+	this->courses = move(other.courses);
 	other.maxOfCourses = 0;
 	other.numOfCourses = 0;
 	return *this;
-}
-
-Student::~Student()
-{
-	destroyCourses();
 }
 
 const char* Student::getDepartmentString() const
