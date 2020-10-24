@@ -376,11 +376,30 @@ bool Course::setLecturePractice(int lectureID, int practiceID)
 		return false;
 	}
 
+	if (checkIfHourOverlap(*(lectures[practiceIndex]), *(lectures[practiceIndex])))
+		return false;
+
 	lectures[lectureIndex]->setPracticeLecture(*lectures[practiceIndex]);
 	return true;
 }
 
-
+bool Course::checkIfHourOverlap(const Lecture& lecture,const Lecture& practice)
+{
+	if (practice.getWeekDay() == lecture.getWeekDay())
+	{
+		int pHour = practice.getHour();
+		int pDuration = practice.getDuration();
+		int lHour = lecture.getHour();
+		int lDuration = lecture.getDuration();
+		if ((pHour > lHour&& lHour + lDuration > pHour) ||
+			(lHour > pHour&& pHour + pDuration > lHour))
+		{
+			cout << "Invalid hours" << endl;
+			return true;
+		}
+	}
+	return false;
+}
 
 Course::eAddingStudentStatus Course::addStudentToCourse(const Lecture& lectureToEnter, Student& studentToSign) noexcept(false)
 {

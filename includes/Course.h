@@ -26,6 +26,8 @@ private:
 	int getConditionCourseIndex(const Course& c) const;
 	bool notInside(const Student** student, int studentsLen, const Student* isInside) const;
 
+	bool checkIfHourOverlap(const Lecture& lecture, const Lecture& practice);
+
 public:
 	Course(const char* name, const Professor* coordinator, float points = 0.5, int maxLectures = 20, int maxConditionCourses = 20);
 	Course(const Course& other) noexcept;
