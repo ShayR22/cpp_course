@@ -94,24 +94,19 @@ public:
 
     // Practitioner
     bool addPractitioner(const Practitioner& newPractitioner);
-    bool removePractitioner(const char *id);
+    bool removePractitioner(const char* id);
     bool setPractitionerSalary(const char* id, double newSalary);
     bool addPracticeToPractitioner(const char* id, const Lecture* newLecture);
     bool removePracticeFromPractitioner(const char* id, const Lecture* lectureToRemove);
     bool setPractitionerDepartment(const char* id, Student::eDepartmenType newDepartmentType);
     bool updatePractitionerGrade(const char* id, const Lecture& lecture, int newGrade);
-    /* TODO give better name from the student fucntions of practitioner */
-    bool addLectureToPractitionerToLearn(const char* id, const Lecture& lecture);
-    bool addLectureToPractitionerToTeach(const char* id, const Lecture& lecture);
+    bool addLectureToPractitioner(const char* id, const Lecture& lecture);
     bool removePractitionerFromCourse(const char* id, const char* courseName);
     // return also the current number of professors
     const Practitioner* const* getPractitioners(int* numOfPractitioners) const;
     const Practitioner* getPractitionerById(const char* id) const;
     void printPractitioners(std::ostream& os) const;
 
-    // Lecture
-    
-    
     const College & operator+=(const Course & c);
     const College & operator+=(const Student & s);
     const College & operator+=(const Professor & p);

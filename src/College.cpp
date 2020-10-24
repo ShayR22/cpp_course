@@ -5,11 +5,11 @@ using namespace std;
 
 
 College::College(int maxAllStudents, int maxAllProfessors, int maxAllCourses, int maxAllClassRooms) noexcept(false) :
-    numOfStudents(0), maxStudents(0),
-    numOfProfessors(0), maxProfessors(0),
-    numOfPractitioners(0), maxPractitioners(0),
-    numOfCourses(0), maxCourses(0),
-    numOfClassRooms(0), maxClassRooms(0)
+    numOfStudents(0), maxStudents(maxAllStudents),
+    numOfProfessors(0), maxProfessors(maxAllProfessors),
+    numOfPractitioners(0), maxPractitioners(maxAllProfessors),
+    numOfCourses(0), maxCourses(maxAllCourses),
+    numOfClassRooms(0), maxClassRooms(maxAllClassRooms)
 {
     if (maxAllStudents < 0)
         throw "Invalid max students: ", maxAllStudents;
@@ -19,12 +19,6 @@ College::College(int maxAllStudents, int maxAllProfessors, int maxAllCourses, in
         throw "Invalid max courses: ", maxAllCourses;
     if (maxAllClassRooms < 0)
         throw "Invalid max class-rooms: ", maxAllClassRooms;
-
-    this->maxStudents = maxAllStudents;
-    this->maxProfessors = maxAllProfessors;
-    this->maxPractitioners = maxAllProfessors;
-    this->maxCourses = maxAllCourses;
-    this->maxClassRooms = maxAllClassRooms;
     
     students = new Student * [maxStudents];
     professors = new Professor * [maxProfessors];
@@ -578,8 +572,13 @@ void College::printProfessors(std::ostream& os) const
 
 void College::printProfessorsOfStudent(std::ostream& os, const char* id) const
 {
-    // TODO
-    return;
+    int index = getStudentIndex(id);
+    if (index < 0) {
+        os << "Student wasn't found" << endl;
+        return;
+    }
+
+    students[index]->printProfessores(os);
 }
 
 int College::getNumOfProfessors() const
@@ -692,8 +691,7 @@ bool College::updatePractitionerGrade(const char* id, const Lecture& lecture, in
     return practitioners[index]->updateGrade(lecture, newGrade);
 }
 
-/* TODO give better name from the student fucntions of practitioner */
-bool College::addLectureToPractitionerToLearn(const char* id, const Lecture& lecture)
+bool College::addLectureToPractitioner(const char* id, const Lecture& lecture)
 {
     int index = getPractitionerIndex(id);
     if (index < 0)
@@ -703,24 +701,6 @@ bool College::addLectureToPractitionerToLearn(const char* id, const Lecture& lec
     }
 
     return practitioners[index]->addLecture(&lecture);
-}
-
-bool College::addLectureToPractitionerToTeach(const char* id, const Lecture& lecture)
-{
-    if (lecture.getLectureType() != Lecture::eType::PRACTICE)
-    {
-        cout << "Lecture must be practice type" << endl;
-        return false;
-    }
-        
-    int index = getPractitionerIndex(id);
-    if (index < 0)
-    {
-        cout << "Practitioner wasn't found" << endl;
-        return false;
-    }
-
-    return practitioners[index]->addLectureTeaching(&lecture);
 }
 
 bool College::removePractitionerFromCourse(const char* id, const char* courseName)
