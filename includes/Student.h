@@ -16,6 +16,7 @@ private:
 	int maxOfCourses;
 	void destroyCourses();
 	bool passedCourse(const Course* c);
+	bool isValidGrade(int grade) const;
 
 protected:
 	virtual void printAddition(std::ostream& os) const;

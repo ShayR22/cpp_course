@@ -110,8 +110,17 @@ const CourseInformation * const * Student::getCourseInformation(int* numOfCourse
 	return courses;
 }
 
+bool Student::isValidGrade(int grade) const
+{
+	return grade >= 1 && grade <= 100;
+}
+
+
 bool Student::updateGrade(const Lecture& lecture, int newGrade) const
 {
+	if (!isValidGrade(newGrade))
+		return false;
+
 	for (int i = 0; i < numOfCourses; i++)
 	{
 		if (lecture.getId() == courses[i]->getLecture()->getId())
