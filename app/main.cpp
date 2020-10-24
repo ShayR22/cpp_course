@@ -94,7 +94,7 @@ static void initlaize_with_data(College* c)
 	int cppId = cpp.getId();
 	const Lecture* userChosenLecture = c->getLecture("C++", cppId);
 
-	bool sucess = c->addLectureToStudent("1", *userChosenLecture);
+	c->addLectureToStudent("1", *userChosenLecture);
 	c->updateStudentGrade("1", *userChosenLecture, 95);
 
 	c->addLectureToStudent("2", *userChosenLecture);
@@ -473,13 +473,13 @@ void setGradesByUser(College& college, string& profName, ostream& os)
 
 	p->printLectures(os);
 
-	// TODO: maybe the user don't need to enter the course name. do it more simple
-	cout << "\nPlease enter Course Name: ";
-	cleanBuffer();
-	cin >> courseName;
+	getCourseNameFromUser(courseName);
 	const Course* course = college.getCourseByName(courseName);
 	if (course == nullptr)
+	{
+		os << "Course name not exist in college: " << courseName;
 		return;
+	}
 
 	cout << "\nPlease enter lecture ID (of " << courseName << "): ";
 	cleanBuffer();
@@ -659,7 +659,9 @@ eSystemStatus chooseCoursesMenu(College& college)
 		case '4':
 			getCourseNameFromUser(courseName);
 			course = college.getCourseByName(courseName);
-			if (course != nullptr)
+			if (course == nullptr)
+				cout << "Course name not exist in college: " << courseName;
+			else
 			{
 				cout << "Enter PRACTICE info:" << endl;
 				Lecture practice = getLectureInfoFromUser(college, *course, nullptr, Lecture::eType::PRACTICE, cout);
@@ -704,9 +706,13 @@ Course getCourseInfoFromUser(College& college, ostream& errorOs)
 		string courseName;
 		float points;
 
-		cout << "Please enter course name: ";
-		cleanBuffer();
-		cin >> courseName;
+		getCourseNameFromUser(courseName);
+		if (college.getCourseByName(courseName) != nullptr)
+		{
+			errorOs << "Your course name is already exist in college: " << courseName << endl;
+			continue;
+		}
+
 		cout << "Please enter number of points: ";
 		cleanBuffer();
 		cin >> points;
@@ -750,7 +756,7 @@ Lecture getLectureInfoFromUser(College& college, const Course& course, const Lec
 		pracRoom = college.getClassRoomByNumber(pracRoomNumber);
 		if (!pracRoom)
 		{
-			cout << "There is no classroom in college with number: " << pracRoomNumber;
+			cout << "There is no classroom in college with number: " << pracRoomNumber << endl;
 			continue;
 		}
 

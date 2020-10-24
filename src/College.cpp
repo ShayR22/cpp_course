@@ -59,7 +59,6 @@ const map<int, const ClassRoom*> College::getClassRooms() const
         constClassRooms[e.first] = e.second;
 
     return constClassRooms;
-
 }
 
 void College::printClassRooms(ostream& os) const
@@ -309,8 +308,7 @@ bool College::updateStudentGrade(const string& studentID, const Lecture& lecture
         return false;
     }
 
-    students[studentID]->updateGrade(lecture, newGrade);
-    return true;
+    return students[studentID]->updateGrade(lecture, newGrade);
 }
 
 bool College::addLectureToStudent(const string& studentID, const Lecture& lecture)
@@ -430,8 +428,7 @@ bool College::setProfesssorSalary(const string& id, double newSalary)
         return false;
     }
 
-    professors[id]->setSalary(newSalary);
-    return true;
+    return professors[id]->setSalary(newSalary);
 }
 
 bool College::addLectureToProfessor(const string& id, const Lecture* newLecture)
@@ -442,8 +439,7 @@ bool College::addLectureToProfessor(const string& id, const Lecture* newLecture)
         return false;
     }
 
-    professors[id]->addLectureTeaching(newLecture);
-    return true;
+    return professors[id]->addLectureTeaching(newLecture);
 }
 
 bool College::removeLectureFromProfessor(const string& id, const Lecture* lectureToRemove)
@@ -454,8 +450,7 @@ bool College::removeLectureFromProfessor(const string& id, const Lecture* lectur
         return false;
     }
 
-    professors[id]->removeLecture(lectureToRemove);
-    return true;
+    return professors[id]->removeLecture(lectureToRemove);
 }
 
 const map<string, const Professor*> College::getProfessors() const
@@ -540,8 +535,7 @@ bool College::setPractitionerSalary(const string& id, double newSalary)
         return false;
     }
 
-    practitioners[id]->setSalary(newSalary);
-    return true;
+    return practitioners[id]->setSalary(newSalary);
 }
 
 bool College::addPracticeToPractitioner(const string& id, const Lecture* newLecture)
@@ -552,8 +546,7 @@ bool College::addPracticeToPractitioner(const string& id, const Lecture* newLect
         return false;
     }
 
-    practitioners[id]->addLectureTeaching(newLecture);
-    return true;
+    return practitioners[id]->addLectureTeaching(newLecture);
 }
 
 bool College::removePracticeFromPractitioner(const string& id, const Lecture* lectureToRemove)
@@ -564,8 +557,7 @@ bool College::removePracticeFromPractitioner(const string& id, const Lecture* le
         return false;
     }
 
-    practitioners[id]->removeLecture(lectureToRemove);
-    return true;
+    return practitioners[id]->removeLecture(lectureToRemove);
 }
 
 bool College::setPractitionerDepartment(const string& id, Student::eDepartmenType newDepartmentType)
@@ -598,8 +590,7 @@ bool College::updatePractitionerGrade(const string& id, const Lecture& lecture, 
         return false;
     }
 
-    practitioners[id]->updateGrade(lecture, newGrade);
-    return true;
+    return practitioners[id]->updateGrade(lecture, newGrade);
 }
 
 bool College::addLectureToPractitioner(const string& id, const Lecture& lecture)
@@ -610,8 +601,7 @@ bool College::addLectureToPractitioner(const string& id, const Lecture& lecture)
         return false;
     }
 
-    practitioners[id]->addLecture(&lecture);
-    return true;
+    return practitioners[id]->addLecture(&lecture);
 }
 
 bool College::removePractitionerFromCourse(const string& id, const string& courseName)
@@ -629,8 +619,7 @@ bool College::removePractitionerFromCourse(const string& id, const string& cours
         return false;
     }
 
-    practitioners[id]->deleteFromCourse(courseToRemove);
-    return true;
+    return practitioners[id]->deleteFromCourse(courseToRemove);
 }
 
 const map<string, const Practitioner*> College::getPractitioners() const
