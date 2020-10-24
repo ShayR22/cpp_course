@@ -85,19 +85,14 @@ static void initlaize_with_data(College* c)
 		*c->getClassRoomByNumber(101), *c->getProfessorById("10"), l);
 	c->addNewLectureToCourse("C++", cpp);
 
-	// add amazing keren to C++ lecture
+	// add keren to C++ lecture
 	c->addLectureToProfessor("10", c->getLecture("C++", cpp.getId()));
-
-	// define Pysics course
-	/*Lecture phsicsPractice(Lecture::eWeekDay::SUNDAY, 20, 1, Lecture::eType::PRACTICE, *c->getCourseByName("Physics"),
-		*c->getClassRoomByNumber(102), *c->getProfessorById("11"), nullptr);
-	c->addNewLectureToCourse("Physics", cppPractice);*/
 
 	Lecture electrocuteHuman(Lecture::eWeekDay::SUNDAY, 18, 3, Lecture::eType::LECTURE, *c->getCourseByName("Physics"),
 		*c->getClassRoomByNumber(103), *c->getProfessorById("11"), nullptr);
 	c->addNewLectureToCourse("Physics", electrocuteHuman);
 
-	// add king vladislav to lecture:
+	// add vladislav to lecture:
 	int lecId = electrocuteHuman.getId();
 	c->addLectureToProfessor("11", c->getLecture("Physics", lecId));
 
@@ -122,9 +117,6 @@ static void initlaize_with_data(College* c)
 	c->updateStudentGrade("2", *userChosenLecture, 96);
 
 	c->addLectureToStudent("3", *userChosenLecture);
-
-	//c->addLectureToStudent("3", *c->getLecture("Physics", pysicsId));
-	//c->updateStudentGrade("3", *c->getLecture("Physics", pysicsId), 90);
 }
 
 int main(int argc, char** argv)
@@ -204,7 +196,6 @@ eSystemStatus chooseStudentsMenu(College& college)
 
 		case '2':
 			if (college.addStudent(getStudentInfoFromUser(cout)))
-			//if (college.addStudent(getStudentInfoFromUser(cout)))
 				cout << "Succeed Add student!" << endl;
 			else
 				cout << "Failed Add student!" << endl;
@@ -821,102 +812,4 @@ Lecture getLectureInfoFromUser(College& college, const Course& course, const Lec
 		}
 	} while (true);
 }
-
-
-
-
-
-
-
-Lecture __getLectureInfoFromUser__(College& college, const Course& course, ostream& errorOs)
-{
-	Lecture::eType lectureType = Lecture::eType::LECTURE;
-	Lecture::eWeekDay lectureDay;
-	int lecDay, lectureStartHour, lectureDuration, lectureRoomNumber;
-	int pracDay, pracStartHour, pracDuration, pracRoomNumber;
-
-	const char* profId;
-	const char* practitionerId;
-
-	const ClassRoom* lectureRoom;
-	const ClassRoom* pracRoom;
-	const Practitioner* practiceProf;
-	const Professor* lectureProf;
-
-	do
-	{
-		cout << "LECTURE info:" << endl;
-		cout << "Please choose lecture day (1 = sunday, ... , 6 = friday): ";
-		cleanBuffer();
-		cin >> lecDay;
-		lectureDay = (Lecture::eWeekDay)lecDay;
-		cout << "Please enter lecture start hour: ";
-		cleanBuffer();
-		cin >> lectureStartHour;
-		cout << "Please enter lecture duration: ";
-		cleanBuffer();
-		cin >> lectureDuration;
-		cout << "Please enter lecture classroom number: ";
-		cleanBuffer();
-		cin >> lectureRoomNumber;
-		lectureRoom = college.getClassRoomByNumber(lectureRoomNumber);
-		if (!lectureRoom)
-		{
-			cout << "There is no classroom in college with number: " << lectureRoomNumber;
-			continue;
-		}
-
-		profId = getProfessorIdFromUser();
-		lectureProf = college.getProfessorById(profId);
-		if (!lectureProf)
-		{
-			cout << "Can not find proffesor";
-			continue;
-		}
-
-	} while (true);
-
-	do {
-		Lecture::eType pracType = Lecture::eType::PRACTICE;
-		Lecture::eWeekDay practiceDay;
-
-		cout << "LECTURE info:" << endl;
-		cout << "Please enter lecture classroom number: ";
-		cin >> pracRoomNumber;
-		pracRoom = college.getClassRoomByNumber(pracRoomNumber);
-		if (!pracRoom)
-		{
-			cout << "There is no classroom in college with number: " << pracRoomNumber;
-			continue;
-		}
-		cout << "Please choose lecture day (1 = sunday, ... , 6 = friday): ";
-		cin >> pracDay;
-		practiceDay = (Lecture::eWeekDay)pracDay;
-		cout << "Please enter lecture start hour: ";
-		cin >> pracStartHour;
-		cout << "Please enter lecture duration: ";
-		cin >> pracDuration;
-
-		practitionerId = getPractitionerIdFromUser();
-		practiceProf = college.getPractitionerById(practitionerId);
-		if (!practiceProf)
-		{
-			cout << "Can not find proffesor with ID: " << practitionerId << endl;
-			continue;
-		}
-
-		try
-		{
-			return Lecture(practiceDay, pracStartHour, pracDuration, pracType,
-				course, *pracRoom, *practiceProf, nullptr);
-		}
-		catch (const char* msg)
-		{
-			errorOs << msg << endl;
-		}
-	} while (true);
-}
-
-
-
 

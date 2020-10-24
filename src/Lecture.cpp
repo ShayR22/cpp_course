@@ -195,6 +195,15 @@ const Student*const* Lecture::getWaitingList(int* numOfWaitingList) const
 
 bool Lecture::addStudent(const Student& newStudent)
 {	
+	for (int i = 0; i < this->numOfStudentList; i++)
+	{
+		if (*(this->studentList[i]) == newStudent.getId())
+		{
+			cout << "Student already register in lecture" << endl;
+			return false;
+		}
+	}
+
 	if (this->numOfStudentList == this->maxStudentList)
 	{
 		cout << "Failed to add student, student list is full" << endl;
