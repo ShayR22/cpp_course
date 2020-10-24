@@ -376,7 +376,7 @@ bool Course::setLecturePractice(int lectureID, int practiceID)
 		return false;
 	}
 
-	if (checkIfHourOverlap(*(lectures[practiceIndex]), *(lectures[practiceIndex])))
+	if (checkIfHourOverlap(*(lectures[lectureIndex]), *(lectures[practiceIndex])))
 		return false;
 
 	lectures[lectureIndex]->setPracticeLecture(*lectures[practiceIndex]);
