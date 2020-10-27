@@ -24,4 +24,6 @@ private:
 	CourseInformation& operator=(const CourseInformation& cinfo) = delete;
 	CourseInformation& operator=(CourseInformation&& cinfo) = delete;
 };
+
+
 #endif

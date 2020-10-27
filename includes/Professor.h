@@ -29,7 +29,7 @@ public:
 
 	bool setSalary(double new_salary);
 	double getSalary() const { return salary; }
-	const Lecture * const* getLectures(int* numOfLectures) const;
+	inline const Lecture * const* getLectures(int* numOfLectures) const;
 
 	bool removeLecture(const Lecture* lectureToRemove);
 	bool addLectureTeaching(const Lecture* newLecture);
@@ -41,5 +41,11 @@ public:
 	const Professor& operator+=(const Lecture& l);
 	const Professor& operator-=(const Lecture& l);
 };
+
+const Lecture* const* Professor::getLectures(int* numOfLectures) const
+{
+	*numOfLectures = this->numOfLectures;
+	return lectures;
+}
 
 #endif /* __H_PROFESSOR__ */

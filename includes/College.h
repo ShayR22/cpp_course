@@ -39,7 +39,7 @@ public:
     bool addClassRoom(const ClassRoom& newClassroom);
     bool removeClassRoom(const ClassRoom& classRoomToRemove);
     const ClassRoom* getClassRoomByNumber(int roomNumber) const;
-    const ClassRoom* const* getClassRooms(int* numOfClassRooms) const;
+    inline const ClassRoom* const* getClassRooms(int* numOfClassRooms) const;
     void printClassRooms(std::ostream& os) const;
 
     // Course
@@ -51,7 +51,7 @@ public:
     bool removeLectureFromCourse(const char* courseName, int id);
     bool addConditionCourseToCourse(const char* name, const Course& c);
     bool removeConditionCourseFromCourse(const char *name, const char *remove);
-    const Course* const* getCourses(int* numOfCourses) const;
+    inline const Course* const* getCourses(int* numOfCourses) const;
     const Course* getCourseByName(const char* name) const;
     void printCourses(std::ostream& os) const;
 
@@ -75,7 +75,7 @@ public:
     bool updateStudentGrade(const char* studentID, const Lecture& lecture, int newGrade);
     bool addLectureToStudent(const char* studentID, const Lecture& lecture);
     bool removeStudentFromCourse(const char* studentID, const char* courseName);
-    const Student* const* getStudents(int* numOfStudents) const;
+    inline const Student* const* getStudents(int* numOfStudents) const;
     const Student* getStudentById(const char* id) const;
     void printStudents(std::ostream& os) const;
     void printProfessorsOfStudent(std::ostream& os, const char* id);
@@ -86,11 +86,11 @@ public:
     bool setProfesssorSalary(const char* id, double newSalary);
     bool addLectureToProfessor(const char* id, const Lecture* newLecture);
     bool removeLectureFromProfessor(const char* id, const Lecture* lectureToRemove);
-    const Professor* const* getProfessors(int* numOfProfessors) const;
+    inline const Professor* const* getProfessors(int* numOfProfessors) const;
     const Professor* getProfessorById(const char* id) const;
     void printProfessors(std::ostream& os) const;
     void printProfessorsOfStudent(std::ostream& os, const char* id) const;
-    int getNumOfProfessors() const;
+    int getNumOfProfessors() const { return numOfProfessors; };
 
     // Practitioner
     bool addPractitioner(const Practitioner& newPractitioner);
@@ -103,7 +103,7 @@ public:
     bool addLectureToPractitioner(const char* id, const Lecture& lecture);
     bool removePractitionerFromCourse(const char* id, const char* courseName);
     // return also the current number of professors
-    const Practitioner* const* getPractitioners(int* numOfPractitioners) const;
+    inline const Practitioner* const* getPractitioners(int* numOfPractitioners) const;
     const Practitioner* getPractitionerById(const char* id) const;
     void printPractitioners(std::ostream& os) const;
 

@@ -210,9 +210,6 @@ void Student::printProfessores(ostream& os) const
 	for (int i = 0; i < numOfCourses; i++)
 	{
 		const Professor& p = courses[i]->getLecture()->getLecturer();
-		/*if (p == NULL)
-			os << "Lecturer not exist to lecture: " << courses[i]->getLecture()->getId() << endl;
-		else*/
 		p.print(os);
 	}
 }

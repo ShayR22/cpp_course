@@ -12,6 +12,7 @@ bool Date::setYear(int newYear)
 	if (newYear < 0)
 		return false;
 
+	year = newYear;
 	return true;
 }
 
@@ -38,7 +39,7 @@ int Date::getNumOfDaysInYearMonth()
 		return 28;
 }
 
-bool Date::setDay(int newDay)
+inline bool Date::setDay(int newDay)
 {
 	if (newDay < 0 || newDay > getNumOfDaysInYearMonth())
 		return false;

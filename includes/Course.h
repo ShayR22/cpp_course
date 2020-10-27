@@ -39,18 +39,17 @@ public:
 	bool operator==(const Course& other) const;
 	bool operator==(const char *name) const;
 
-
 	const char* getCourseName() const { return name; }
 	bool setCourseName(const char* name);
 	const Professor* getCoordinator()const { return coordinator; }
 	bool setCoordinator(const Professor* p);
 	float getPoints() const { return points; }
 	bool setPoints(float p);
-	Lecture** getLectures(int* numOfLectures) const;
+	inline Lecture** getLectures(int* numOfLectures) const;
 	bool removeLecture(const Lecture& lectureToRemove);
 	bool removeLecture(int id);
 	bool addLecture(const Lecture& lectureToAdd);
-	const Course** getConditionsCourses(int* numOfConditionCourses) const;
+	inline const Course** getConditionsCourses(int* numOfConditionCourses) const;
 	bool removeConditionCourse(const Course& c);
 	bool removeConditionCourse(const char* name);
 	bool addConditionCourse(const Course& c);
@@ -74,5 +73,17 @@ public:
 
 	~Course();
 };
+
+Lecture** Course::getLectures(int* numOfLectures) const
+{
+	*numOfLectures = this->numOfLectures;
+	return lectures;
+}
+
+const Course** Course::getConditionsCourses(int* numOfConditionCourses) const
+{
+	*numOfConditionCourses = this->numOfConditionCourses;
+	return conditionCourses;
+}
 
 #endif /* __H_COURSE__ */

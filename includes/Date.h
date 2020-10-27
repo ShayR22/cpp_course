@@ -7,7 +7,7 @@ private:
 	int year;
 	int month;
 	int day;
-	int getNumOfDaysInYearMonth();
+	inline int getNumOfDaysInYearMonth();
 public:
 	Date(int year, int month, int day);
 	Date(const Date& other);

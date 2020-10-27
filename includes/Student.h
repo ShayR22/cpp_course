@@ -33,10 +33,10 @@ public:
 	~Student();
 
 	eDepartmenType getDepartment() const { return department; }
-	const char* getDepartmentString() const;
+	inline const char* getDepartmentString() const;
 
 	void setDepartment(eDepartmenType newDepartmentType);
-	const CourseInformation * const * getCourseInformation(int* numOfCourses) const;
+	inline const CourseInformation * const * getCourseInformation(int* numOfCourses) const;
 	bool updateGrade(const Lecture& lecture, int newGrade) const; 
 	bool addLecture(const Lecture* newLecture);
 

@@ -50,37 +50,37 @@ public:
 	Lecture& operator=(Lecture&& otherL) noexcept;
 
 	int getId() const { return id; }
-	eWeekDay getWeekDay() const;
+	inline eWeekDay getWeekDay() const;
 	void setWeekDay(eWeekDay day);
-	int getHour() const;
+	inline int getHour() const;
 	bool setHour(int newHour);
-	int getDuration() const;
+	inline int getDuration() const;
 	bool setDuration(int newDuration);
-	int getMaxStudentsList() const;
+	inline int getMaxStudentsList() const;
 	bool setMaxStudentsList(int newMaxStudentsList);
-	int getMaxWaitingsList() const;
+	inline int getMaxWaitingsList() const;
 	bool setMaxWaitingList(int newMaxWaitingList);
-	eType getLectureType()const;
+	inline eType getLectureType()const;
 	void setLectureType(const eType newType);
 
-	const ClassRoom& getClassRoom() const;
+	inline const ClassRoom& getClassRoom() const;
 	void setClassRoom(const ClassRoom* newClassRoom);
 
-	const Professor& getLecturer()const;
+	inline const Professor& getLecturer()const;
 	void setLecturer(const Professor& newLectureProfessor);
 
-	const Student*const* getStudentList(int* numOfStudentList) const;
+	inline const Student*const* getStudentList(int* numOfStudentList) const;
 	bool addStudent(const Student& newStudent);
 	bool removeStudent(Student& studentToRemove);
 
-	const Student*const* getWaitingList(int* numOfWaitingList)const;
+	inline const Student*const* getWaitingList(int* numOfWaitingList)const;
 	bool addToWaitingList(const Student& newStudent);
 	bool removeFromWaitingList(const Student& studentToRemove);
 
-	const Lecture& getPracticeLecture() const;
+	inline const Lecture& getPracticeLecture() const;
 	void setPracticeLecture(const Lecture& newPracticeLecture);
 	
-	const Course& getCourse()const;
+	inline const Course& getCourse()const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Lecture& l);
 	friend std::ostream& operator<<(std::ostream& os, Lecture::eWeekDay day);
@@ -88,5 +88,46 @@ public:
 
 	~Lecture();
 };
+
+Lecture::eWeekDay Lecture::getWeekDay() const
+{
+	return this->day;
+}
+
+int Lecture::getHour() const
+{
+	return this->startHour;
+}
+
+int Lecture::getDuration() const
+{
+	return this->duration;
+}
+
+const Professor& Lecture::getLecturer() const
+{
+	return *(this->lecturer);
+}
+
+const Student* const* Lecture::getStudentList(int* numOfStudentList) const
+{
+	*numOfStudentList = this->numOfStudentList;
+	return this->studentList;
+}
+
+Lecture::eType Lecture::getLectureType() const
+{
+	return this->type;
+}
+
+const ClassRoom& Lecture::getClassRoom() const
+{
+	return *(this->classRoom);
+}
+
+const Course& Lecture::getCourse() const
+{
+	return *course;
+}
 
 #endif

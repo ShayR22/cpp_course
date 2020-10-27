@@ -149,12 +149,6 @@ bool Course::setPoints(float p)
 	return true;
 }
 
-Lecture** Course::getLectures(int* numOfLectures) const
-{
-	*numOfLectures = this->numOfLectures;
-	return lectures;
-}
-
 int Course::getLectureIndex(int id) const
 {
 	for (int i = 0; i < numOfLectures; i++)
@@ -207,12 +201,6 @@ bool Course::addLecture(const Lecture& lectureToAdd)
 
 	lectures[numOfLectures++] = new Lecture(lectureToAdd);
 	return true;
-}
-
-const Course** Course::getConditionsCourses(int* numOfConditionCourses) const
-{
-	*numOfConditionCourses = this->numOfConditionCourses;
-	return conditionCourses;
 }
 
 int Course::getConditionCourseIndex(const char* name) const

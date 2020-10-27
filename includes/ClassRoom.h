@@ -14,12 +14,12 @@ public:
 	bool operator==(const ClassRoom& other) const;
 	bool operator==(int roomNumber) const;
 
-
-	int getRoomNumber() const { return roomNumber; }
+	inline int getRoomNumber() const { return roomNumber; }
 	bool setRoomNumber(int newRoomNumber);
-	int getMaxSeats()const { return maxSeats; }
+	inline int getMaxSeats()const { return maxSeats; }
 	bool setMaxSeats(int newMaxSeats);
 
 	friend std::ostream& operator<<(std::ostream& os, const ClassRoom& cr);
 };
+
 #endif

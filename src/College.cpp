@@ -581,11 +581,6 @@ void College::printProfessorsOfStudent(std::ostream& os, const char* id) const
     students[index]->printProfessores(os);
 }
 
-int College::getNumOfProfessors() const
-{
-    return numOfProfessors;
-}
-
 // Practitioner
 bool College::addPractitioner(const Practitioner& newPractitioner)
 {

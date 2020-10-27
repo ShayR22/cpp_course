@@ -74,12 +74,6 @@ bool Professor::setSalary(double new_salary)
 	return true;
 }
 
-const Lecture* const* Professor::getLectures(int* numOfLectures) const
-{
-	*numOfLectures = this->numOfLectures;
-	return lectures;
-}
-
 void Professor::removeLectureByIndex(int index)
 {
 	/* invalid element index */
