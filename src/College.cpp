@@ -76,23 +76,12 @@ void College::printClassRooms(ostream& os) const
 // course
 bool College::addCourse(const Course& newCourse)
 {
-    if (courses.find(newCourse.getCourseName()) != courses.end())
-        return false;
-    if ((int)courses.size() >= maxCourses)
-        return false;
-
-    courses[newCourse.getCourseName()] = new Course(newCourse);
-    return true;
+    return addT(newCourse, newCourse.getCourseName(), &courses, maxCourses);
 }
 
 bool College::removeCourse(const Course& courseToRemove)
 {
-    if (!courses.erase(courseToRemove.getCourseName()))
-    {
-        cout << "Can't find course" << endl;
-        return false;
-    }
-    return true;
+    return removeT(courseToRemove.getCourseName(), &courses);
 }
 
 bool College::setCourseName(const string& name, const string& newName)
@@ -269,23 +258,12 @@ bool College::removeStudentFromLectureWaitingList(const string& courseName, cons
 // Student
 bool College::addStudent(const Student& newStudent)
 {
-    if (students.find(newStudent.getId()) != students.end())
-        return false;
-    if ((int)students.size() >= maxStudents)
-        return false;
-   
-    students[newStudent.getId()] = new Student(newStudent);
-    return true;
+    return addT(newStudent, newStudent.getId(), &students, maxStudents);
 }
 
 bool College::removeStudent(const string& studentID)
 {
-    if (!students.erase(studentID))
-    {
-        cout << "Student not in College" << endl;
-        return false;
-    }
-    return true;
+    return removeT(studentID, &students);
 }
 
 bool College::setStudentDepartment(const string& studentID, Student::eDepartmenType newDepartmentType)
@@ -395,29 +373,12 @@ void College::printProfessorsOfStudent(std::ostream& os, const string& id)
 
 bool College::addProfessor(const Professor& newProfessor)
 {
-    if (professors.find(newProfessor.getId()) != professors.end()) {
-        cout << "Professor with same id already exist, ID: " << newProfessor.getId() << endl;
-        return false;
-    }
-
-    if ((int)professors.size() >= maxProfessors) {
-        cout << "College is full of professors." << endl;
-        cout << "Num of professors: " << professors.size() << endl;
-        return false;
-    }
-
-    professors[newProfessor.getId()] = new Professor(newProfessor);
-    return true;
+    return addT(newProfessor, newProfessor.getId(), &professors, maxProfessors);
 }
 
 bool College::removeProfessor(const string& id)
 {
-    if (!professors.erase(id))
-    {
-        cout << "proffesor not in College" << endl;
-        return false;
-    }
-    return true;
+    return removeT(id, &professors);
 }
 
 bool College::setProfesssorSalary(const string& id, double newSalary)
@@ -501,30 +462,12 @@ int College::getNumOfProfessors() const
 // Practitioner
 bool College::addPractitioner(const Practitioner& newPractitioner)
 {
-
-    if (practitioners.find(newPractitioner.getId()) != practitioners.end()) {
-        cout << "Practitioner with same id already exist, ID: " << newPractitioner.getId() << endl;
-        return false;
-    }
-
-    if ((int)practitioners.size() >= maxPractitioners) {
-        cout << "College is full of practitioners." << endl;
-        cout << "Num of practitioners: " << practitioners.size() << endl;
-        return false;
-    }
-
-    practitioners[newPractitioner.getId()] = new Practitioner(newPractitioner);
-    return true;
+    return addT(newPractitioner, newPractitioner.getId(), &practitioners, maxPractitioners);
 }
 
 bool College::removePractitioner(const string& id)
 {
-    if (!practitioners.erase(id))
-    {
-        cout << "Practitioner wasn't found" << endl;
-        return false;
-    }
-    return true;
+    return removeT(id, &practitioners);
 }
 
 bool College::setPractitionerSalary(const string& id, double newSalary)

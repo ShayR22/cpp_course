@@ -13,6 +13,36 @@
 class College
 {
 private:
+
+    template<typename T>
+    bool addT(const T& element, const std::string& id, std::map<std::string, T*>* map, int maxTAllowed)
+    {
+        if (map->find(id) != map->end())
+        {
+            std::cout << typeid(T).name() << " with same id already exist, ID: " << id << std::endl;
+            return false;
+        }
+        if ((int)map->size() >= maxTAllowed)
+        {
+            std::cout << "College is full of " << typeid(T).name() << "." << std::endl;
+            return false;
+        }
+
+        (*map)[id] = new T(element);
+        return true;
+    }
+
+    template<typename T>
+    bool removeT(const std::string& elementID, std::map<std::string, T*>* map)
+    {
+        if (!map->erase(elementID))
+        {
+            std::cout << typeid(T).name() << " not in College" << std::endl;
+            return false;
+        }
+        return true;
+    }
+
     std::map<std::string, Student *> students;
     int maxStudents;
 
