@@ -36,11 +36,11 @@ public:
 	bool setCoordinator(const Professor* p);
 	float getPoints() const { return points; }
 	bool setPoints(float p);
-	std::map<int, Lecture*> getLectures() const;
+	std::map<int, Lecture*> getLectures() const { return lectures; };
 	bool removeLecture(const Lecture& lectureToRemove);
 	bool removeLecture(int id);
 	bool addLecture(const Lecture& lectureToAdd);
-	const std::map<std::string, const Course*> getConditionsCourses() const;
+	const std::map<std::string, const Course*> getConditionsCourses() const { return conditionCourses; };
 	bool removeConditionCourse(const Course& c);
 	bool removeConditionCourse(const std::string& name);
 	bool addConditionCourse(const Course& c);

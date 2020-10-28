@@ -57,12 +57,6 @@ bool Professor::setSalary(double new_salary)
 	return true;
 }
 
-const map<int, const Lecture *> Professor::getLectures() const
-{
-	return lectures;
-}
-
-
 bool Professor::removeLecture(const Lecture* lectureToRemove)
 {
 	if (!lectures.erase(lectureToRemove->getId()))

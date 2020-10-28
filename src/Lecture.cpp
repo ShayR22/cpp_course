@@ -36,19 +36,11 @@ Lecture::Lecture(const Lecture& otherL) noexcept
 	*this = otherL;
 }
 
-Lecture::eWeekDay Lecture::getWeekDay() const
-{ 
-	return this->day; 
-}
+
 
 void Lecture::setWeekDay(eWeekDay day)
 { 
 	this->day = day;
-}
-
-int Lecture::getHour() const 
-{ 
-	return this->startHour; 
 }
 
 bool Lecture::setHour(int newHour)
@@ -66,11 +58,6 @@ bool Lecture::setHour(int newHour)
 	
 	this->startHour = newHour;
 	return true;
-}
-
-int Lecture::getDuration() const 
-{ 
-	return this->duration; 
 }
 
 bool Lecture::setDuration(int newDuration)
@@ -96,11 +83,6 @@ bool Lecture::setDuration(int newDuration)
 	return true;
 }
 
-int Lecture::getMaxStudentsMap() const
-{
-	return this->maxStudentMap;
-}
-
 bool Lecture::setMaxStudentsMap(int newMaxStudentsMap)
 {	
 	if (newMaxStudentsMap < (int)this->studentMap.size())
@@ -111,11 +93,6 @@ bool Lecture::setMaxStudentsMap(int newMaxStudentsMap)
 
 	this->maxStudentMap = newMaxStudentsMap;
 	return true;
-}
-
-int Lecture::getMaxWaitingsMap() const
-{
-	return this->maxWaitingMap;
 }
 
 bool Lecture::setMaxWaitingMap(int newMaxWaitingMap)
@@ -130,19 +107,9 @@ bool Lecture::setMaxWaitingMap(int newMaxWaitingMap)
 	return true;
 }
 
-Lecture::eType Lecture::getLectureType() const 
-{ 
-	return this->type; 
-}
-
 void Lecture::setLectureType(const eType newType)
 {	
 	this->type = newType;
-}
-
-const ClassRoom& Lecture::getClassRoom() const
-{ 
-	return *(this->classRoom); 
 }
 
 void Lecture::setClassRoom(const ClassRoom* newClassRoom)
@@ -150,24 +117,9 @@ void Lecture::setClassRoom(const ClassRoom* newClassRoom)
 	this->classRoom = newClassRoom;
 }
 
-const Professor& Lecture::getLecturer() const
-{
-	return *(this->lecturer);
-}
-
 void Lecture::setLecturer(const Professor& newLectureProfessor)
 {	
 	this->lecturer = &newLectureProfessor;
-}
-
-const map<string, const Student*> Lecture::getStudentMap() const
-{
-	return this->studentMap;
-}
-
-const map<string, const Student*> Lecture::getWaitingMap() const
-{
-	return this->waitingMap;
 }
 
 bool Lecture::addStudent(const Student& newStudent)
@@ -220,20 +172,9 @@ bool Lecture::removeFromWaitingMap(const Student& studentToRemove)
 	return true;
 }
 
-
-const Lecture& Lecture::getPracticeLecture() const
-{
-	return *practice;
-}
-
 void Lecture::setPracticeLecture(const Lecture& newPracticeLecture)
 {
 	this->practice = &newPracticeLecture;
-}
-
-const Course& Lecture::getCourse() const
-{
-	return *course;
 }
 
 bool Lecture::operator==(int id) const

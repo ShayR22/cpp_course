@@ -125,11 +125,6 @@ bool Course::setPoints(float p)
 	return true;
 }
 
-map<int, Lecture*> Course::getLectures() const
-{
-	return lectures;
-}
-
 bool Course::removeLecture(const Lecture& lectureToRemove)
 {
 	return removeLecture(lectureToRemove.getId());
@@ -161,11 +156,6 @@ bool Course::addLecture(const Lecture& lectureToAdd)
 
 	lectures[lectureToAdd.getId()] = new Lecture(lectureToAdd);
 	return true;
-}
-
-const map<string, const Course*> Course::getConditionsCourses() const
-{
-	return conditionCourses;
 }
 
 bool Course::removeConditionCourse(const Course& c)

@@ -24,7 +24,7 @@ public:
 
 	bool setSalary(double new_salary);
 	double getSalary() const { return salary; }
-	const std::map<int, const Lecture*> getLectures() const;
+	const std::map<int, const Lecture*> getLectures() const { return lectures; };
 
 	bool removeLecture(const Lecture* lectureToRemove);
 	bool addLectureTeaching(const Lecture* newLecture);

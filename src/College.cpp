@@ -342,11 +342,7 @@ const map<string, const Student*> College::getStudents() const
 
 const Student* College::getStudentById(const string& id) const
 {
-    for (auto& e : students)
-        if (*(e.second) == id)
-            return e.second;
-   
-    return nullptr;
+    return getTById(id, &students);
 }
 
 void College::printStudents(std::ostream& os) const
@@ -356,7 +352,6 @@ void College::printStudents(std::ostream& os) const
 
     for (auto& e : students)
         os << *(e.second);
-
 }
 
 void College::printProfessorsOfStudent(std::ostream& os, const string& id)
@@ -426,11 +421,7 @@ const map<string, const Professor*> College::getProfessors() const
 
 const Professor* College::getProfessorById(const string& id) const
 {
-    for (auto& e : professors)
-        if (*(e.second) == id)
-            return e.second;
-
-    return nullptr;
+    return getTById(id, &professors);
 }
 
 void College::printProfessors(std::ostream& os) const
@@ -452,11 +443,6 @@ void College::printProfessorsOfStudent(ostream& os, const string& id) const
     }
 
     pos->second->printProfessores(os);
-}
-
-int College::getNumOfProfessors() const
-{
-    return professors.size();
 }
 
 // Practitioner
@@ -577,11 +563,7 @@ const map<string, const Practitioner*> College::getPractitioners() const
 
 const Practitioner* College::getPractitionerById(const string& id) const
 {
-    for (auto& e: practitioners)
-        if (*(e.second) == id)
-            return e.second;
-
-    return nullptr;
+    return getTById(id, &practitioners);
 }
 
 void College::printPractitioners(std::ostream& os) const
@@ -673,5 +655,9 @@ std::ostream& operator<<(std::ostream& os, const College& c)
 
 College::~College()
 {
-
+    destoryPointerMap(&students);
+    destoryPointerMap(&professors);
+    destoryPointerMap(&practitioners);
+    destoryPointerMap(&courses);
+    destoryPointerMap(&classRooms);
 }

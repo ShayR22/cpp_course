@@ -43,6 +43,28 @@ private:
         return true;
     }
 
+    template<typename T>
+    T* getTById(const std::string& elementID, const std::map<std::string, T*>* map) const
+    {
+        typename std::map<std::string, T*>::const_iterator pos = map->find(elementID);
+        if (pos == map->end())
+            return nullptr;
+        return pos->second;
+    }
+
+    template<typename T, typename K>
+    void destoryPointerMap(std::map<K, T*>* map)
+    {
+        typename std::map<K, T*>::iterator itr = map->begin();
+        while (itr != map->end())
+        {
+            // found it - delete it
+            delete itr->second;
+            map->erase(itr);
+            ++itr;
+        }
+    }
+
     std::map<std::string, Student *> students;
     int maxStudents;
 
@@ -66,7 +88,7 @@ public:
     bool addClassRoom(const ClassRoom& newClassroom);
     bool removeClassRoom(const ClassRoom& classRoomToRemove);
     const ClassRoom* getClassRoomByNumber(int roomNumber) const;
-    const std::map<int, const ClassRoom*> getClassRooms() const;
+    inline const std::map<int, const ClassRoom*> getClassRooms() const;
     void printClassRooms(std::ostream& os) const;
 
     // Course
@@ -118,7 +140,7 @@ public:
     const Professor* getProfessorById(const std::string& id) const;
     void printProfessors(std::ostream& os) const;
     void printProfessorsOfStudent(std::ostream& os, const std::string& id) const;
-    int getNumOfProfessors() const;
+    inline int getNumOfProfessors() const;
 
     // Practitioner
     bool addPractitioner(const Practitioner& newPractitioner);
@@ -156,4 +178,10 @@ private:
     void removeStudentFromAllLectures(Student * removeStudent);
     void removeClassRoomFromAllLectures(const ClassRoom& c);
 };
+
+int College::getNumOfProfessors() const
+{
+    return professors.size();
+}
+
 #endif

@@ -34,7 +34,7 @@ public:
 	const std::string getDepartmentString() const;
 
 	void setDepartment(eDepartmenType newDepartmentType);
-	const GenericLinkedList<CourseInformation> getCourseInformation(int* numOfCourses) const;
+	inline const GenericLinkedList<CourseInformation> getCourseInformation(int* numOfCourses) const;
 	bool updateGrade(const Lecture& lecture, int newGrade);
 	bool addLecture(const Lecture* newLecture);
 

@@ -14,7 +14,6 @@ public:
 	bool operator==(const ClassRoom& other) const;
 	bool operator==(int roomNumber) const;
 
-
 	int getRoomNumber() const { return roomNumber; }
 	bool setRoomNumber(int newRoomNumber);
 	int getMaxSeats()const { return maxSeats; }
